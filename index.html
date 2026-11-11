@@ -1,0 +1,2275 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Hệ Thống Quản Lý Dịch Vụ Chăm Sóc Thú Cưng - PetCare CSDL (Chuẩn 3NF)</title>
+  <style>
+    :root {
+      --primary: #1e3a8a;
+      --primary-light: #2563eb;
+      --accent: #0ea5e9;
+      --success: #15803d;
+      --success-bg: #dcfce7;
+      --danger: #b91c1c;
+      --danger-bg: #fee2e2;
+      --warning: #b45309;
+      --warning-bg: #fef3c7;
+      --bg: #f1f5f9;
+      --card: #ffffff;
+      --border: #cbd5e1;
+      --text: #0f172a;
+      --muted: #475569;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.5;
+    }
+    header {
+      background: linear-gradient(135deg, #0f172a 0%, #1e3a8a 60%, #1d4ed8 100%);
+      color: #fff;
+      padding: 18px 28px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    }
+    .brand h1 { font-size: 20px; font-weight: 700; letter-spacing: 0.3px; }
+    .brand p { font-size: 13px; color: #bfdbfe; margin-top: 2px; }
+    .status-badge {
+      background: rgba(255,255,255,0.15);
+      border: 1px solid rgba(255,255,255,0.3);
+      padding: 6px 14px;
+      border-radius: 999px;
+      font-size: 12.5px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .dot { width: 9px; height: 9px; border-radius: 50%; background: #4ade80; display: inline-block; }
+
+    /* Navigation Tabs */
+    .nav-tabs {
+      background: #fff;
+      border-bottom: 2px solid var(--border);
+      display: flex;
+      gap: 4px;
+      padding: 0 24px;
+      overflow-x: auto;
+    }
+    .tab-btn {
+      padding: 13px 18px;
+      border: none;
+      background: transparent;
+      color: var(--muted);
+      font-weight: 600;
+      font-size: 13.5px;
+      cursor: pointer;
+      border-bottom: 3px solid transparent;
+      transition: all 0.2s;
+      white-space: nowrap;
+    }
+    .tab-btn:hover { color: var(--primary-light); background: #f8fafc; }
+    .tab-btn.active {
+      color: var(--primary);
+      border-bottom-color: var(--primary-light);
+      background: #eff6ff;
+    }
+
+    .container { max-width: 1380px; margin: 22px auto; padding: 0 20px; }
+    .tab-pane { display: none; }
+    .tab-pane.active { display: block; }
+
+    .grid-2 { display: grid; grid-template-columns: 440px 1fr; gap: 22px; align-items: start; }
+    @media (max-width: 1024px) { .grid-2 { grid-template-columns: 1fr; } }
+
+    .card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 20px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+      margin-bottom: 20px;
+    }
+    .card-header {
+      border-bottom: 1px solid #e2e8f0;
+      padding-bottom: 12px;
+      margin-bottom: 16px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+    .card-title { font-size: 16.5px; font-weight: 700; color: var(--primary); }
+    .badge {
+      display: inline-block;
+      padding: 3px 9px;
+      border-radius: 999px;
+      font-size: 11.5px;
+      font-weight: 600;
+    }
+    .badge-blue { background: #dbeafe; color: #1e40af; }
+    .badge-green { background: #dcfce7; color: #166534; }
+    .badge-amber { background: #fef3c7; color: #92400e; }
+    .badge-red { background: #fee2e2; color: #991b1b; }
+    .badge-purple { background: #f3e8ff; color: #6b21a8; }
+
+    /* Form styles */
+    .form-group { margin-bottom: 13px; }
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    label {
+      display: block;
+      font-size: 12.5px;
+      font-weight: 600;
+      color: #334155;
+      margin-bottom: 4px;
+    }
+    label span.req { color: var(--danger); }
+    input, select, textarea {
+      width: 100%;
+      padding: 8px 11px;
+      border: 1px solid #94a3b8;
+      border-radius: 6px;
+      font-size: 13.5px;
+      font-family: inherit;
+      background: #fff;
+    }
+    input:focus, select:focus, textarea:focus {
+      outline: none;
+      border-color: var(--primary-light);
+      box-shadow: 0 0 0 3px rgba(37,99,235,0.15);
+    }
+    input.invalid, select.invalid {
+      border-color: var(--danger);
+      background: #fff5f5;
+    }
+    .hint { font-size: 11.5px; color: var(--muted); margin-top: 3px; }
+
+    /* Buttons */
+    .btn-bar { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 14px; }
+    .btn {
+      padding: 8px 14px;
+      border-radius: 6px;
+      font-size: 13px;
+      font-weight: 600;
+      border: 1px solid transparent;
+      cursor: pointer;
+      transition: all 0.15s;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .btn-primary { background: var(--primary-light); color: #fff; }
+    .btn-primary:hover { background: var(--primary); }
+    .btn-success { background: var(--success); color: #fff; }
+    .btn-success:hover { background: #166534; }
+    .btn-danger-outline { background: #fff1f2; color: var(--danger); border-color: #fecdd3; }
+    .btn-danger-outline:hover { background: #ffe4e6; }
+    .btn-secondary { background: #f1f5f9; color: #334155; border-color: #cbd5e1; }
+    .btn-secondary:hover { background: #e2e8f0; }
+
+    /* Alert boxes */
+    .alert {
+      padding: 12px 15px;
+      border-radius: 8px;
+      margin-bottom: 15px;
+      font-size: 13px;
+      display: none;
+    }
+    .alert.show { display: block; }
+    .alert-error {
+      background: var(--danger-bg);
+      border-left: 4px solid var(--danger);
+      color: #7f1d1d;
+    }
+    .alert-success {
+      background: var(--success-bg);
+      border-left: 4px solid var(--success);
+      color: #14532d;
+    }
+    .alert ul { margin-left: 18px; margin-top: 5px; }
+
+    /* SQL Box */
+    .sql-box {
+      background: #0f172a;
+      color: #e2e8f0;
+      font-family: 'Consolas', 'Courier New', monospace;
+      font-size: 12.5px;
+      padding: 12px 15px;
+      border-radius: 8px;
+      overflow-x: auto;
+      margin-top: 12px;
+      border: 1px solid #334155;
+      white-space: pre-wrap;
+    }
+    .sql-label {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.7px;
+      color: #38bdf8;
+      font-weight: 700;
+      margin-bottom: 4px;
+      display: block;
+    }
+
+    /* Tables */
+    .table-wrap { overflow-x: auto; }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+    }
+    th, td {
+      padding: 9px 11px;
+      border-bottom: 1px solid #e2e8f0;
+      text-align: left;
+    }
+    th {
+      background: #f8fafc;
+      color: #1e293b;
+      font-weight: 700;
+      border-top: 1px solid #e2e8f0;
+      white-space: nowrap;
+    }
+    tr:hover td { background: #f8fafc; }
+    .num { text-align: right; font-variant-numeric: tabular-nums; }
+
+    /* Official Report Paper Styling (Mục 7) */
+    .report-paper {
+      background: #fff;
+      border: 1px solid #94a3b8;
+      padding: 32px 40px;
+      border-radius: 4px;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+      font-family: 'Times New Roman', Times, serif;
+      color: #000;
+      margin-top: 14px;
+    }
+    .report-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 20px;
+      font-size: 14px;
+    }
+    .report-org { text-align: center; width: 45%; }
+    .report-nation { text-align: center; width: 50%; }
+    .report-title-block { text-align: center; margin: 18px 0 16px; }
+    .report-title-block h2 { font-size: 19px; text-transform: uppercase; margin-bottom: 4px; }
+    .report-meta-box {
+      background: #f8fafc;
+      border: 1px dashed #64748b;
+      padding: 10px 16px;
+      margin-bottom: 16px;
+      font-size: 14px;
+      line-height: 1.6;
+    }
+    .report-paper table {
+      border: 1px solid #000;
+      font-family: 'Times New Roman', Times, serif;
+      font-size: 13.5px;
+    }
+    .report-paper th, .report-paper td {
+      border: 1px solid #000;
+      padding: 7px 9px;
+    }
+    .report-paper th {
+      background: #e2e8f0;
+      color: #000;
+      text-align: center;
+    }
+    .report-sign {
+      display: flex;
+      justify-content: space-around;
+      margin-top: 28px;
+      text-align: center;
+      font-size: 14px;
+    }
+    .report-sign div { width: 30%; }
+    .sign-space { height: 65px; }
+
+    @media print {
+      header, .nav-tabs, .no-print { display: none !important; }
+      body { background: #fff; }
+      .container { max-width: 100%; margin: 0; padding: 0; }
+      .card { border: none; box-shadow: none; padding: 0; }
+      .report-paper { border: none; box-shadow: none; padding: 10px; }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="brand">
+    <h1>HỆ THỐNG CƠ SỞ DỮ LIỆU QUẢN LÝ DỊCH VỤ CHĂM SÓC THÚ CƯNG (PETCARE SPA &amp; CLINIC)</h1>
+    <p>Demo Bài Tập Lớn CSDL: Mô hình ER, Quan hệ 3NF, 2 Màn hình Nhập (Validation), 1 Màn hình Tìm kiếm &amp; 2 Báo cáo Thực tế</p>
+  </div>
+  <div class="status-badge">
+    <span class="dot"></span>
+    <span id="dbStatusText">CSDL SQLite 3NF: Đang hoạt động</span>
+  </div>
+</header>
+
+<nav class="nav-tabs">
+  <button class="tab-btn active" onclick="switchTab('tab-input1', this)">Mục 5.1: Tiếp Nhận Khách Hàng &amp; Thú Cưng (KHACH_HANG &rarr; THU_CUNG)</button>
+  <button class="tab-btn" onclick="switchTab('tab-input2', this)">Mục 5.2: Đặt Lịch Hẹn Chăm Sóc (LICH_HEN)</button>
+  <button class="tab-btn" onclick="switchTab('tab-search', this)">Mục 6: Tìm Kiếm Lịch Hẹn &amp; Hồ Sơ</button>
+  <button class="tab-btn" onclick="switchTab('tab-report1', this)">Mục 7.1: Báo Cáo Doanh Thu Dịch Vụ</button>
+  <button class="tab-btn" onclick="switchTab('tab-report2', this)">Mục 7.2: Báo Cáo Hiệu Suất Nhân Viên</button>
+  <button class="tab-btn" onclick="switchTab('tab-schema', this)">Mục 1-4: Lược Đồ ER, Quan Hệ &amp; Chuẩn Hóa 3NF</button>
+</nav>
+
+<div class="container">
+
+  <!-- ======================= MỤC 5.1: MÀN HÌNH NHẬP 1 (KHACH_HANG & THU_CUNG) ======================= -->
+  <div id="tab-input1" class="tab-pane active">
+    <div class="grid-2">
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">Màn hình 1: Tiếp nhận Khách hàng &amp; Đăng ký Hồ sơ Thú cưng</div>
+          <span class="badge badge-blue">Mục 5 - Kiểm tra toàn vẹn</span>
+        </div>
+
+        <div style="background:#f8fafc;border:1px solid #e2e8f0;padding:10px 12px;border-radius:8px;margin-bottom:14px;">
+          <div style="font-size:12px;font-weight:700;color:#1e3a8a;margin-bottom:6px;">BỘ NÚT DEMO KIỂM TRA TÍNH ĐÚNG ĐẮN DỮ LIỆU (VALIDATION DEMO):</div>
+          <div class="btn-bar" style="margin-top:0;">
+            <button type="button" class="btn btn-success" onclick="demoNewCustomerAndPet()">Điền Mẫu: Khách Hàng Mới + Thú Cưng Mới</button>
+            <button type="button" class="btn btn-success" onclick="demoPetValid()">Điền Mẫu: Khách Cũ + Thú Cưng Mới</button>
+            <button type="button" class="btn btn-danger-outline" onclick="demoPetError('kh_sdt')">Demo Lỗi SĐT Khách Hàng</button>
+            <button type="button" class="btn btn-danger-outline" onclick="demoPetError('pk')">Demo Lỗi Trùng PK (TC001)</button>
+            <button type="button" class="btn btn-danger-outline" onclick="demoPetError('check')">Demo Lỗi CHECK (Cân Nặng Âm)</button>
+            <button type="button" class="btn btn-danger-outline" onclick="demoPetError('fk')">Demo Lỗi FK (KH999)</button>
+          </div>
+        </div>
+
+        <div id="petAlert" class="alert"></div>
+
+        <form id="petForm" onsubmit="submitPetForm(event)" novalidate>
+          <!-- BƯỚC 1: CHỌN HOẶC THÊM MỚI KHÁCH HÀNG (BẢNG CHA KHACH_HANG) -->
+          <div style="background:#eff6ff;border:1px solid #bfdbfe;padding:12px 14px;border-radius:8px;margin-bottom:14px;">
+            <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;margin-bottom:10px;">
+              <div style="font-size:13px;font-weight:700;color:#1e3a8a;">BƯỚC 1: THÔNG TIN CHỦ SỞ HỮU (BẢNG CHA: KHACH_HANG)</div>
+              <div style="display:flex;gap:6px;">
+                <button type="button" id="btnModeExistingKH" class="btn btn-primary" style="padding:5px 10px;font-size:12px;" onclick="setCustomerMode('existing')">Khách hàng đã có hồ sơ</button>
+                <button type="button" id="btnModeNewKH" class="btn btn-secondary" style="padding:5px 10px;font-size:12px;" onclick="setCustomerMode('new')">+ Đăng ký Khách hàng mới</button>
+              </div>
+            </div>
+
+            <!-- Chọn khách hàng đã có sẵn -->
+            <div id="existingCustomerBox" class="form-group" style="margin-bottom:0;">
+              <label>Chọn Chủ Sở Hữu (MaKH - Khóa ngoại tham chiếu KHACH_HANG) <span class="req">*</span></label>
+              <select id="tc_makh" onchange="onSelectCustomerChange(this.value)" required></select>
+              <div class="hint">Nếu khách hàng mới lần đầu đến tiệm, hãy bấm nút <strong>"+ Đăng ký Khách hàng mới"</strong> ở góc phải phía trên.</div>
+            </div>
+
+            <!-- Nhập khách hàng mới vào bảng KHACH_HANG -->
+            <div id="newCustomerBox" style="display:none;">
+              <div class="form-row">
+                <div class="form-group">
+                  <label>Mã Khách Hàng Mới (MaKH - PK) <span class="req">*</span></label>
+                  <input type="text" id="kh_makh" placeholder="VD: KH007" />
+                  <div class="hint">Định dạng: KH + số (Khóa chính bảng KHACH_HANG)</div>
+                </div>
+                <div class="form-group">
+                  <label>Họ và Tên Khách Hàng (HoTen) <span class="req">*</span></label>
+                  <input type="text" id="kh_hoten" placeholder="VD: Đặng Quốc Khánh" />
+                </div>
+              </div>
+              <div class="form-row">
+                <div class="form-group">
+                  <label>Số Điện Thoại (SDT - UNIQUE) <span class="req">*</span></label>
+                  <input type="text" id="kh_sdt" placeholder="VD: 0968889999" />
+                  <div class="hint">Ràng buộc CHECK: 10-11 chữ số, bắt đầu bằng số 0, không trùng</div>
+                </div>
+                <div class="form-group">
+                  <label>Email (Email - UNIQUE)</label>
+                  <input type="email" id="kh_email" placeholder="VD: khanh.dang@gmail.com" />
+                </div>
+              </div>
+              <div class="form-group" style="margin-bottom:8px;">
+                <label>Địa Chỉ Liên Hệ (DiaChi)</label>
+                <input type="text" id="kh_diachi" placeholder="VD: 108 Láng Hạ, Đống Đa, Hà Nội" />
+              </div>
+              <div style="display:flex;justify-content:flex-end;">
+                <button type="button" class="btn btn-success" style="padding:6px 12px;font-size:12px;" onclick="submitCustomerOnly()">Chỉ Lưu Khách Hàng Mới Này Vào KHACH_HANG</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- BƯỚC 2: THÔNG TIN THÚ CƯNG (BẢNG CON THU_CUNG) -->
+          <div style="font-size:13px;font-weight:700;color:#1e3a8a;margin-bottom:8px;">BƯỚC 2: THÔNG TIN HỒ SƠ THÚ CƯNG (BẢNG CON: THU_CUNG)</div>
+          <div class="form-row">
+            <div class="form-group">
+              <label>Mã Thú Cưng (MaThuCung - PK) <span class="req">*</span></label>
+              <input type="text" id="tc_matc" placeholder="VD: TC008" required />
+              <div class="hint">Định dạng: TC + số (Duy nhất, không trùng lặp)</div>
+            </div>
+            <div class="form-group">
+              <label>Tên Thú Cưng (TenThuCung) <span class="req">*</span></label>
+              <input type="text" id="tc_ten" placeholder="VD: Kem, Bông..." required />
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label>Loài (Loai) <span class="req">*</span></label>
+              <select id="tc_loai">
+                <option value="Chó">Chó</option>
+                <option value="Mèo">Mèo</option>
+                <option value="Hamster">Hamster</option>
+                <option value="Thỏ">Thỏ</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Giống (Giong)</label>
+              <input type="text" id="tc_giong" placeholder="VD: Poodle, Anh lông ngắn..." />
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label>Giới Tính (GioiTinh) <span class="req">*</span></label>
+              <select id="tc_gioitinh">
+                <option value="Đực">Đực</option>
+                <option value="Cái">Cái</option>
+                <option value="Chưa xác định">Chưa xác định</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Tuổi (Tháng tuổi - Tuoi) <span class="req">*</span></label>
+              <input type="number" id="tc_tuoi" placeholder="VD: 14" min="1" max="360" required />
+              <div class="hint">Ràng buộc CHECK: 0 &lt; Tuoi &lt;= 360 tháng</div>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label>Cân Nặng (kg - CanNang) <span class="req">*</span></label>
+              <input type="number" step="0.1" id="tc_cannang" placeholder="VD: 4.2" min="0.1" max="150" required />
+              <div class="hint">Ràng buộc CHECK: 0 &lt; CanNang &lt;= 150 kg</div>
+            </div>
+            <div class="form-group">
+              <label>Ghi Chú Sức Khỏe / Lưu Ý (GhiChu)</label>
+              <input type="text" id="tc_ghichu" placeholder="Tình trạng da, lông, dị ứng sữa tắm..." />
+            </div>
+          </div>
+
+          <div class="btn-bar">
+            <button type="submit" id="btnSubmitPetMain" class="btn btn-primary">Lưu Hồ Sơ Thú Cưng Vào CSDL</button>
+            <button type="button" class="btn btn-secondary" onclick="resetPetForm()">Làm Mới Form</button>
+          </div>
+        </form>
+
+        <div class="sql-box">
+          <span class="sql-label">Câu lệnh SQL thực thi &amp; kiểm tra ràng buộc (Mục 5.1):</span>
+          <div id="petSqlLog">-- Ràng buộc trên bảng KHACH_HANG &amp; THU_CUNG:
+-- 1. KHACH_HANG: PRIMARY KEY (MaKH), UNIQUE (SDT, Email), CHECK (LENGTH(SDT) BETWEEN 10 AND 11 AND SDT GLOB '0[0-9]*')
+-- 2. THU_CUNG: PRIMARY KEY (MaThuCung), FOREIGN KEY (MaKH) REFERENCES KHACH_HANG(MaKH)
+--    CHECK (Tuoi > 0 AND Tuoi <= 360), CHECK (CanNang > 0 AND CanNang <= 150)</div>
+        </div>
+      </div>
+
+      <div style="display:flex;flex-direction:column;gap:16px;">
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">Danh sách Hồ sơ Thú cưng trong CSDL (<span id="petCount">0</span> bản ghi)</div>
+            <span class="badge badge-green">Bảng con THU_CUNG (N)</span>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Mã TC (PK)</th>
+                  <th>Tên Thú Cưng</th>
+                  <th>Loài / Giống</th>
+                  <th>Giới Tính</th>
+                  <th class="num">Tuổi (tháng)</th>
+                  <th class="num">Cân Nặng</th>
+                  <th>Chủ Sở Hữu (FK MaKH)</th>
+                  <th>Ghi Chú Đặc Điểm</th>
+                </tr>
+              </thead>
+              <tbody id="petTableBody"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">Danh sách Khách hàng hiện có (<span id="customerCount">0</span> bản ghi)</div>
+            <span class="badge badge-blue">Bảng cha KHACH_HANG (1)</span>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Mã KH (PK)</th>
+                  <th>Họ và Tên Khách Hàng</th>
+                  <th>Số Điện Thoại</th>
+                  <th>Email</th>
+                  <th>Địa Chỉ Liên Hệ</th>
+                </tr>
+              </thead>
+              <tbody id="customerTableBody"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ======================= MỤC 5.2: MÀN HÌNH NHẬP 2 (LICH_HEN) ======================= -->
+  <div id="tab-input2" class="tab-pane">
+    <div class="grid-2">
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">Màn hình 2: Tiếp nhận &amp; Đặt Lịch Hẹn (Bảng LICH_HEN)</div>
+          <span class="badge badge-blue">Đã chuẩn hóa 3NF</span>
+        </div>
+
+        <div style="background:#f8fafc;border:1px solid #e2e8f0;padding:10px 12px;border-radius:8px;margin-bottom:14px;">
+          <div style="font-size:12px;font-weight:700;color:#1e3a8a;margin-bottom:6px;">BỘ NÚT DEMO KIỂM TRA QUY TẮC NGHIỆP VỤ &amp; TOÀN VẸN DỮ LIỆU:</div>
+          <div class="btn-bar" style="margin-top:0;">
+            <button type="button" class="btn btn-danger-outline" onclick="demoBookingError('off_staff')">Demo Lỗi: Nhân Viên Nghỉ Phép (NV006)</button>
+            <button type="button" class="btn btn-danger-outline" onclick="demoBookingError('wrong_shift')">Demo Lỗi: Sai Ca Làm Việc</button>
+            <button type="button" class="btn btn-danger-outline" onclick="demoBookingError('overlap')">Demo Lỗi: Trùng Lịch Nhân Viên</button>
+            <button type="button" class="btn btn-success" onclick="demoBookingValid()">Điền Lịch Hẹn Hợp Lệ Mẫu</button>
+          </div>
+        </div>
+
+        <div id="bookingAlert" class="alert"></div>
+
+        <form id="bookingForm" onsubmit="submitBookingForm(event)" novalidate>
+          <div class="form-row">
+            <div class="form-group">
+              <label>Mã Lịch Hẹn (MaLich - PK) <span class="req">*</span></label>
+              <input type="text" id="lh_malich" placeholder="VD: LH012" required />
+            </div>
+            <div class="form-group">
+              <label>Thú Cưng Đặt Lịch (MaThuCung - FK) <span class="req">*</span></label>
+              <select id="lh_matc" onchange="updateOwnerPreview()" required></select>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label>Khách Hàng Sở Hữu (Suy dẫn tự động từ MaThuCung theo chuẩn 3NF)</label>
+            <input type="text" id="lh_owner_preview" readonly style="background:#f1f5f9;color:#1e3a8a;font-weight:600;" />
+            <div class="hint">Chuẩn 3NF: Không lưu dư thừa MaKH trong LICH_HEN vì MaThuCung &rarr; MaKH</div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label>Dịch Vụ Sử Dụng (MaDV - FK) <span class="req">*</span></label>
+              <select id="lh_madv" onchange="updatePricePreview()" required></select>
+            </div>
+            <div class="form-group">
+              <label>Số Lượng (SoLuong) <span class="req">*</span></label>
+              <input type="number" id="lh_soluong" value="1" min="1" max="30" oninput="updatePricePreview()" required />
+              <div class="hint">Tạm tính: <strong id="lh_price_preview" style="color:#15803d;">0 đ</strong></div>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label>Nhân Viên Phụ Trách (MaNV - FK) <span class="req">*</span></label>
+              <select id="lh_manv" required></select>
+              <div class="hint">Chỉ phân công NV đang làm việc &amp; đúng ca</div>
+            </div>
+            <div class="form-group">
+              <label>Ngày Giờ Hẹn (NgayGioHen) <span class="req">*</span></label>
+              <input type="datetime-local" id="lh_ngaygio" required />
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label>Trạng Thái Lịch Hẹn (TrangThai) <span class="req">*</span></label>
+              <select id="lh_trangthai">
+                <option value="Mới tạo">Mới tạo</option>
+                <option value="Đã xác nhận" selected>Đã xác nhận</option>
+                <option value="Đang thực hiện">Đang thực hiện</option>
+                <option value="Hoàn thành">Hoàn thành</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Ghi Chú Yêu Cầu (GhiChu)</label>
+              <input type="text" id="lh_ghichu" placeholder="Ghi chú kiểu cắt, lưu ý..." />
+            </div>
+          </div>
+
+          <div class="btn-bar">
+            <button type="submit" class="btn btn-primary">Tạo Lịch Hẹn Mới</button>
+            <button type="button" class="btn btn-secondary" onclick="resetBookingForm()">Làm Mới</button>
+          </div>
+        </form>
+
+        <div class="sql-box">
+          <span class="sql-label">Câu lệnh SQL thực thi &amp; kiểm tra trùng lịch (Mục 5.2):</span>
+          <div id="bookingSqlLog">-- Kiểm tra nhân viên đang làm việc & không trùng lịch hẹn trong vòng 60 phút:
+SELECT COUNT(*) FROM LICH_HEN
+WHERE MaNV = :MaNV AND TrangThai NOT IN ('Đã hủy', 'Không đến')
+  AND ABS((JULIANDAY(NgayGioHen) - JULIANDAY(:NgayGioHen)) * 1440) < 60;</div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">Danh sách Lịch hẹn Chăm sóc Thú cưng (<span id="bookingCount">0</span> lịch hẹn)</div>
+          <span class="badge badge-purple">Bảng nghiệp vụ trung tâm LICH_HEN</span>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Mã Lịch</th>
+                <th>Ngày Giờ Hẹn</th>
+                <th>Thú Cưng &amp; Chủ Nuôi</th>
+                <th>Dịch Vụ</th>
+                <th class="num">SL</th>
+                <th class="num">Thành Tiền</th>
+                <th>Nhân Viên &amp; Ca</th>
+                <th>Trạng Thái</th>
+                <th>Phương Thức TT</th>
+              </tr>
+            </thead>
+            <tbody id="bookingTableBody"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ======================= MỤC 6: MÀN HÌNH TÌM KIẾM ĐA TIÊU CHÍ ======================= -->
+  <div id="tab-search" class="tab-pane">
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title">Mục 6: Màn hình Tìm kiếm &amp; Tra cứu Lịch hẹn Chăm sóc Thú cưng Đa tiêu chí</div>
+        <span class="badge badge-blue">Kết nối 6 bảng (JOIN KHACH_HANG, THU_CUNG, LICH_HEN, DICH_VU, NHAN_VIEN, THANH_TOAN)</span>
+      </div>
+
+      <form onsubmit="runSearch(event)" style="background:#f8fafc;padding:16px;border-radius:8px;border:1px solid #cbd5e1;margin-bottom:16px;">
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:12px;">
+          <div>
+            <label>Từ khóa (Mã lịch, Tên KH, SĐT, Tên thú cưng)</label>
+            <input type="text" id="s_kw" placeholder="VD: Tuấn, 0901, Milo, LH001..." oninput="runSearch()" />
+          </div>
+          <div>
+            <label>Loài Thú Cưng</label>
+            <select id="s_loai" onchange="runSearch()">
+              <option value="">-- Tất cả loài --</option>
+              <option value="Chó">Chó</option>
+              <option value="Mèo">Mèo</option>
+            </select>
+          </div>
+          <div>
+            <label>Dịch Vụ Chăm Sóc</label>
+            <select id="s_madv" onchange="runSearch()">
+              <option value="">-- Tất cả dịch vụ --</option>
+            </select>
+          </div>
+          <div>
+            <label>Nhân Viên Thực Hiện</label>
+            <select id="s_manv" onchange="runSearch()">
+              <option value="">-- Tất cả nhân viên --</option>
+            </select>
+          </div>
+          <div>
+            <label>Trạng Thái Lịch Hẹn</label>
+            <select id="s_trangthai" onchange="runSearch()">
+              <option value="">-- Tất cả trạng thái --</option>
+              <option value="Hoàn thành">Hoàn thành</option>
+              <option value="Đang thực hiện">Đang thực hiện</option>
+              <option value="Đã xác nhận">Đã xác nhận</option>
+              <option value="Mới tạo">Mới tạo</option>
+              <option value="Đã hủy">Đã hủy</option>
+            </select>
+          </div>
+          <div>
+            <label>Từ Ngày - Đến Ngày</label>
+            <div style="display:flex;gap:6px;">
+              <input type="date" id="s_tungay" onchange="runSearch()" />
+              <input type="date" id="s_denngay" onchange="runSearch()" />
+            </div>
+          </div>
+        </div>
+        <div class="btn-bar" style="margin-top:12px;justify-content:space-between;align-items:center;">
+          <div style="display:flex;gap:8px;flex-wrap:wrap;">
+            <button type="submit" class="btn btn-primary">Tìm Kiếm Ngay</button>
+            <button type="button" class="btn btn-secondary" onclick="resetSearch()">Xóa Bộ Lọc (Xem Tất Cả)</button>
+            <button type="button" class="btn btn-secondary" onclick="quickFilter('Chó','Hoàn thành')">Lọc nhanh: Chó + Đã hoàn thành</button>
+            <button type="button" class="btn btn-secondary" onclick="quickFilter('Mèo','')">Lọc nhanh: Hồ sơ Mèo</button>
+          </div>
+          <div style="font-size:13.5px;font-weight:700;color:#1e3a8a;">
+            Kết quả tìm thấy: <span id="searchResultCount">0</span> bản ghi | Tổng giá trị: <span id="searchTotalMoney" style="color:#15803d;">0 đ</span>
+          </div>
+        </div>
+      </form>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Mã Lịch</th>
+              <th>Ngày Giờ Hẹn</th>
+              <th>Khách Hàng &amp; SĐT</th>
+              <th>Thú Cưng (Loài - Giống)</th>
+              <th>Dịch Vụ Đăng Ký</th>
+              <th class="num">Đơn Giá &times; SL</th>
+              <th class="num">Thành Tiền</th>
+              <th>Nhân Viên Phụ Trách</th>
+              <th>Trạng Thái Lịch</th>
+              <th>Thanh Toán</th>
+              <th>Ghi Chú Kết Quả</th>
+            </tr>
+          </thead>
+          <tbody id="searchTableBody"></tbody>
+        </table>
+      </div>
+
+      <div class="sql-box">
+        <span class="sql-label">Câu lệnh SQL truy vấn tìm kiếm thực tế (Mục 6):</span>
+        <div id="searchSqlBox"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ======================= MỤC 7.1: BÁO CÁO 1 (DOANH THU DỊCH VỤ) ======================= -->
+  <div id="tab-report1" class="tab-pane">
+    <div class="card">
+      <div class="card-header no-print">
+        <div>
+          <div class="card-title">Mục 7 - Báo cáo 1: Báo cáo Tổng hợp Doanh thu Dịch vụ Chăm sóc Thú cưng</div>
+          <div style="font-size:13px;color:#475569;margin-top:3px;">
+            <strong>Ai tạo báo cáo:</strong> Nhân viên Thu ngân / Lễ tân trưởng (Phạm Ngọc Lan) &nbsp;|&nbsp;
+            <strong>Gửi cho ai:</strong> Chủ cơ sở / Quản lý cửa hàng (Đỗ Thanh Hương) để đối soát quỹ &amp; phân tích hiệu quả dịch vụ.
+          </div>
+        </div>
+        <div class="btn-bar" style="margin-top:0;">
+          <button class="btn btn-success" onclick="exportReportXlsx(1)">Xuất File Excel (.xlsx)</button>
+          <button class="btn btn-primary" onclick="exportReportWord('report1Paper', 'Bao_Cao_Doanh_Thu_Dich_Vu_PetCare.doc')">Xuất File Word (.doc)</button>
+          <button class="btn btn-secondary" onclick="exportReportCsv(1)">Xuất File CSV (.csv)</button>
+          <button class="btn btn-secondary" onclick="window.print()">In Báo Cáo / Xuất PDF</button>
+        </div>
+      </div>
+
+      <!-- Biểu mẫu Báo cáo chuẩn thực tế -->
+      <div id="report1Paper" class="report-paper">
+        <div class="report-top">
+          <div class="report-org">
+            <strong>TRUNG TÂM CHĂM SÓC THÚ CƯNG PETCARE SPA &amp; CLINIC</strong><br/>
+            <span>Bộ phận: Tài chính - Thu ngân &amp; Lễ tân</span><br/>
+            <span>Số: 11/2026/BC-DT-PETCARE</span>
+          </div>
+          <div class="report-nation">
+            <strong>CỘNG HÒA XÃ HỘI CHỦ NGHĨA VIỆT NAM</strong><br/>
+            <strong>Độc lập - Tự do - Hạnh phúc</strong><br/>
+            <span>-----------------------------------</span><br/>
+            <em>Hà Nội, ngày 09 tháng 11 năm 2026</em>
+          </div>
+        </div>
+
+        <div class="report-title-block">
+          <h2>BÁO CÁO TỔNG HỢP DOANH THU THEO DỊCH VỤ CHĂM SÓC THÚ CƯNG</h2>
+          <div><em>(Kỳ báo cáo: Tháng 11/2026 - Biểu mẫu số: BC-01/TC-KT)</em></div>
+        </div>
+
+        <div class="report-meta-box">
+          <div><strong>1. Người lập báo cáo:</strong> Bà <strong>Phạm Ngọc Lan</strong> – Chức vụ: Nhân viên Lễ tân &amp; Thu ngân (Mã NV: NV005).</div>
+          <div><strong>2. Người nhận báo cáo:</strong> Bà <strong>Đỗ Thanh Hương</strong> – Chức vụ: Quản lý cơ sở / Chủ cửa hàng (Mã NV: NV001).</div>
+          <div><strong>3. Mục đích sử dụng thực tế:</strong> Đối soát tổng số tiền thực thu tại quầy theo từng phương thức thanh toán (Tiền mặt, Chuyển khoản, Thẻ), đánh giá tỷ trọng doanh thu của từng nhóm dịch vụ để điều chỉnh bảng giá, nhập vật tư tiêu hao và xây dựng gói combo khuyến mãi.</div>
+        </div>
+
+        <table>
+          <thead>
+            <tr>
+              <th style="width:45px;">STT</th>
+              <th>Mã DV</th>
+              <th>Tên Dịch Vụ Chăm Sóc</th>
+              <th>Đơn Giá Niêm Yết (VNĐ)</th>
+              <th>Số Giao Dịch Hoàn Thành</th>
+              <th>Tổng Lượt Sử Dụng</th>
+              <th>Thu Tiền Mặt (VNĐ)</th>
+              <th>Thu Chuyển Khoản (VNĐ)</th>
+              <th>Thu Qua Thẻ (VNĐ)</th>
+              <th>Tổng Thực Thu (VNĐ)</th>
+            </tr>
+          </thead>
+          <tbody id="rep1TableBody"></tbody>
+          <tfoot id="rep1TableFoot"></tfoot>
+        </table>
+
+        <div style="margin-top:14px;font-size:14px;">
+          <div>- <strong>Tổng số tiền thực thu (bằng số):</strong> <span id="rep1TotalTextNum" style="font-weight:bold;"></span></div>
+          <div>- <strong>Nhận xét nghiệp vụ:</strong> Các giao dịch hoàn thành đều đã đối chiếu khớp 100% giữa bảng <code>LICH_HEN</code> và bảng <code>THANH_TOAN</code>. Dịch vụ Grooming trọn gói và Khách sạn thú cưng VIP mang lại nguồn thu chủ lực.</div>
+        </div>
+
+        <div class="report-sign">
+          <div>
+            <strong>NGƯỜI LẬP BÁO CÁO</strong><br/>
+            <em>(Ký, ghi rõ họ tên)</em>
+            <div class="sign-space"></div>
+            <strong>Phạm Ngọc Lan</strong><br/>
+            <span>(Lễ tân - Thu ngân)</span>
+          </div>
+          <div>
+            <strong>KẾ TOÁN KIỂM SOÁT</strong><br/>
+            <em>(Ký, ghi rõ họ tên)</em>
+            <div class="sign-space"></div>
+            <strong>Nguyễn Minh Trang</strong><br/>
+            <span>(Phụ trách Kế toán)</span>
+          </div>
+          <div>
+            <strong>NGƯỜI NHẬN / QUẢN LÝ PHÊ DUYỆT</strong><br/>
+            <em>(Ký, đóng dấu xác nhận)</em>
+            <div class="sign-space"></div>
+            <strong>Đỗ Thanh Hương</strong><br/>
+            <span>(Quản lý Cơ sở PetCare)</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="sql-box no-print">
+        <span class="sql-label">Câu lệnh SQL tổng hợp Báo cáo 1 (Mục 7.1):</span>
+        <div id="rep1SqlBox"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ======================= MỤC 7.2: BÁO CÁO 2 (HIỆU SUẤT NHÂN VIÊN) ======================= -->
+  <div id="tab-report2" class="tab-pane">
+    <div class="card">
+      <div class="card-header no-print">
+        <div>
+          <div class="card-title">Mục 7 - Báo cáo 2: Báo cáo Hiệu suất Làm việc của Nhân viên &amp; Tình hình Thực hiện Lịch hẹn</div>
+          <div style="font-size:13px;color:#475569;margin-top:3px;">
+            <strong>Ai tạo báo cáo:</strong> Quản lý cơ sở (Đỗ Thanh Hương) &nbsp;|&nbsp;
+            <strong>Gửi cho ai:</strong> Bộ phận Hành chính Nhân sự - Kế toán tiền lương &amp; Ban Giám đốc để tính thưởng KPI và điều phối nhân sự.
+          </div>
+        </div>
+        <div class="btn-bar" style="margin-top:0;">
+          <button class="btn btn-success" onclick="exportReportXlsx(2)">Xuất File Excel (.xlsx)</button>
+          <button class="btn btn-primary" onclick="exportReportWord('report2Paper', 'Bao_Cao_Hieu_Suat_Nhan_Vien_PetCare.doc')">Xuất File Word (.doc)</button>
+          <button class="btn btn-secondary" onclick="exportReportCsv(2)">Xuất File CSV (.csv)</button>
+          <button class="btn btn-secondary" onclick="window.print()">In Báo Cáo / Xuất PDF</button>
+        </div>
+      </div>
+
+      <!-- Biểu mẫu Báo cáo 2 chuẩn thực tế -->
+      <div id="report2Paper" class="report-paper">
+        <div class="report-top">
+          <div class="report-org">
+            <strong>TRUNG TÂM CHĂM SÓC THÚ CƯNG PETCARE SPA &amp; CLINIC</strong><br/>
+            <span>Bộ phận: Quản lý Điều hành &amp; Nhân sự</span><br/>
+            <span>Số: 12/2026/BC-NS-PETCARE</span>
+          </div>
+          <div class="report-nation">
+            <strong>CỘNG HÒA XÃ HỘI CHỦ NGHĨA VIỆT NAM</strong><br/>
+            <strong>Độc lập - Tự do - Hạnh phúc</strong><br/>
+            <span>-----------------------------------</span><br/>
+            <em>Hà Nội, ngày 09 tháng 11 năm 2026</em>
+          </div>
+        </div>
+
+        <div class="report-title-block">
+          <h2>BÁO CÁO TỔNG HỢP HIỆU SUẤT LÀM VIỆC CỦA NHÂN VIÊN CHĂM SÓC THÚ CƯNG</h2>
+          <div><em>(Kỳ đánh giá: Tháng 11/2026 - Biểu mẫu số: BC-02/NS-ĐH)</em></div>
+        </div>
+
+        <div class="report-meta-box">
+          <div><strong>1. Người lập báo cáo:</strong> Bà <strong>Đỗ Thanh Hương</strong> – Chức vụ: Quản lý cơ sở (Mã NV: NV001).</div>
+          <div><strong>2. Người nhận báo cáo:</strong> <strong>Bộ phận Nhân sự - Kế toán Tiền lương &amp; Ban Giám đốc Trung tâm PetCare</strong>.</div>
+          <div><strong>3. Mục đích sử dụng thực tế:</strong> Đánh giá khối lượng công việc thực tế (số lịch hẹn hoàn thành, tổng số phút trực tiếp chăm sóc thú cưng, doanh thu đóng góp) của từng kỹ thuật viên theo ca làm việc; làm căn cứ tính phụ cấp tay nghề, thưởng KPI cuối tháng và phân bổ lại lịch trực ca.</div>
+        </div>
+
+        <table>
+          <thead>
+            <tr>
+              <th style="width:45px;">STT</th>
+              <th>Mã NV</th>
+              <th>Họ và Tên Nhân Viên</th>
+              <th>Ca Làm Việc Phụ Trách</th>
+              <th>Trạng Thái</th>
+              <th>Tổng Lịch Phân Công</th>
+              <th>Số Lịch Hoàn Thành</th>
+              <th>Đang Xử Lý / Chờ</th>
+              <th>Số Lịch Đã Hủy</th>
+              <th>Tổng Thời Gian Phục Vụ (Phút)</th>
+              <th>Doanh Thu Đóng Góp (VNĐ)</th>
+            </tr>
+          </thead>
+          <tbody id="rep2TableBody"></tbody>
+          <tfoot id="rep2TableFoot"></tfoot>
+        </table>
+
+        <div style="margin-top:14px;font-size:14px;">
+          <div>- <strong>Đánh giá chung:</strong> Đội ngũ kỹ thuật viên chăm sóc thú cưng đảm bảo tiến độ phục vụ khách hàng theo đúng ca được phân công; nhân viên Trần Quốc Bảo (NV004) và Nguyễn Văn Khoa (NV002) đạt hiệu suất phục vụ và đóng góp doanh thu cao nhất kỳ.</div>
+        </div>
+
+        <div class="report-sign">
+          <div>
+            <strong>NGƯỜI LẬP BÁO CÁO</strong><br/>
+            <em>(Quản lý cơ sở ký tên)</em>
+            <div class="sign-space"></div>
+            <strong>Đỗ Thanh Hương</strong><br/>
+            <span>(Quản lý Điều hành)</span>
+          </div>
+          <div>
+            <strong>BỘ PHẬN NHẬN (NHÂN SỰ - TIỀN LƯƠNG)</strong><br/>
+            <em>(Ký tiếp nhận tính KPI)</em>
+            <div class="sign-space"></div>
+            <strong>Lê Thu Phương</strong><br/>
+            <span>(Trưởng BP Nhân sự - Tiền lương)</span>
+          </div>
+          <div>
+            <strong>BAN GIÁM ĐỐC PHÊ DUYỆT</strong><br/>
+            <em>(Ký, đóng dấu)</em>
+            <div class="sign-space"></div>
+            <strong>Nguyễn Hoàng Long</strong><br/>
+            <span>(Giám đốc Trung tâm PetCare)</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="sql-box no-print">
+        <span class="sql-label">Câu lệnh SQL tổng hợp Báo cáo 2 (Mục 7.2):</span>
+        <div id="rep2SqlBox"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ======================= MỤC 1-4: LƯỢC ĐỒ ER, QUAN HỆ & CHUẨN HÓA 3NF ======================= -->
+  <div id="tab-schema" class="tab-pane">
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title">Tổng hợp Kiểm tra Lược đồ, Mô hình Quan hệ &amp; Chuẩn hóa 3NF (Mục 1, 2, 3, 4)</div>
+        <span class="badge badge-green">Đã rà soát &amp; chuẩn hóa 3NF</span>
+      </div>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-bottom:18px;">
+        <div style="background:#eff6ff;border-left:4px solid #1d4ed8;padding:14px 16px;border-radius:6px;">
+          <h3 style="font-size:15px;color:#1e3a8a;margin-bottom:6px;">Các điểm đã phát hiện &amp; hiệu chỉnh trên Lược đồ gốc:</h3>
+          <ul style="margin-left:18px;font-size:13.5px;line-height:1.6;">
+            <li><strong>Lỗi 1 (Mức quan niệm ERD):</strong> Trong file <code>ERD_Cham_soc_thu_cung (1).drawio</code> cũ, các thuộc tính khóa ngoại (<code>MaKH</code> ở <code>THU_CUNG</code>; <code>MaKH, MaThuCung, MaDV, MaNV</code> ở <code>LICH_HEN</code>; <code>MaLich</code> ở <code>THANH_TOAN</code>) đang được vẽ thành hình elip trên thực thể. <em>Đã sửa:</em> Loại bỏ elip khóa ngoại trên ERD (vì đã có hình thoi mối kết hợp biểu diễn) và chỉ đưa khóa ngoại vào Mô hình Quan hệ ở Mục 3.</li>
+            <li><strong>Lỗi 2 (Vi phạm chuẩn 3NF trong bảng LICH_HEN):</strong> Bảng <code>LICH_HEN</code> cũ lưu cả <code>MaThuCung</code> và <code>MaKH</code>, tạo ra phụ thuộc hàm bắc cầu <code>MaLich &rarr; MaThuCung &rarr; MaKH</code> và mối kết hợp vòng dư thừa <code>ĐẶT</code>. <em>Đã sửa:</em> Loại bỏ cột dư thừa <code>MaKH</code> khỏi <code>LICH_HEN</code> để đạt chuẩn 3NF.</li>
+            <li><strong>Lỗi 3 (Thuộc tính dẫn xuất trong THANH_TOAN):</strong> <code>ThanhTien</code> được tính từ <code>DonGia &times; SoLuong</code>. <em>Đã sửa:</em> Ký hiệu elip nét đứt (thuộc tính dẫn xuất) trên ERD và loại bỏ lưu trữ dư thừa khi chuẩn hóa 3NF.</li>
+          </ul>
+        </div>
+
+        <div style="background:#f0fdf4;border-left:4px solid #15803d;padding:14px 16px;border-radius:6px;">
+          <h3 style="font-size:15px;color:#14532d;margin-bottom:6px;">Lược đồ Quan hệ sau khi Chuẩn hóa 3NF (6 Bảng cốt lõi):</h3>
+          <ol style="margin-left:18px;font-size:13.5px;line-height:1.7;">
+            <li><strong>KHACH_HANG</strong>(<u>MaKH</u>, HoTen, SDT, Email, DiaChi)</li>
+            <li><strong>THU_CUNG</strong>(<u>MaThuCung</u>, <em>MaKH</em>, TenThuCung, Loai, Giong, GioiTinh, Tuoi, CanNang, GhiChu)</li>
+            <li><strong>NHAN_VIEN</strong>(<u>MaNV</u>, HoTen, NgaySinh, GioiTinh, SDT, ChucVu, CaLamViec, Luong, TrangThai)</li>
+            <li><strong>DICH_VU</strong>(<u>MaDV</u>, TenDV, DonGia, ThoiLuongDuKien, MoTaDichVu)</li>
+            <li><strong>LICH_HEN</strong>(<u>MaLich</u>, <em>MaThuCung</em>, <em>MaDV</em>, <em>MaNV</em>, NgayGioHen, SoLuong, TrangThai, GhiChu)</li>
+            <li><strong>THANH_TOAN</strong>(<u>MaTT</u>, <em>MaLich</em>, ThoiGianThanhToan, SoTien, PhuongThuc, TrangThaiTT)</li>
+          </ol>
+        </div>
+      </div>
+
+      <h3 style="font-size:15.5px;color:#1e3a8a;margin-bottom:10px;">Bảng Tổng hợp Kiểm tra Chuẩn hóa 3NF (Mục 4):</h3>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Tên Bảng</th>
+              <th>Khóa Chính (PK)</th>
+              <th>Các Phụ Thuộc Hàm (Functional Dependencies)</th>
+              <th>Kiểm Tra Ban Đầu</th>
+              <th>Xử Lý Chuẩn Hóa 3NF</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>KHACH_HANG</strong></td>
+              <td><code>MaKH</code></td>
+              <td><code>MaKH &rarr; HoTen, SDT, Email, DiaChi</code><br/><code>SDT &rarr; MaKH</code> (Khóa ứng viên)</td>
+              <td><span class="badge badge-green">Đạt 3NF</span></td>
+              <td>Giữ nguyên. Tất cả thuộc tính đơn trị (1NF), phụ thuộc đầy đủ vào khóa đơn <code>MaKH</code> (2NF), không có phụ thuộc bắc cầu (3NF).</td>
+            </tr>
+            <tr>
+              <td><strong>THU_CUNG</strong></td>
+              <td><code>MaThuCung</code></td>
+              <td><code>MaThuCung &rarr; MaKH, TenThuCung, Loai, Giong, GioiTinh, Tuoi, CanNang, GhiChu</code></td>
+              <td><span class="badge badge-green">Đạt 3NF</span></td>
+              <td>Giữ nguyên. Các thông tin của chủ nuôi (<code>HoTen, SDT...</code>) đã tách riêng sang bảng <code>KHACH_HANG</code>, chỉ giữ khóa ngoại <code>MaKH</code>.</td>
+            </tr>
+            <tr>
+              <td><strong>NHAN_VIEN</strong></td>
+              <td><code>MaNV</code></td>
+              <td><code>MaNV &rarr; HoTen, NgaySinh, GioiTinh, SDT, ChucVu, CaLamViec, Luong, TrangThai</code></td>
+              <td><span class="badge badge-green">Đạt 3NF</span></td>
+              <td>Giữ nguyên. Mức lương <code>Luong</code> và <code>CaLamViec</code> được thỏa thuận theo hợp đồng cá nhân từng nhân viên (<code>MaNV</code>), không phụ thuộc hàm vào <code>ChucVu</code>.</td>
+            </tr>
+            <tr>
+              <td><strong>DICH_VU</strong></td>
+              <td><code>MaDV</code></td>
+              <td><code>MaDV &rarr; TenDV, DonGia, ThoiLuongDuKien, MoTaDichVu</code></td>
+              <td><span class="badge badge-green">Đạt 3NF</span></td>
+              <td>Giữ nguyên. Mọi thuộc tính không khóa phụ thuộc trực tiếp vào khóa chính <code>MaDV</code>.</td>
+            </tr>
+            <tr>
+              <td><strong>LICH_HEN</strong></td>
+              <td><code>MaLich</code></td>
+              <td>Thiết kế cũ: <code>MaLich &rarr; MaThuCung, MaKH, MaDV, MaNV, NgayGioHen, SoLuong, TrangThai, GhiChu</code><br/>Mà: <code>MaThuCung &rarr; MaKH</code></td>
+              <td><span class="badge badge-red">Vi phạm 3NF (Phụ thuộc bắc cầu)</span></td>
+              <td><strong>Đã chuẩn hóa về 3NF:</strong> Tồn tại phụ thuộc bắc cầu <code>MaLich &rarr; MaThuCung &rarr; MaKH</code>. Loại bỏ cột <code>MaKH</code> khỏi bảng <code>LICH_HEN</code> (truy xuất chủ nuôi qua phép kết nối với <code>THU_CUNG</code>).</td>
+            </tr>
+            <tr>
+              <td><strong>THANH_TOAN</strong></td>
+              <td><code>MaTT</code></td>
+              <td>Thiết kế cũ có cả <code>ThanhTien</code> và <code>SoTien</code>, trong đó <code>MaTT &rarr; MaLich &rarr; ThanhTien (DonGia &times; SoLuong)</code></td>
+              <td><span class="badge badge-amber">Dư thừa thuộc tính dẫn xuất</span></td>
+              <td><strong>Đã chuẩn hóa về 3NF:</strong> Loại bỏ cột dẫn xuất <code>ThanhTien</code> lưu cứng trong bảng vật lý, chỉ lưu <code>SoTien</code> thực thu và tính <code>ThanhTien</code> qua truy vấn kết nối để tránh dị thường cập nhật.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+  // ======================= EMBEDDED FALLBACK DATA (100% IDENTICAL TO SQLITE DB) =======================
+  const STATE = {
+    usingApi: false,
+    khach_hang: [
+      { MaKH: 'KH001', HoTen: 'Nguyễn Minh Tuấn', SDT: '0901234567', Email: 'tuan.nguyen@gmail.com', DiaChi: '125 Cầu Giấy, Hà Nội' },
+      { MaKH: 'KH002', HoTen: 'Trần Thị Thu Hà', SDT: '0912345678', Email: 'thuha.tran@gmail.com', DiaChi: '42 Nguyễn Chí Thanh, Đống Đa, Hà Nội' },
+      { MaKH: 'KH003', HoTen: 'Lê Hoàng Nam', SDT: '0987654321', Email: 'hoangnam.le@outlook.com', DiaChi: '88 Lê Văn Lương, Thanh Xuân, Hà Nội' },
+      { MaKH: 'KH004', HoTen: 'Phạm Phương Thảo', SDT: '0934567890', Email: 'phuongthao.pham@gmail.com', DiaChi: '19 Đội Cấn, Ba Đình, Hà Nội' },
+      { MaKH: 'KH005', HoTen: 'Vũ Đức Anh', SDT: '0978112233', Email: 'ducanh.vu@gmail.com', DiaChi: '302 Minh Khai, Hai Bà Trưng, Hà Nội' },
+      { MaKH: 'KH006', HoTen: 'Hoàng Bích Ngọc', SDT: '0945667788', Email: 'bichngoc.hoang@gmail.com', DiaChi: '56 Xuân Thủy, Cầu Giấy, Hà Nội' }
+    ],
+    thu_cung: [
+      { MaThuCung: 'TC001', MaKH: 'KH001', TenThuCung: 'Milo', Loai: 'Chó', Giong: 'Poodle Tiny', GioiTinh: 'Đực', Tuoi: 18, CanNang: 4.2, GhiChu: 'Lông xoăn dày, hơi nhát người lạ' },
+      { MaThuCung: 'TC002', MaKH: 'KH001', TenThuCung: 'Miu', Loai: 'Mèo', Giong: 'Anh lông ngắn (ALN)', GioiTinh: 'Cái', Tuoi: 12, CanNang: 3.8, GhiChu: 'Hiền lành, thích gãi cằm' },
+      { MaThuCung: 'TC003', MaKH: 'KH002', TenThuCung: 'Bơ', Loai: 'Chó', Giong: 'Corgi Pembroke', GioiTinh: 'Đực', Tuoi: 24, CanNang: 11.5, GhiChu: 'Đang thay lông mùa thu, dị ứng sữa tắm mùi mạnh' },
+      { MaThuCung: 'TC004', MaKH: 'KH003', TenThuCung: 'Simba', Loai: 'Mèo', Giong: 'Maine Coon', GioiTinh: 'Đực', Tuoi: 30, CanNang: 7.4, GhiChu: 'Lông dài cần chải kỹ vùng bụng' },
+      { MaThuCung: 'TC005', MaKH: 'KH004', TenThuCung: 'Lu', Loai: 'Chó', Giong: 'Golden Retriever', GioiTinh: 'Đực', Tuoi: 36, CanNang: 28.0, GhiChu: 'Rất thân thiện, thích tắm nước ấm' },
+      { MaThuCung: 'TC006', MaKH: 'KH005', TenThuCung: 'Na', Loai: 'Mèo', Giong: 'Ba Tư (Persian)', GioiTinh: 'Cái', Tuoi: 15, CanNang: 3.5, GhiChu: 'Mắt nhạy cảm, cần vệ sinh tuyến lệ nhẹ nhàng' },
+      { MaThuCung: 'TC007', MaKH: 'KH006', TenThuCung: 'Đậu', Loai: 'Chó', Giong: 'Phốc Sóc (Pomeranian)', GioiTinh: 'Cái', Tuoi: 10, CanNang: 2.6, GhiChu: 'Hiếu động, cần sấy lông ở nhiệt độ mát' }
+    ],
+    nhan_vien: [
+      { MaNV: 'NV001', HoTen: 'Đỗ Thanh Hương', NgaySinh: '1995-04-12', GioiTinh: 'Nữ', SDT: '0961112221', ChucVu: 'Quản lý', CaLamViec: 'Hành chính (08:00-17:00)', Luong: 18000000, TrangThai: 'Đang làm việc' },
+      { MaNV: 'NV002', HoTen: 'Nguyễn Văn Khoa', NgaySinh: '1999-08-20', GioiTinh: 'Nam', SDT: '0961112222', ChucVu: 'Nhân viên chăm sóc', CaLamViec: 'Ca sáng (08:00-12:00)', Luong: 9500000, TrangThai: 'Đang làm việc' },
+      { MaNV: 'NV003', HoTen: 'Lê Thị Mai Anh', NgaySinh: '2000-11-05', GioiTinh: 'Nữ', SDT: '0961112223', ChucVu: 'Nhân viên chăm sóc', CaLamViec: 'Ca chiều (13:00-17:00)', Luong: 9800000, TrangThai: 'Đang làm việc' },
+      { MaNV: 'NV004', HoTen: 'Trần Quốc Bảo', NgaySinh: '1998-02-18', GioiTinh: 'Nam', SDT: '0961112224', ChucVu: 'Nhân viên chăm sóc', CaLamViec: 'Hành chính (08:00-17:00)', Luong: 11000000, TrangThai: 'Đang làm việc' },
+      { MaNV: 'NV005', HoTen: 'Phạm Ngọc Lan', NgaySinh: '2001-07-25', GioiTinh: 'Nữ', SDT: '0961112225', ChucVu: 'Lễ tân', CaLamViec: 'Hành chính (08:00-17:00)', Luong: 8500000, TrangThai: 'Đang làm việc' },
+      { MaNV: 'NV006', HoTen: 'Hoàng Minh Đức', NgaySinh: '1997-09-14', GioiTinh: 'Nam', SDT: '0961112226', ChucVu: 'Nhân viên chăm sóc', CaLamViec: 'Ca tối (17:00-21:00)', Luong: 9200000, TrangThai: 'Nghỉ phép' }
+    ],
+    dich_vu: [
+      { MaDV: 'DV001', TenDV: 'Tắm vệ sinh tiêu chuẩn 7 bước', DonGia: 200000, ThoiLuongDuKien: 60, MoTaDichVu: 'Tắm khử mùi, vệ sinh tai, vắt tuyến hôi, cắt mài móng, sấy chải bông lông' },
+      { MaDV: 'DV002', TenDV: 'Cắt tỉa tạo kiểu Grooming trọn gói', DonGia: 380000, ThoiLuongDuKien: 120, MoTaDichVu: 'Bao gồm tắm vệ sinh 7 bước + cắt tỉa lông nghệ thuật theo form giống' },
+      { MaDV: 'DV003', TenDV: 'Spa ủ dưỡng lông Collagen & Khử khuẩn', DonGia: 320000, ThoiLuongDuKien: 90, MoTaDichVu: 'Tắm thảo dược, ủ dưỡng phục hồi lông xơ rối và massage thư giãn' },
+      { MaDV: 'DV004', TenDV: 'Vệ sinh răng miệng & Lấy cao răng sóng âm', DonGia: 250000, ThoiLuongDuKien: 45, MoTaDichVu: 'Làm sạch mảng bám cao răng không gây mê, xịt thơm miệng kháng khuẩn' },
+      { MaDV: 'DV005', TenDV: 'Khách sạn thú cưng phòng VIP (Theo ngày)', DonGia: 300000, ThoiLuongDuKien: 1440, MoTaDichVu: 'Lưu trú phòng điều hòa riêng, camera 24/7, 3 bữa dinh dưỡng và vận động' },
+      { MaDV: 'DV006', TenDV: 'Gỡ rối lông chuyên sâu & Cạo vệ sinh', DonGia: 180000, ThoiLuongDuKien: 60, MoTaDichVu: 'Xử lý lông vón cục, cạo vệ sinh bàn chân, bụng và vùng hậu môn' }
+    ],
+    lich_hen: [
+      { MaLich: 'LH001', MaThuCung: 'TC001', MaDV: 'DV002', MaNV: 'NV002', NgayGioHen: '2026-11-01 09:00:00', SoLuong: 1, TrangThai: 'Hoàn thành', GhiChu: 'Cắt kiểu Teddy mặt tròn, bé hợp tác tốt' },
+      { MaLich: 'LH002', MaThuCung: 'TC002', MaDV: 'DV001', MaNV: 'NV004', NgayGioHen: '2026-11-02 10:00:00', SoLuong: 1, TrangThai: 'Hoàn thành', GhiChu: 'Tắm sạch, đã cắt móng chân trước' },
+      { MaLich: 'LH003', MaThuCung: 'TC003', MaDV: 'DV003', MaNV: 'NV003', NgayGioHen: '2026-11-03 14:00:00', SoLuong: 1, TrangThai: 'Hoàn thành', GhiChu: 'Dùng sữa tắm dịu nhẹ cho da nhạy cảm' },
+      { MaLich: 'LH004', MaThuCung: 'TC004', MaDV: 'DV006', MaNV: 'NV004', NgayGioHen: '2026-11-04 09:30:00', SoLuong: 1, TrangThai: 'Hoàn thành', GhiChu: 'Gỡ rối lông bụng thành công, không cần cạo' },
+      { MaLich: 'LH005', MaThuCung: 'TC005', MaDV: 'DV001', MaNV: 'NV002', NgayGioHen: '2026-11-05 08:30:00', SoLuong: 1, TrangThai: 'Hoàn thành', GhiChu: 'Chó lớn 28kg, sấy kỹ 2 lớp lông' },
+      { MaLich: 'LH006', MaThuCung: 'TC006', MaDV: 'DV004', MaNV: 'NV003', NgayGioHen: '2026-11-06 15:00:00', SoLuong: 1, TrangThai: 'Hoàn thành', GhiChu: 'Lấy sạch mảng bám răng hàm, vệ sinh mắt' },
+      { MaLich: 'LH007', MaThuCung: 'TC001', MaDV: 'DV005', MaNV: 'NV004', NgayGioHen: '2026-11-07 08:00:00', SoLuong: 2, TrangThai: 'Hoàn thành', GhiChu: 'Gửi khách sạn VIP 2 ngày cuối tuần' },
+      { MaLich: 'LH008', MaThuCung: 'TC007', MaDV: 'DV002', MaNV: 'NV002', NgayGioHen: '2026-11-08 09:30:00', SoLuong: 1, TrangThai: 'Hoàn thành', GhiChu: 'Tỉa form Boo tròn, sấy mát' },
+      { MaLich: 'LH009', MaThuCung: 'TC003', MaDV: 'DV001', MaNV: 'NV003', NgayGioHen: '2026-11-09 14:30:00', SoLuong: 1, TrangThai: 'Đang thực hiện', GhiChu: 'Khách hẹn đón lúc 16h00' },
+      { MaLich: 'LH010', MaThuCung: 'TC005', MaDV: 'DV003', MaNV: 'NV004', NgayGioHen: '2026-11-10 10:00:00', SoLuong: 1, TrangThai: 'Đã xác nhận', GhiChu: 'Khách đặt lịch trước qua điện thoại' },
+      { MaLich: 'LH011', MaThuCung: 'TC002', MaDV: 'DV002', MaNV: 'NV002', NgayGioHen: '2026-11-08 11:00:00', SoLuong: 1, TrangThai: 'Đã hủy', GhiChu: 'Khách bận đột xuất xin dời sang tuần sau' }
+    ],
+    thanh_toan: [
+      { MaTT: 'TT001', MaLich: 'LH001', ThoiGianThanhToan: '2026-11-01 11:10:00', SoTien: 380000, PhuongThuc: 'Chuyển khoản', TrangThaiTT: 'Đã thanh toán' },
+      { MaTT: 'TT002', MaLich: 'LH002', ThoiGianThanhToan: '2026-11-02 11:05:00', SoTien: 200000, PhuongThuc: 'Tiền mặt', TrangThaiTT: 'Đã thanh toán' },
+      { MaTT: 'TT003', MaLich: 'LH003', ThoiGianThanhToan: '2026-11-03 15:40:00', SoTien: 320000, PhuongThuc: 'Chuyển khoản', TrangThaiTT: 'Đã thanh toán' },
+      { MaTT: 'TT004', MaLich: 'LH004', ThoiGianThanhToan: '2026-11-04 10:45:00', SoTien: 180000, PhuongThuc: 'Thẻ', TrangThaiTT: 'Đã thanh toán' },
+      { MaTT: 'TT005', MaLich: 'LH005', ThoiGianThanhToan: '2026-11-05 10:00:00', SoTien: 200000, PhuongThuc: 'Chuyển khoản', TrangThaiTT: 'Đã thanh toán' },
+      { MaTT: 'TT006', MaLich: 'LH006', ThoiGianThanhToan: '2026-11-06 16:00:00', SoTien: 250000, PhuongThuc: 'Tiền mặt', TrangThaiTT: 'Đã thanh toán' },
+      { MaTT: 'TT007', MaLich: 'LH007', ThoiGianThanhToan: '2026-11-09 09:00:00', SoTien: 600000, PhuongThuc: 'Chuyển khoản', TrangThaiTT: 'Đã thanh toán' },
+      { MaTT: 'TT008', MaLich: 'LH008', ThoiGianThanhToan: '2026-11-08 11:45:00', SoTien: 380000, PhuongThuc: 'Thẻ', TrangThaiTT: 'Đã thanh toán' }
+    ]
+  };
+
+  function fmtMoney(n) {
+    return Number(n || 0).toLocaleString('vi-VN') + ' đ';
+  }
+
+  function switchTab(id, btn) {
+    document.querySelectorAll('.tab-pane').forEach(el => el.classList.remove('active'));
+    document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+    if (btn) btn.classList.add('active');
+  }
+
+  async function initApp() {
+    try {
+      const res = await fetch('/api/init');
+      if (res.ok) {
+        const data = await res.json();
+        STATE.khach_hang = data.khach_hang;
+        STATE.thu_cung = data.thu_cung;
+        STATE.nhan_vien = data.nhan_vien;
+        STATE.dich_vu = data.dich_vu;
+        STATE.lich_hen = data.lich_hen;
+        STATE.thanh_toan = data.thanh_toan;
+        STATE.usingApi = true;
+        document.getElementById('dbStatusText').textContent = 'CSDL SQLite (petcare.db): Đã kết nối trực tiếp';
+      }
+    } catch (e) {
+      STATE.usingApi = false;
+      document.getElementById('dbStatusText').textContent = 'Chế độ CSDL SQLite Nội bộ (Sẵn sàng)';
+    }
+    populateSelects();
+    renderPetsTable();
+    renderBookingsTable();
+    resetPetForm();
+    resetBookingForm();
+    runSearch();
+    renderReports();
+  }
+
+  let CUSTOMER_MODE = 'existing'; // 'existing' or 'new'
+
+  function nextCustomerId() {
+    const nums = STATE.khach_hang.map(k => parseInt(k.MaKH.replace(/\D/g, ''), 10) || 0);
+    const next = Math.max(0, ...nums) + 1;
+    return 'KH' + String(next).padStart(3, '0');
+  }
+
+  function setCustomerMode(mode) {
+    CUSTOMER_MODE = mode;
+    const exBox = document.getElementById('existingCustomerBox');
+    const newBox = document.getElementById('newCustomerBox');
+    const btnEx = document.getElementById('btnModeExistingKH');
+    const btnNew = document.getElementById('btnModeNewKH');
+    const btnMain = document.getElementById('btnSubmitPetMain');
+
+    if (mode === 'new') {
+      exBox.style.display = 'none';
+      newBox.style.display = 'block';
+      btnEx.className = 'btn btn-secondary';
+      btnNew.className = 'btn btn-primary';
+      btnMain.textContent = 'Lưu Khách Hàng Mới + Hồ Sơ Thú Cưng Vào CSDL';
+      if (!document.getElementById('kh_makh').value) {
+        document.getElementById('kh_makh').value = nextCustomerId();
+      }
+    } else {
+      exBox.style.display = 'block';
+      newBox.style.display = 'none';
+      btnEx.className = 'btn btn-primary';
+      btnNew.className = 'btn btn-secondary';
+      btnMain.textContent = 'Lưu Hồ Sơ Thú Cưng Vào CSDL';
+    }
+  }
+
+  function onSelectCustomerChange(val) {
+    if (val === '__NEW__') {
+      setCustomerMode('new');
+    }
+  }
+
+  function populateSelects() {
+    const khSel = document.getElementById('tc_makh');
+    khSel.innerHTML = STATE.khach_hang.map(kh =>
+      `<option value="${kh.MaKH}">${kh.MaKH} - ${kh.HoTen} (${kh.SDT})</option>`
+    ).join('') +
+      `<option value="__NEW__" style="font-weight:bold;color:#1d4ed8;">+ Đăng ký Khách hàng mới...</option>` +
+      `<option value="KH999">KH999 - Khách hàng không tồn tại (Test lỗi FK)</option>`;
+
+    const tcSel = document.getElementById('lh_matc');
+    tcSel.innerHTML = STATE.thu_cung.map(tc => {
+      const kh = STATE.khach_hang.find(k => k.MaKH === tc.MaKH);
+      return `<option value="${tc.MaThuCung}">${tc.MaThuCung} - ${tc.TenThuCung} (${tc.Loai} ${tc.Giong}) - Chủ: ${kh ? kh.HoTen : tc.MaKH}</option>`;
+    }).join('');
+
+    const dvSel = document.getElementById('lh_madv');
+    const sDvSel = document.getElementById('s_madv');
+    dvSel.innerHTML = STATE.dich_vu.map(dv =>
+      `<option value="${dv.MaDV}">${dv.MaDV} - ${dv.TenDV} (${fmtMoney(dv.DonGia)})</option>`
+    ).join('');
+    sDvSel.innerHTML = `<option value="">-- Tất cả dịch vụ --</option>` + STATE.dich_vu.map(dv =>
+      `<option value="${dv.MaDV}">${dv.MaDV} - ${dv.TenDV}</option>`
+    ).join('');
+
+    const nvSel = document.getElementById('lh_manv');
+    const sNvSel = document.getElementById('s_manv');
+    nvSel.innerHTML = STATE.nhan_vien.map(nv =>
+      `<option value="${nv.MaNV}">${nv.MaNV} - ${nv.HoTen} | ${nv.CaLamViec} [${nv.TrangThai}]</option>`
+    ).join('');
+    sNvSel.innerHTML = `<option value="">-- Tất cả nhân viên --</option>` + STATE.nhan_vien.map(nv =>
+      `<option value="${nv.MaNV}">${nv.MaNV} - ${nv.HoTen} (${nv.ChucVu})</option>`
+    ).join('');
+
+    updateOwnerPreview();
+    updatePricePreview();
+  }
+
+  function updateOwnerPreview() {
+    const matc = document.getElementById('lh_matc').value;
+    const tc = STATE.thu_cung.find(t => t.MaThuCung === matc);
+    if (!tc) return;
+    const kh = STATE.khach_hang.find(k => k.MaKH === tc.MaKH);
+    document.getElementById('lh_owner_preview').value = kh
+      ? `${kh.MaKH} - ${kh.HoTen} | SĐT: ${kh.SDT} | Đ/c: ${kh.DiaChi}`
+      : tc.MaKH;
+  }
+
+  function updatePricePreview() {
+    const madv = document.getElementById('lh_madv').value;
+    const sl = parseInt(document.getElementById('lh_soluong').value || '0', 10);
+    const dv = STATE.dich_vu.find(d => d.MaDV === madv);
+    const total = dv && sl > 0 ? dv.DonGia * sl : 0;
+    document.getElementById('lh_price_preview').textContent = fmtMoney(total);
+  }
+
+  function renderPetsTable() {
+    const tbody = document.getElementById('petTableBody');
+    document.getElementById('petCount').textContent = STATE.thu_cung.length;
+    tbody.innerHTML = STATE.thu_cung.map(tc => {
+      const kh = STATE.khach_hang.find(k => k.MaKH === tc.MaKH);
+      return `<tr>
+        <td><strong>${tc.MaThuCung}</strong></td>
+        <td><strong>${tc.TenThuCung}</strong></td>
+        <td><span class="badge ${tc.Loai === 'Chó' ? 'badge-blue' : 'badge-purple'}">${tc.Loai}</span> ${tc.Giong || ''}</td>
+        <td>${tc.GioiTinh}</td>
+        <td class="num">${tc.Tuoi} tháng</td>
+        <td class="num"><strong>${Number(tc.CanNang).toFixed(1)} kg</strong></td>
+        <td>${tc.MaKH} - ${kh ? kh.HoTen : ''}<br/><small style="color:#64748b">${kh ? kh.SDT : ''}</small></td>
+        <td>${tc.GhiChu || ''}</td>
+      </tr>`;
+    }).join('');
+
+    const khTbody = document.getElementById('customerTableBody');
+    if (khTbody) {
+      document.getElementById('customerCount').textContent = STATE.khach_hang.length;
+      khTbody.innerHTML = STATE.khach_hang.map(kh => `<tr>
+        <td><strong>${kh.MaKH}</strong></td>
+        <td><strong>${kh.HoTen}</strong></td>
+        <td>${kh.SDT}</td>
+        <td>${kh.Email || ''}</td>
+        <td>${kh.DiaChi || ''}</td>
+      </tr>`).join('');
+    }
+  }
+
+  function statusBadge(st) {
+    if (st === 'Hoàn thành' || st === 'Đã thanh toán') return `<span class="badge badge-green">${st}</span>`;
+    if (st === 'Đang thực hiện' || st === 'Đã xác nhận') return `<span class="badge badge-blue">${st}</span>`;
+    if (st === 'Mới tạo' || st === 'Chưa thanh toán') return `<span class="badge badge-amber">${st}</span>`;
+    return `<span class="badge badge-red">${st}</span>`;
+  }
+
+  function getEnrichedBookings() {
+    return STATE.lich_hen.map(lh => {
+      const tc = STATE.thu_cung.find(t => t.MaThuCung === lh.MaThuCung) || {};
+      const kh = STATE.khach_hang.find(k => k.MaKH === tc.MaKH) || {};
+      const dv = STATE.dich_vu.find(d => d.MaDV === lh.MaDV) || {};
+      const nv = STATE.nhan_vien.find(n => n.MaNV === lh.MaNV) || {};
+      const tt = STATE.thanh_toan.find(p => p.MaLich === lh.MaLich);
+      return {
+        ...lh,
+        TenThuCung: tc.TenThuCung || lh.TenThuCung || '',
+        Loai: tc.Loai || lh.Loai || '',
+        Giong: tc.Giong || lh.Giong || '',
+        CanNang: tc.CanNang || lh.CanNang || 0,
+        MaKH: tc.MaKH || lh.MaKH || '',
+        TenKhachHang: kh.HoTen || lh.TenKhachHang || '',
+        SDTKhachHang: kh.SDT || lh.SDTKhachHang || '',
+        TenDV: dv.TenDV || lh.TenDV || '',
+        DonGia: dv.DonGia || lh.DonGia || 0,
+        ThanhTienDuKien: (dv.DonGia || lh.DonGia || 0) * lh.SoLuong,
+        TenNhanVien: nv.HoTen || lh.TenNhanVien || '',
+        CaLamViec: nv.CaLamViec || lh.CaLamViec || '',
+        TrangThaiThanhToan: tt ? tt.TrangThaiTT : (lh.TrangThaiThanhToan || 'Chưa thanh toán'),
+        PhuongThucThanhToan: (tt && tt.TrangThaiTT === 'Đã thanh toán') ? tt.PhuongThuc : 'Chưa thanh toán'
+      };
+    }).sort((a, b) => (b.NgayGioHen > a.NgayGioHen ? 1 : -1));
+  }
+
+  function statusSelectHtml(malich, currentStatus) {
+    const statuses = ['Mới tạo', 'Đã xác nhận', 'Đang thực hiện', 'Hoàn thành', 'Đã hủy', 'Không đến'];
+    let bg = '#fef3c7', color = '#92400e', border = '#fde68a';
+    if (currentStatus === 'Hoàn thành') { bg = '#dcfce7'; color = '#166534'; border = '#86efac'; }
+    else if (currentStatus === 'Đang thực hiện' || currentStatus === 'Đã xác nhận') { bg = '#dbeafe'; color = '#1e40af'; border = '#93c5fd'; }
+    else if (currentStatus === 'Đã hủy' || currentStatus === 'Không đến') { bg = '#fee2e2'; color = '#991b1b'; border = '#fca5a5'; }
+
+    const opts = statuses.map(s => `<option value="${s}" ${s === currentStatus ? 'selected' : ''}>${s}</option>`).join('');
+    return `<select onchange="changeBookingStatus('${malich}', this.value)" title="Nhấp để đổi trạng thái đơn ${malich}" style="width:auto;min-width:126px;padding:4px 8px;font-size:12px;font-weight:700;border-radius:999px;background:${bg};color:${color};border:1px solid ${border};cursor:pointer;">${opts}</select>`;
+  }
+
+  function paymentSelectHtml(malich, currentMethod) {
+    const methods = [
+      { val: 'Chưa thanh toán', label: 'Chưa thanh toán' },
+      { val: 'Chuyển khoản', label: 'ĐTT: Chuyển khoản' },
+      { val: 'Tiền mặt', label: 'ĐTT: Tiền mặt' },
+      { val: 'Thẻ', label: 'ĐTT: Quẹt thẻ' }
+    ];
+    let bg = '#fef3c7', color = '#92400e', border = '#fde68a';
+    if (currentMethod !== 'Chưa thanh toán') {
+      bg = '#dcfce7'; color = '#166534'; border = '#86efac';
+    }
+    const opts = methods.map(m => `<option value="${m.val}" ${m.val === currentMethod ? 'selected' : ''}>${m.label}</option>`).join('');
+    return `<select onchange="changePaymentMethod('${malich}', this.value)" title="Nhấp để chọn phương thức thanh toán cho đơn ${malich}" style="width:auto;min-width:138px;padding:4px 8px;font-size:12px;font-weight:700;border-radius:999px;background:${bg};color:${color};border:1px solid ${border};cursor:pointer;">${opts}</select>`;
+  }
+
+  async function changePaymentMethod(malich, newMethod) {
+    const lh = STATE.lich_hen.find(l => l.MaLich === malich);
+    if (!lh) return;
+
+    let sqlText = '';
+    if (STATE.usingApi) {
+      const res = await fetch('/api/thanh_toan/method', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ MaLich: malich, PhuongThuc: newMethod })
+      });
+      const data = await res.json();
+      if (!res.ok || !data.ok) {
+        alert((data.errors || ['Lỗi cập nhật phương thức thanh toán']).join('\n'));
+        renderBookingsTable();
+        runSearch();
+        return;
+      }
+      sqlText = data.sql || '';
+      if (data.thanh_toan) {
+        STATE.thanh_toan.push(data.thanh_toan);
+      } else {
+        const exTt = STATE.thanh_toan.find(t => t.MaLich === malich);
+        if (exTt) {
+          if (newMethod === 'Chưa thanh toán') {
+            exTt.TrangThaiTT = 'Chưa thanh toán';
+          } else {
+            exTt.PhuongThuc = newMethod;
+            exTt.TrangThaiTT = 'Đã thanh toán';
+          }
+        }
+      }
+    } else {
+      const dv = STATE.dich_vu.find(d => d.MaDV === lh.MaDV) || { DonGia: 0 };
+      const sotien = Number(dv.DonGia) * Number(lh.SoLuong);
+      const nowStr = new Date().toISOString().slice(0, 19).replace('T', ' ');
+      const exTt = STATE.thanh_toan.find(t => t.MaLich === malich);
+      if (newMethod === 'Chưa thanh toán') {
+        if (exTt) {
+          exTt.TrangThaiTT = 'Chưa thanh toán';
+          sqlText = `UPDATE THANH_TOAN SET TrangThaiTT = 'Chưa thanh toán' WHERE MaLich = '${malich}';`;
+        }
+      } else {
+        if (exTt) {
+          exTt.PhuongThuc = newMethod;
+          exTt.TrangThaiTT = 'Đã thanh toán';
+          exTt.SoTien = sotien;
+          sqlText = `UPDATE THANH_TOAN SET PhuongThuc = '${newMethod}', TrangThaiTT = 'Đã thanh toán', SoTien = ${sotien} WHERE MaLich = '${malich}';`;
+        } else {
+          const nums = STATE.thanh_toan.map(t => parseInt(t.MaTT.replace(/\D/g, ''), 10) || 0);
+          const nextTt = 'TT' + String(Math.max(0, ...nums) + 1).padStart(3, '0');
+          STATE.thanh_toan.push({
+            MaTT: nextTt,
+            MaLich: malich,
+            ThoiGianThanhToan: nowStr,
+            SoTien: sotien,
+            PhuongThuc: newMethod,
+            TrangThaiTT: 'Đã thanh toán'
+          });
+          sqlText = `INSERT INTO THANH_TOAN (MaTT, MaLich, ThoiGianThanhToan, SoTien, PhuongThuc, TrangThaiTT) VALUES ('${nextTt}', '${malich}', '${nowStr}', ${sotien}, '${newMethod}', 'Đã thanh toán');`;
+        }
+      }
+    }
+
+    renderBookingsTable();
+    runSearch();
+    renderReports();
+
+    const alertBox = document.getElementById('bookingAlert');
+    const sqlLog = document.getElementById('bookingSqlLog');
+    if (sqlLog && sqlText) {
+      sqlLog.textContent = `-- [CẬP NHẬT PHƯƠNG THỨC THANH TOÁN ĐƠN ${malich}]\n${sqlText}`;
+    }
+    if (alertBox) {
+      alertBox.className = 'alert alert-success show';
+      alertBox.innerHTML = `<strong>ĐÃ CẬP NHẬT THANH TOÁN:</strong> Đơn <strong>${malich}</strong> đã được chuyển sang hình thức <strong>"${newMethod}"</strong> trong bảng <code>THANH_TOAN</code> và cập nhật tức thời sang Báo cáo Doanh thu!`;
+    }
+  }
+
+  async function changeBookingStatus(malich, newStatus) {
+    const lh = STATE.lich_hen.find(l => l.MaLich === malich);
+    if (!lh) return;
+    const oldStatus = lh.TrangThai;
+    if (oldStatus === newStatus) return;
+
+    const existingTt = STATE.thanh_toan.find(t => t.MaLich === malich);
+    const phuongThuc = existingTt && existingTt.PhuongThuc ? existingTt.PhuongThuc : 'Chuyển khoản';
+
+    let sqlText = `UPDATE LICH_HEN SET TrangThai = '${newStatus}' WHERE MaLich = '${malich}';`;
+
+    if (STATE.usingApi) {
+      const res = await fetch('/api/lich_hen/status', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ MaLich: malich, TrangThai: newStatus, PhuongThuc: phuongThuc })
+      });
+      const data = await res.json();
+      if (!res.ok || !data.ok) {
+        alert((data.errors || ['Lỗi cập nhật trạng thái']).join('\n'));
+        renderBookingsTable();
+        runSearch();
+        return;
+      }
+      if (data.sql) sqlText = data.sql;
+      if (data.thanh_toan) {
+        STATE.thanh_toan.push(data.thanh_toan);
+      } else if (newStatus === 'Hoàn thành') {
+        const exTt = STATE.thanh_toan.find(t => t.MaLich === malich);
+        if (exTt) {
+          exTt.TrangThaiTT = 'Đã thanh toán';
+          exTt.PhuongThuc = phuongThuc;
+        }
+      } else if (newStatus === 'Đã hủy' || newStatus === 'Không đến') {
+        const exTt = STATE.thanh_toan.find(t => t.MaLich === malich);
+        if (exTt) exTt.TrangThaiTT = 'Chưa thanh toán';
+      }
+    } else {
+      if (newStatus === 'Hoàn thành') {
+        const dv = STATE.dich_vu.find(d => d.MaDV === lh.MaDV) || { DonGia: 0 };
+        const sotien = Number(dv.DonGia) * Number(lh.SoLuong);
+        const nowStr = new Date().toISOString().slice(0, 19).replace('T', ' ');
+        const exTt = STATE.thanh_toan.find(t => t.MaLich === malich);
+        if (exTt) {
+          exTt.TrangThaiTT = 'Đã thanh toán';
+          exTt.PhuongThuc = phuongThuc;
+          exTt.SoTien = sotien;
+        } else {
+          const nums = STATE.thanh_toan.map(t => parseInt(t.MaTT.replace(/\D/g, ''), 10) || 0);
+          const nextTt = 'TT' + String(Math.max(0, ...nums) + 1).padStart(3, '0');
+          STATE.thanh_toan.push({
+            MaTT: nextTt,
+            MaLich: malich,
+            ThoiGianThanhToan: nowStr,
+            SoTien: sotien,
+            PhuongThuc: phuongThuc,
+            TrangThaiTT: 'Đã thanh toán'
+          });
+          sqlText += `\n-- Tự động ghi nhận phiếu thu vào bảng THANH_TOAN:\nINSERT INTO THANH_TOAN (MaTT, MaLich, ThoiGianThanhToan, SoTien, PhuongThuc, TrangThaiTT) VALUES ('${nextTt}', '${malich}', '${nowStr}', ${sotien}, '${phuongThuc}', 'Đã thanh toán');`;
+        }
+      } else if (newStatus === 'Đã hủy' || newStatus === 'Không đến') {
+        const exTt = STATE.thanh_toan.find(t => t.MaLich === malich);
+        if (exTt) exTt.TrangThaiTT = 'Chưa thanh toán';
+      }
+    }
+
+    lh.TrangThai = newStatus;
+    renderBookingsTable();
+    runSearch();
+    renderReports();
+
+    const alertBox = document.getElementById('bookingAlert');
+    const sqlLog = document.getElementById('bookingSqlLog');
+    if (sqlLog) {
+      sqlLog.textContent = `-- [CẬP NHẬT TRẠNG THÁI ĐƠN ${malich}: '${oldStatus}' -> '${newStatus}']\n${sqlText}`;
+    }
+    if (alertBox) {
+      alertBox.className = 'alert alert-success show';
+      alertBox.innerHTML = `<strong>ĐÃ CẬP NHẬT TRẠNG THÁI:</strong> Đơn lịch hẹn <strong>${malich}</strong> đã chuyển từ <em>"${oldStatus}"</em> sang <strong>"${newStatus}"</strong>${newStatus === 'Hoàn thành' ? ` (Bạn có thể đổi nhanh Phương thức thanh toán ở cột bên cạnh)` : ''}!`;
+    }
+  }
+
+  function renderBookingsTable() {
+    const rows = getEnrichedBookings();
+    document.getElementById('bookingCount').textContent = rows.length;
+    document.getElementById('bookingTableBody').innerHTML = rows.map(r => `<tr>
+      <td><strong>${r.MaLich}</strong></td>
+      <td>${r.NgayGioHen.slice(0, 16)}</td>
+      <td><strong>${r.TenThuCung}</strong> (${r.Loai})<br/><small style="color:#475569">KH: ${r.TenKhachHang} (${r.SDTKhachHang})</small></td>
+      <td>${r.TenDV}</td>
+      <td class="num">${r.SoLuong}</td>
+      <td class="num"><strong>${fmtMoney(r.ThanhTienDuKien)}</strong></td>
+      <td>${r.TenNhanVien}<br/><small style="color:#64748b">${r.CaLamViec}</small></td>
+      <td>${statusSelectHtml(r.MaLich, r.TrangThai)}</td>
+      <td>${paymentSelectHtml(r.MaLich, r.PhuongThucThanhToan)}</td>
+    </tr>`).join('');
+  }
+
+  // ======================= MỤC 5.1: VALIDATION & DEMO CHO KHACH_HANG & THU_CUNG =======================
+  function nextPetId() {
+    const nums = STATE.thu_cung.map(t => parseInt(t.MaThuCung.replace(/\D/g, ''), 10) || 0);
+    const next = Math.max(0, ...nums) + 1;
+    return 'TC' + String(next).padStart(3, '0');
+  }
+
+  function resetPetForm() {
+    setCustomerMode('existing');
+    document.getElementById('tc_matc').value = nextPetId();
+    document.getElementById('tc_makh').value = 'KH002';
+    document.getElementById('kh_makh').value = nextCustomerId();
+    document.getElementById('kh_hoten').value = '';
+    document.getElementById('kh_sdt').value = '';
+    document.getElementById('kh_email').value = '';
+    document.getElementById('kh_diachi').value = '';
+    document.getElementById('tc_ten').value = '';
+    document.getElementById('tc_loai').value = 'Mèo';
+    document.getElementById('tc_giong').value = '';
+    document.getElementById('tc_gioitinh').value = 'Cái';
+    document.getElementById('tc_tuoi').value = '';
+    document.getElementById('tc_cannang').value = '';
+    document.getElementById('tc_ghichu').value = '';
+    document.getElementById('petAlert').className = 'alert';
+    document.querySelectorAll('#petForm input, #petForm select').forEach(el => el.classList.remove('invalid'));
+  }
+
+  function demoNewCustomerAndPet() {
+    resetPetForm();
+    setCustomerMode('new');
+    document.getElementById('kh_makh').value = nextCustomerId();
+    document.getElementById('kh_hoten').value = 'Đặng Quốc Khánh';
+    document.getElementById('kh_sdt').value = '0968889999';
+    document.getElementById('kh_email').value = 'khanh.dang@gmail.com';
+    document.getElementById('kh_diachi').value = '108 Láng Hạ, Đống Đa, Hà Nội';
+
+    document.getElementById('tc_matc').value = nextPetId();
+    document.getElementById('tc_ten').value = 'Bông';
+    document.getElementById('tc_loai').value = 'Chó';
+    document.getElementById('tc_giong').value = 'Bichon Frise';
+    document.getElementById('tc_gioitinh').value = 'Cái';
+    document.getElementById('tc_tuoi').value = '16';
+    document.getElementById('tc_cannang').value = '5.2';
+    document.getElementById('tc_ghichu').value = 'Khách hàng mới lần đầu đến Spa, lông trắng cần tắm dưỡng';
+  }
+
+  function demoPetError(type) {
+    resetPetForm();
+    if (type === 'kh_sdt') {
+      setCustomerMode('new');
+      document.getElementById('kh_makh').value = nextCustomerId();
+      document.getElementById('kh_hoten').value = 'Ngô Văn Hùng';
+      document.getElementById('kh_sdt').value = '12345'; // Sai định dạng CHECK 10-11 số bắt đầu bằng 0
+      document.getElementById('kh_sdt').classList.add('invalid');
+      document.getElementById('tc_matc').value = nextPetId();
+      document.getElementById('tc_ten').value = 'Cún';
+      document.getElementById('tc_loai').value = 'Chó';
+      document.getElementById('tc_tuoi').value = '12';
+      document.getElementById('tc_cannang').value = '6.0';
+    } else if (type === 'pk') {
+      document.getElementById('tc_matc').value = 'TC001';
+      document.getElementById('tc_makh').value = 'KH001';
+      document.getElementById('tc_ten').value = 'Milo Bản Sao';
+      document.getElementById('tc_loai').value = 'Chó';
+      document.getElementById('tc_giong').value = 'Poodle';
+      document.getElementById('tc_tuoi').value = '12';
+      document.getElementById('tc_cannang').value = '4.0';
+      document.getElementById('tc_matc').classList.add('invalid');
+    } else if (type === 'check') {
+      document.getElementById('tc_matc').value = nextPetId();
+      document.getElementById('tc_makh').value = 'KH002';
+      document.getElementById('tc_ten').value = 'Bông';
+      document.getElementById('tc_loai').value = 'Mèo';
+      document.getElementById('tc_giong').value = 'Ragdoll';
+      document.getElementById('tc_tuoi').value = '0';
+      document.getElementById('tc_cannang').value = '-3.5';
+      document.getElementById('tc_tuoi').classList.add('invalid');
+      document.getElementById('tc_cannang').classList.add('invalid');
+    } else if (type === 'fk') {
+      document.getElementById('tc_matc').value = nextPetId();
+      document.getElementById('tc_makh').value = 'KH999';
+      document.getElementById('tc_ten').value = 'Lucky';
+      document.getElementById('tc_loai').value = 'Chó';
+      document.getElementById('tc_giong').value = 'Husky';
+      document.getElementById('tc_tuoi').value = '18';
+      document.getElementById('tc_cannang').value = '16.5';
+      document.getElementById('tc_makh').classList.add('invalid');
+    }
+    submitPetForm(new Event('submit'));
+  }
+
+  function demoPetValid() {
+    resetPetForm();
+    document.getElementById('tc_matc').value = nextPetId();
+    document.getElementById('tc_makh').value = 'KH002';
+    document.getElementById('tc_ten').value = 'Kem';
+    document.getElementById('tc_loai').value = 'Mèo';
+    document.getElementById('tc_giong').value = 'Ragdoll mắt xanh';
+    document.getElementById('tc_gioitinh').value = 'Cái';
+    document.getElementById('tc_tuoi').value = '14';
+    document.getElementById('tc_cannang').value = '4.1';
+    document.getElementById('tc_ghichu').value = 'Lông dài mượt, đã tiêm phòng đầy đủ';
+  }
+
+  async function submitCustomerOnly() {
+    const khPayload = {
+      MaKH: document.getElementById('kh_makh').value.trim(),
+      HoTen: document.getElementById('kh_hoten').value.trim(),
+      SDT: document.getElementById('kh_sdt').value.trim(),
+      Email: document.getElementById('kh_email').value.trim(),
+      DiaChi: document.getElementById('kh_diachi').value.trim()
+    };
+
+    const errors = [];
+    if (!/^KH\d{3,}$/.test(khPayload.MaKH)) {
+      errors.push("Mã khách hàng (MaKH) phải đúng định dạng 'KHxxx' (VD: KH007).");
+    }
+    if (STATE.khach_hang.some(k => k.MaKH === khPayload.MaKH)) {
+      errors.push(`Vi phạm Khóa chính (PRIMARY KEY): Mã khách hàng '${khPayload.MaKH}' đã tồn tại trong bảng KHACH_HANG.`);
+    }
+    if (!khPayload.HoTen) {
+      errors.push("Ràng buộc NOT NULL: Họ tên khách hàng (HoTen) không được để trống.");
+    }
+    if (!/^0\d{9,10}$/.test(khPayload.SDT)) {
+      errors.push(`Vi phạm Ràng buộc CHECK (CHK_KH_SDT): Số điện thoại '${khPayload.SDT}' phải gồm 10-11 chữ số và bắt đầu bằng số 0.`);
+    }
+    if (STATE.khach_hang.some(k => k.SDT === khPayload.SDT)) {
+      errors.push(`Vi phạm Ràng buộc UNIQUE: Số điện thoại '${khPayload.SDT}' đã được đăng ký cho khách hàng khác.`);
+    }
+    if (khPayload.Email && STATE.khach_hang.some(k => k.Email && k.Email.toLowerCase() === khPayload.Email.toLowerCase())) {
+      errors.push(`Vi phạm Ràng buộc UNIQUE: Email '${khPayload.Email}' đã tồn tại trong bảng KHACH_HANG.`);
+    }
+
+    const alertBox = document.getElementById('petAlert');
+    const sqlLog = document.getElementById('petSqlLog');
+
+    if (errors.length > 0) {
+      alertBox.className = 'alert alert-error show';
+      alertBox.innerHTML = `<strong>LỖI KHI THÊM KHÁCH HÀNG MỚI (BẢNG KHACH_HANG):</strong><ul>` +
+        errors.map(err => `<li>${err}</li>`).join('') + `</ul>`;
+      return;
+    }
+
+    if (STATE.usingApi) {
+      const res = await fetch('/api/khach_hang', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(khPayload)
+      });
+      const data = await res.json();
+      if (!res.ok || !data.ok) {
+        alertBox.className = 'alert alert-error show';
+        alertBox.innerHTML = `<strong>LỖI TỪ CSDL:</strong><ul>` + (data.errors || []).map(x => `<li>${x}</li>`).join('') + `</ul>`;
+        return;
+      }
+    }
+
+    STATE.khach_hang.push(khPayload);
+    populateSelects();
+    renderPetsTable();
+    setCustomerMode('existing');
+    document.getElementById('tc_makh').value = khPayload.MaKH;
+
+    const emailVal = khPayload.Email ? `'${khPayload.Email}'` : 'NULL';
+    sqlLog.textContent = `-- [THỰC THI THÀNH CÔNG BƯỚC 1 - BẢNG CHA KHACH_HANG]\nINSERT INTO KHACH_HANG (MaKH, HoTen, SDT, Email, DiaChi)\nVALUES ('${khPayload.MaKH}', '${khPayload.HoTen}', '${khPayload.SDT}', ${emailVal}, '${khPayload.DiaChi}');`;
+    alertBox.className = 'alert alert-success show';
+    alertBox.innerHTML = `<strong>THÀNH CÔNG:</strong> Đã thêm khách hàng mới <strong>${khPayload.HoTen} (${khPayload.MaKH})</strong> vào bảng <code>KHACH_HANG</code> và tự động chọn làm chủ sở hữu ở Bước 2!`;
+  }
+
+  async function submitPetForm(e) {
+    if (e && e.preventDefault) e.preventDefault();
+
+    let newKhObj = null;
+    let makh = document.getElementById('tc_makh').value.trim();
+
+    if (CUSTOMER_MODE === 'new') {
+      newKhObj = {
+        MaKH: document.getElementById('kh_makh').value.trim(),
+        HoTen: document.getElementById('kh_hoten').value.trim(),
+        SDT: document.getElementById('kh_sdt').value.trim(),
+        Email: document.getElementById('kh_email').value.trim(),
+        DiaChi: document.getElementById('kh_diachi').value.trim()
+      };
+      makh = newKhObj.MaKH;
+    }
+
+    const payload = {
+      MaThuCung: document.getElementById('tc_matc').value.trim(),
+      MaKH: makh,
+      TenThuCung: document.getElementById('tc_ten').value.trim(),
+      Loai: document.getElementById('tc_loai').value.trim(),
+      Giong: document.getElementById('tc_giong').value.trim(),
+      GioiTinh: document.getElementById('tc_gioitinh').value.trim(),
+      Tuoi: document.getElementById('tc_tuoi').value,
+      CanNang: document.getElementById('tc_cannang').value,
+      GhiChu: document.getElementById('tc_ghichu').value.trim()
+    };
+    if (newKhObj) {
+      payload.new_customer = newKhObj;
+    }
+
+    const errors = [];
+    if (newKhObj) {
+      if (!/^KH\d{3,}$/.test(newKhObj.MaKH)) {
+        errors.push("Mã khách hàng mới (MaKH) phải đúng định dạng 'KHxxx' (VD: KH007).");
+      }
+      if (STATE.khach_hang.some(k => k.MaKH === newKhObj.MaKH)) {
+        errors.push(`Vi phạm Khóa chính (PRIMARY KEY): Mã khách hàng '${newKhObj.MaKH}' đã tồn tại trong bảng KHACH_HANG.`);
+      }
+      if (!newKhObj.HoTen) {
+        errors.push("Ràng buộc NOT NULL: Họ tên khách hàng mới (HoTen) không được để trống.");
+      }
+      if (!/^0\d{9,10}$/.test(newKhObj.SDT)) {
+        errors.push(`Vi phạm Ràng buộc CHECK (CHK_KH_SDT): SĐT khách hàng '${newKhObj.SDT}' phải gồm 10-11 chữ số và bắt đầu bằng số 0.`);
+      }
+      if (STATE.khach_hang.some(k => k.SDT === newKhObj.SDT)) {
+        errors.push(`Vi phạm Ràng buộc UNIQUE: Số điện thoại '${newKhObj.SDT}' đã tồn tại trong bảng KHACH_HANG.`);
+      }
+      if (newKhObj.Email && STATE.khach_hang.some(k => k.Email && k.Email.toLowerCase() === newKhObj.Email.toLowerCase())) {
+        errors.push(`Vi phạm Ràng buộc UNIQUE: Email '${newKhObj.Email}' đã tồn tại trong bảng KHACH_HANG.`);
+      }
+    } else {
+      if (!STATE.khach_hang.some(k => k.MaKH === payload.MaKH)) {
+        errors.push(`Vi phạm Ràng buộc Khóa ngoại (FOREIGN KEY FK_TC_KH): Mã khách hàng '${payload.MaKH}' không tồn tại trong bảng KHACH_HANG.`);
+      }
+    }
+
+    if (!/^TC\d{3,}$/.test(payload.MaThuCung)) {
+      errors.push("Mã thú cưng (MaThuCung) không đúng định dạng chuẩn 'TCxxx' (VD: TC008).");
+    }
+    if (STATE.thu_cung.some(t => t.MaThuCung === payload.MaThuCung)) {
+      errors.push(`Vi phạm Ràng buộc Khóa chính (PRIMARY KEY): Mã thú cưng '${payload.MaThuCung}' đã tồn tại trong bảng THU_CUNG.`);
+    }
+    if (!payload.TenThuCung) {
+      errors.push("Ràng buộc NOT NULL: Tên thú cưng (TenThuCung) không được để trống.");
+    }
+    const tuoi = Number(payload.Tuoi);
+    if (!Number.isInteger(tuoi) || tuoi <= 0 || tuoi > 360) {
+      errors.push(`Vi phạm Ràng buộc miền giá trị (CHECK CHK_TC_Tuoi): Tuổi thú cưng (${payload.Tuoi}) phải nằm trong khoảng 1 đến 360 tháng.`);
+    }
+    const cannang = Number(payload.CanNang);
+    if (isNaN(cannang) || cannang <= 0 || cannang > 150) {
+      errors.push(`Vi phạm Ràng buộc miền giá trị (CHECK CHK_TC_CanNang): Cân nặng (${payload.CanNang} kg) phải lớn hơn 0 và không vượt quá 150 kg.`);
+    }
+
+    const alertBox = document.getElementById('petAlert');
+    const sqlLog = document.getElementById('petSqlLog');
+
+    if (errors.length > 0) {
+      alertBox.className = 'alert alert-error show';
+      alertBox.innerHTML = `<strong>PHÁT HIỆN LỖI KHI KIỂM TRA TÍNH ĐÚNG ĐẮN DỮ LIỆU (ĐÃ CHẶN GHI VÀO CSDL):</strong><ul>` +
+        errors.map(err => `<li>${err}</li>`).join('') + `</ul>`;
+      let failedSql = '';
+      if (newKhObj) {
+        const emailVal = newKhObj.Email ? `'${newKhObj.Email}'` : 'NULL';
+        failedSql += `INSERT INTO KHACH_HANG (MaKH, HoTen, SDT, Email, DiaChi) VALUES ('${newKhObj.MaKH}', '${newKhObj.HoTen}', '${newKhObj.SDT}', ${emailVal}, '${newKhObj.DiaChi}');\n`;
+      }
+      failedSql += `INSERT INTO THU_CUNG (MaThuCung, MaKH, TenThuCung, Loai, Giong, GioiTinh, Tuoi, CanNang, GhiChu)\nVALUES ('${payload.MaThuCung}', '${payload.MaKH}', '${payload.TenThuCung}', '${payload.Loai}', '${payload.Giong}', '${payload.GioiTinh}', ${payload.Tuoi || 'NULL'}, ${payload.CanNang || 'NULL'}, '${payload.GhiChu}');`;
+      sqlLog.textContent = `-- [BỊ TỪ CHỐI BỞI BỘ KIỂM TRA RÀNG BUỘC TOÀN VẸN]\n${failedSql}\n-- Lỗi: ${errors[0]}`;
+      return;
+    }
+
+    if (STATE.usingApi) {
+      const res = await fetch('/api/thu_cung', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+      const data = await res.json();
+      if (!res.ok || !data.ok) {
+        alertBox.className = 'alert alert-error show';
+        alertBox.innerHTML = `<strong>LỖI TỪ HỆ QUẢN TRỊ CSDL:</strong><ul>` + (data.errors || []).map(x => `<li>${x}</li>`).join('') + `</ul>`;
+        return;
+      }
+    }
+
+    let sqlExecuted = '';
+    if (newKhObj) {
+      STATE.khach_hang.push(newKhObj);
+      const emailVal = newKhObj.Email ? `'${newKhObj.Email}'` : 'NULL';
+      sqlExecuted += `-- Bước 1: Thêm Khách hàng mới vào bảng cha KHACH_HANG\nINSERT INTO KHACH_HANG (MaKH, HoTen, SDT, Email, DiaChi)\nVALUES ('${newKhObj.MaKH}', '${newKhObj.HoTen}', '${newKhObj.SDT}', ${emailVal}, '${newKhObj.DiaChi}');\n\n`;
+    }
+    STATE.thu_cung.push({
+      MaThuCung: payload.MaThuCung,
+      MaKH: payload.MaKH,
+      TenThuCung: payload.TenThuCung,
+      Loai: payload.Loai,
+      Giong: payload.Giong,
+      GioiTinh: payload.GioiTinh,
+      Tuoi: tuoi,
+      CanNang: cannang,
+      GhiChu: payload.GhiChu
+    });
+    populateSelects();
+    renderPetsTable();
+
+    sqlExecuted += `-- ${newKhObj ? 'Bước 2: ' : ''}Thêm Hồ sơ Thú cưng vào bảng con THU_CUNG (tham chiếu MaKH = '${payload.MaKH}')\nINSERT INTO THU_CUNG (MaThuCung, MaKH, TenThuCung, Loai, Giong, GioiTinh, Tuoi, CanNang, GhiChu)\nVALUES ('${payload.MaThuCung}', '${payload.MaKH}', '${payload.TenThuCung}', '${payload.Loai}', '${payload.Giong}', '${payload.GioiTinh}', ${tuoi}, ${cannang}, '${payload.GhiChu}');`;
+    sqlLog.textContent = `-- [THỰC THI THÀNH CÔNG]\n${sqlExecuted}`;
+    alertBox.className = 'alert alert-success show';
+    alertBox.innerHTML = newKhObj
+      ? `<strong>THÀNH CÔNG:</strong> Đã thêm Khách hàng mới <strong>${newKhObj.HoTen} (${newKhObj.MaKH})</strong> vào bảng <code>KHACH_HANG</code> trước, sau đó thêm Hồ sơ Thú cưng <strong>${payload.TenThuCung} (${payload.MaThuCung})</strong> vào bảng <code>THU_CUNG</code>!`
+      : `<strong>THÀNH CÔNG:</strong> Đã kiểm tra hợp lệ toàn bộ ràng buộc (PK, FK, NOT NULL, CHECK) và thêm thú cưng <strong>${payload.TenThuCung} (${payload.MaThuCung})</strong> vào CSDL!`;
+
+    setCustomerMode('existing');
+    document.getElementById('tc_makh').value = payload.MaKH;
+    document.getElementById('tc_matc').value = nextPetId();
+    document.getElementById('kh_makh').value = nextCustomerId();
+  }
+
+  // ======================= MỤC 5.2: VALIDATION & DEMO CHO LICH_HEN =======================
+  function nextBookingId() {
+    const nums = STATE.lich_hen.map(l => parseInt(l.MaLich.replace(/\D/g, ''), 10) || 0);
+    const next = Math.max(0, ...nums) + 1;
+    return 'LH' + String(next).padStart(3, '0');
+  }
+
+  function resetBookingForm() {
+    document.getElementById('lh_malich').value = nextBookingId();
+    document.getElementById('lh_matc').value = 'TC001';
+    document.getElementById('lh_madv').value = 'DV001';
+    document.getElementById('lh_soluong').value = '1';
+    document.getElementById('lh_manv').value = 'NV004';
+    document.getElementById('lh_ngaygio').value = '2026-11-12T09:30';
+    document.getElementById('lh_trangthai').value = 'Đã xác nhận';
+    document.getElementById('lh_ghichu').value = '';
+    document.getElementById('bookingAlert').className = 'alert';
+    updateOwnerPreview();
+    updatePricePreview();
+  }
+
+  function demoBookingError(type) {
+    resetBookingForm();
+    if (type === 'off_staff') {
+      document.getElementById('lh_manv').value = 'NV006'; // Hoàng Minh Đức - Nghỉ phép
+      document.getElementById('lh_ngaygio').value = '2026-11-12T18:00';
+      document.getElementById('lh_ghichu').value = 'Thử phân công nhân viên đang nghỉ phép';
+    } else if (type === 'wrong_shift') {
+      document.getElementById('lh_manv').value = 'NV002'; // Nguyễn Văn Khoa - Ca sáng (08:00-12:00)
+      document.getElementById('lh_ngaygio').value = '2026-11-12T15:30'; // Đặt giờ chiều
+      document.getElementById('lh_ghichu').value = 'Thử đặt lịch buổi chiều cho nhân viên ca sáng';
+    } else if (type === 'overlap') {
+      document.getElementById('lh_manv').value = 'NV003'; // Đã có lịch LH009 lúc 2026-11-09 14:30
+      document.getElementById('lh_ngaygio').value = '2026-11-09T14:45';
+      document.getElementById('lh_ghichu').value = 'Thử đặt trùng khung giờ với lịch hẹn LH009';
+    }
+    submitBookingForm(new Event('submit'));
+  }
+
+  function demoBookingValid() {
+    resetBookingForm();
+    document.getElementById('lh_malich').value = nextBookingId();
+    document.getElementById('lh_matc').value = 'TC004';
+    document.getElementById('lh_madv').value = 'DV003';
+    document.getElementById('lh_soluong').value = '1';
+    document.getElementById('lh_manv').value = 'NV004';
+    document.getElementById('lh_ngaygio').value = '2026-11-14T09:30';
+    document.getElementById('lh_trangthai').value = 'Đã xác nhận';
+    document.getElementById('lh_ghichu').value = 'Ủ dưỡng Collagen lông dài cho bé mèo Simba';
+    updateOwnerPreview();
+    updatePricePreview();
+  }
+
+  async function submitBookingForm(e) {
+    if (e && e.preventDefault) e.preventDefault();
+    const rawDt = document.getElementById('lh_ngaygio').value;
+    const ngaygio = rawDt ? rawDt.replace('T', ' ') + (rawDt.length === 16 ? ':00' : '') : '';
+    const payload = {
+      MaLich: document.getElementById('lh_malich').value.trim(),
+      MaThuCung: document.getElementById('lh_matc').value.trim(),
+      MaDV: document.getElementById('lh_madv').value.trim(),
+      MaNV: document.getElementById('lh_manv').value.trim(),
+      NgayGioHen: ngaygio,
+      SoLuong: parseInt(document.getElementById('lh_soluong').value || '0', 10),
+      TrangThai: document.getElementById('lh_trangthai').value,
+      GhiChu: document.getElementById('lh_ghichu').value.trim()
+    };
+
+    const errors = [];
+    if (!/^LH\d{3,}$/.test(payload.MaLich)) {
+      errors.push("Mã lịch hẹn (MaLich) phải có định dạng 'LHxxx' (VD: LH012).");
+    }
+    if (STATE.lich_hen.some(l => l.MaLich === payload.MaLich)) {
+      errors.push(`Vi phạm Khóa chính (PRIMARY KEY): Mã lịch hẹn '${payload.MaLich}' đã tồn tại trong bảng LICH_HEN.`);
+    }
+    if (!payload.SoLuong || payload.SoLuong <= 0) {
+      errors.push("Vi phạm Ràng buộc CHECK (CHK_LH_SoLuong): Số lượng dịch vụ phải lớn hơn 0.");
+    }
+    if (!payload.NgayGioHen) {
+      errors.push("Ràng buộc NOT NULL: Ngày giờ hẹn (NgayGioHen) không được để trống.");
+    }
+
+    const nv = STATE.nhan_vien.find(n => n.MaNV === payload.MaNV);
+    if (!nv) {
+      errors.push(`Vi phạm Khóa ngoại: Nhân viên '${payload.MaNV}' không tồn tại.`);
+    } else {
+      if (nv.TrangThai !== 'Đang làm việc') {
+        errors.push(`Vi phạm Quy tắc Nghiệp vụ Nhân sự: Nhân viên '${nv.HoTen}' (${nv.MaNV}) đang ở trạng thái '${nv.TrangThai}', không thể phân công thực hiện lịch hẹn!`);
+      }
+      if (payload.NgayGioHen) {
+        const dt = new Date(payload.NgayGioHen.replace(' ', 'T'));
+        const hr = dt.getHours() + dt.getMinutes() / 60.0;
+        const ca = nv.CaLamViec;
+        if (ca.includes('Ca sáng') && !(hr >= 8 && hr <= 12)) {
+          errors.push(`Vi phạm Quy tắc Ca làm việc: Nhân viên '${nv.HoTen}' phụ trách '${ca}' nhưng giờ hẹn đặt lúc ${payload.NgayGioHen.slice(11, 16)}.`);
+        } else if (ca.includes('Ca chiều') && !(hr >= 13 && hr <= 17)) {
+          errors.push(`Vi phạm Quy tắc Ca làm việc: Nhân viên '${nv.HoTen}' phụ trách '${ca}' nhưng giờ hẹn đặt lúc ${payload.NgayGioHen.slice(11, 16)}.`);
+        } else if (ca.includes('Ca tối') && !(hr >= 17 && hr <= 21)) {
+          errors.push(`Vi phạm Quy tắc Ca làm việc: Nhân viên '${nv.HoTen}' phụ trách '${ca}' nhưng giờ hẹn đặt lúc ${payload.NgayGioHen.slice(11, 16)}.`);
+        } else if (ca.includes('Hành chính') && !(hr >= 8 && hr <= 17)) {
+          errors.push(`Vi phạm Quy tắc Ca làm việc: Nhân viên '${nv.HoTen}' phụ trách '${ca}' nhưng giờ hẹn đặt lúc ${payload.NgayGioHen.slice(11, 16)}.`);
+        }
+
+        // Check overlap within 60 mins
+        const overlap = STATE.lich_hen.find(l => {
+          if (l.MaNV !== payload.MaNV || l.TrangThai === 'Đã hủy' || l.TrangThai === 'Không đến') return false;
+          const t1 = new Date(l.NgayGioHen.replace(' ', 'T')).getTime();
+          const t2 = dt.getTime();
+          return Math.abs(t1 - t2) / 60000 < 60;
+        });
+        if (overlap) {
+          errors.push(`Vi phạm Quy tắc Chống trùng lịch: Nhân viên '${nv.HoTen}' đã được phân công lịch hẹn '${overlap.MaLich}' vào lúc ${overlap.NgayGioHen.slice(0, 16)} (chồng lấn thời gian thực hiện).`);
+        }
+      }
+    }
+
+    const alertBox = document.getElementById('bookingAlert');
+    const sqlLog = document.getElementById('bookingSqlLog');
+
+    if (errors.length > 0) {
+      alertBox.className = 'alert alert-error show';
+      alertBox.innerHTML = `<strong>PHÁT HIỆN VI PHẠM RÀNG BUỘC KHI ĐẶT LỊCH HẸN (ĐÃ CHẶN LƯU):</strong><ul>` +
+        errors.map(e => `<li>${e}</li>`).join('') + `</ul>`;
+      sqlLog.textContent = `-- [BỊ CHẶN BỞI KIỂM TRA NGHIỆP VỤ & TOÀN VẸN DỮ LIỆU]\nINSERT INTO LICH_HEN (MaLich, MaThuCung, MaDV, MaNV, NgayGioHen, SoLuong, TrangThai, GhiChu)\nVALUES ('${payload.MaLich}', '${payload.MaThuCung}', '${payload.MaDV}', '${payload.MaNV}', '${payload.NgayGioHen}', ${payload.SoLuong}, '${payload.TrangThai}', '${payload.GhiChu}');\n-- Lý do từ chối: ${errors[0]}`;
+      return;
+    }
+
+    if (STATE.usingApi) {
+      const res = await fetch('/api/lich_hen', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+      const data = await res.json();
+      if (!res.ok || !data.ok) {
+        alertBox.className = 'alert alert-error show';
+        alertBox.innerHTML = `<strong>LỖI TỪ CSDL:</strong><ul>` + (data.errors || []).map(x => `<li>${x}</li>`).join('') + `</ul>`;
+        return;
+      }
+    }
+
+    STATE.lich_hen.push(payload);
+    renderBookingsTable();
+    runSearch();
+    renderReports();
+
+    const sqlText = `INSERT INTO LICH_HEN (MaLich, MaThuCung, MaDV, MaNV, NgayGioHen, SoLuong, TrangThai, GhiChu)\nVALUES ('${payload.MaLich}', '${payload.MaThuCung}', '${payload.MaDV}', '${payload.MaNV}', '${payload.NgayGioHen}', ${payload.SoLuong}, '${payload.TrangThai}', '${payload.GhiChu}');`;
+    sqlLog.textContent = `-- [THỰC THI THÀNH CÔNG]\n${sqlText}`;
+    alertBox.className = 'alert alert-success show';
+    alertBox.innerHTML = `<strong>THÀNH CÔNG:</strong> Đã kiểm tra hợp lệ toàn bộ điều kiện (ca làm việc, trạng thái nhân viên, không trùng giờ hẹn) và lưu lịch hẹn <strong>${payload.MaLich}</strong> vào bảng <code>LICH_HEN</code>!`;
+    document.getElementById('lh_malich').value = nextBookingId();
+  }
+
+  // ======================= MỤC 6: TÌM KIẾM ĐA TIÊU CHÍ =======================
+  function resetSearch() {
+    document.getElementById('s_kw').value = '';
+    document.getElementById('s_loai').value = '';
+    document.getElementById('s_madv').value = '';
+    document.getElementById('s_manv').value = '';
+    document.getElementById('s_trangthai').value = '';
+    document.getElementById('s_tungay').value = '';
+    document.getElementById('s_denngay').value = '';
+    runSearch();
+  }
+
+  function quickFilter(loai, trangthai) {
+    resetSearch();
+    document.getElementById('s_loai').value = loai;
+    document.getElementById('s_trangthai').value = trangthai;
+    runSearch();
+  }
+
+  function runSearch(e) {
+    if (e && e.preventDefault) e.preventDefault();
+    const kw = document.getElementById('s_kw').value.trim().toLowerCase();
+    const loai = document.getElementById('s_loai').value;
+    const madv = document.getElementById('s_madv').value;
+    const manv = document.getElementById('s_manv').value;
+    const trangthai = document.getElementById('s_trangthai').value;
+    const tungay = document.getElementById('s_tungay').value;
+    const denngay = document.getElementById('s_denngay').value;
+
+    const all = getEnrichedBookings();
+    const filtered = all.filter(r => {
+      if (kw) {
+        const hay = `${r.MaLich} ${r.TenKhachHang} ${r.SDTKhachHang} ${r.TenThuCung}`.toLowerCase();
+        if (!hay.includes(kw)) return false;
+      }
+      if (loai && r.Loai !== loai) return false;
+      if (madv && r.MaDV !== madv) return false;
+      if (manv && r.MaNV !== manv) return false;
+      if (trangthai && r.TrangThai !== trangthai) return false;
+      const d = r.NgayGioHen.slice(0, 10);
+      if (tungay && d < tungay) return false;
+      if (denngay && d > denngay) return false;
+      return true;
+    });
+
+    document.getElementById('searchResultCount').textContent = filtered.length;
+    const sumMoney = filtered.reduce((acc, r) => acc + r.ThanhTienDuKien, 0);
+    document.getElementById('searchTotalMoney').textContent = fmtMoney(sumMoney);
+
+    const tbody = document.getElementById('searchTableBody');
+    if (filtered.length === 0) {
+      tbody.innerHTML = `<tr><td colspan="11" style="text-align:center;padding:24px;color:#64748b;">Không tìm thấy bản ghi lịch hẹn nào khớp với điều kiện tra cứu.</td></tr>`;
+    } else {
+      tbody.innerHTML = filtered.map(r => `<tr>
+        <td><strong>${r.MaLich}</strong></td>
+        <td>${r.NgayGioHen.slice(0, 16)}</td>
+        <td><strong>${r.TenKhachHang}</strong><br/><small>${r.SDTKhachHang} (${r.MaKH})</small></td>
+        <td><strong>${r.TenThuCung}</strong> (${r.MaThuCung})<br/><small>${r.Loai} - ${r.Giong}</small></td>
+        <td>${r.TenDV} (${r.MaDV})</td>
+        <td class="num">${fmtMoney(r.DonGia)} &times; ${r.SoLuong}</td>
+        <td class="num"><strong>${fmtMoney(r.ThanhTienDuKien)}</strong></td>
+        <td>${r.TenNhanVien}<br/><small>${r.CaLamViec}</small></td>
+        <td>${statusSelectHtml(r.MaLich, r.TrangThai)}</td>
+        <td>${paymentSelectHtml(r.MaLich, r.PhuongThucThanhToan)}</td>
+        <td>${r.GhiChu || ''}</td>
+      </tr>`).join('');
+    }
+
+    let whereClause = "WHERE 1=1";
+    if (kw) whereClause += `\n  AND (lh.MaLich LIKE '%${kw}%' OR kh.HoTen LIKE '%${kw}%' OR kh.SDT LIKE '%${kw}%' OR tc.TenThuCung LIKE '%${kw}%')`;
+    if (loai) whereClause += `\n  AND tc.Loai = '${loai}'`;
+    if (madv) whereClause += `\n  AND lh.MaDV = '${madv}'`;
+    if (manv) whereClause += `\n  AND lh.MaNV = '${manv}'`;
+    if (trangthai) whereClause += `\n  AND lh.TrangThai = '${trangthai}'`;
+    if (tungay) whereClause += `\n  AND DATE(lh.NgayGioHen) >= '${tungay}'`;
+    if (denngay) whereClause += `\n  AND DATE(lh.NgayGioHen) <= '${denngay}'`;
+
+    document.getElementById('searchSqlBox').textContent =
+`SELECT lh.MaLich, lh.NgayGioHen, kh.MaKH, kh.HoTen AS TenKhachHang, kh.SDT,
+       tc.MaThuCung, tc.TenThuCung, tc.Loai, tc.Giong,
+       dv.MaDV, dv.TenDV, dv.DonGia, lh.SoLuong, (dv.DonGia * lh.SoLuong) AS ThanhTien,
+       nv.MaNV, nv.HoTen AS TenNhanVien, lh.TrangThai, COALESCE(tt.TrangThaiTT, 'Chưa thanh toán') AS TrangThaiTT
+FROM LICH_HEN lh
+JOIN THU_CUNG tc ON lh.MaThuCung = tc.MaThuCung
+JOIN KHACH_HANG kh ON tc.MaKH = kh.MaKH
+JOIN DICH_VU dv ON lh.MaDV = dv.MaDV
+JOIN NHAN_VIEN nv ON lh.MaNV = nv.MaNV
+LEFT JOIN THANH_TOAN tt ON lh.MaLich = tt.MaLich
+${whereClause}
+ORDER BY lh.NgayGioHen DESC;`;
+  }
+
+  // ======================= MỤC 7: 2 BÁO CÁO NGHIỆP VỤ & XUẤT FILE =======================
+  function computeReportsData() {
+    // Report 1: Revenue by Service
+    const rep1 = STATE.dich_vu.map(dv => {
+      const doneBookings = STATE.lich_hen.filter(l => l.MaDV === dv.MaDV && l.TrangThai === 'Hoàn thành');
+      let soGD = 0, tongSL = 0, tienMat = 0, chuyenKhoan = 0, quaThe = 0, tongThu = 0;
+      doneBookings.forEach(lh => {
+        const tt = STATE.thanh_toan.find(p => p.MaLich === lh.MaLich && p.TrangThaiTT === 'Đã thanh toán');
+        if (tt) {
+          soGD += 1;
+          tongSL += Number(lh.SoLuong);
+          const amt = Number(tt.SoTien);
+          tongThu += amt;
+          if (tt.PhuongThuc === 'Tiền mặt') tienMat += amt;
+          else if (tt.PhuongThuc === 'Chuyển khoản') chuyenKhoan += amt;
+          else if (tt.PhuongThuc === 'Thẻ') quaThe += amt;
+        }
+      });
+      return {
+        MaDV: dv.MaDV,
+        TenDV: dv.TenDV,
+        DonGia: dv.DonGia,
+        SoGD: soGD,
+        TongSL: tongSL,
+        TienMat: tienMat,
+        ChuyenKhoan: chuyenKhoan,
+        QuaThe: quaThe,
+        TongThu: tongThu
+      };
+    }).sort((a, b) => b.TongThu - a.TongThu);
+
+    // Report 2: Staff Performance
+    const rep2 = STATE.nhan_vien.filter(n => n.ChucVu === 'Nhân viên chăm sóc').map(nv => {
+      const myBookings = STATE.lich_hen.filter(l => l.MaNV === nv.MaNV);
+      let hoanThanh = 0, dangXuLy = 0, daHuy = 0, tongPhut = 0, doanhThu = 0;
+      myBookings.forEach(lh => {
+        const dv = STATE.dich_vu.find(d => d.MaDV === lh.MaDV) || { ThoiLuongDuKien: 0 };
+        if (lh.TrangThai === 'Hoàn thành') {
+          hoanThanh += 1;
+          tongPhut += Number(dv.ThoiLuongDuKien) * Number(lh.SoLuong);
+        } else if (lh.TrangThai === 'Đã hủy' || lh.TrangThai === 'Không đến') {
+          daHuy += 1;
+        } else {
+          dangXuLy += 1;
+        }
+        const tt = STATE.thanh_toan.find(p => p.MaLich === lh.MaLich && p.TrangThaiTT === 'Đã thanh toán');
+        if (tt) doanhThu += Number(tt.SoTien);
+      });
+      return {
+        MaNV: nv.MaNV,
+        HoTen: nv.HoTen,
+        CaLamViec: nv.CaLamViec,
+        TrangThai: nv.TrangThai,
+        TongLich: myBookings.length,
+        HoanThanh: hoanThanh,
+        DangXuLy: dangXuLy,
+        DaHuy: daHuy,
+        TongPhut: tongPhut,
+        DoanhThu: doanhThu
+      };
+    }).sort((a, b) => b.DoanhThu - a.DoanhThu);
+
+    return { rep1, rep2 };
+  }
+
+  function renderReports() {
+    const { rep1, rep2 } = computeReportsData();
+
+    // Render Report 1
+    let sumGD = 0, sumSL = 0, sumTM = 0, sumCK = 0, sumThe = 0, sumThu = 0;
+    document.getElementById('rep1TableBody').innerHTML = rep1.map((r, i) => {
+      sumGD += r.SoGD; sumSL += r.TongSL; sumTM += r.TienMat; sumCK += r.ChuyenKhoan; sumThe += r.QuaThe; sumThu += r.TongThu;
+      return `<tr>
+        <td style="text-align:center;">${i + 1}</td>
+        <td style="text-align:center;"><strong>${r.MaDV}</strong></td>
+        <td>${r.TenDV}</td>
+        <td class="num">${fmtMoney(r.DonGia)}</td>
+        <td style="text-align:center;">${r.SoGD}</td>
+        <td style="text-align:center;">${r.TongSL}</td>
+        <td class="num">${fmtMoney(r.TienMat)}</td>
+        <td class="num">${fmtMoney(r.ChuyenKhoan)}</td>
+        <td class="num">${fmtMoney(r.QuaThe)}</td>
+        <td class="num"><strong>${fmtMoney(r.TongThu)}</strong></td>
+      </tr>`;
+    }).join('');
+
+    document.getElementById('rep1TableFoot').innerHTML = `<tr style="background:#f1f5f9;font-weight:bold;">
+      <td colspan="4" style="text-align:center;">TỔNG CỘNG TOÀN KỲ</td>
+      <td style="text-align:center;">${sumGD}</td>
+      <td style="text-align:center;">${sumSL}</td>
+      <td class="num">${fmtMoney(sumTM)}</td>
+      <td class="num">${fmtMoney(sumCK)}</td>
+      <td class="num">${fmtMoney(sumThe)}</td>
+      <td class="num" style="color:#b91c1c;">${fmtMoney(sumThu)}</td>
+    </tr>`;
+    document.getElementById('rep1TotalTextNum').textContent = `${fmtMoney(sumThu)} (Hai triệu năm trăm mười nghìn đồng chẵn).`;
+
+    document.getElementById('rep1SqlBox').textContent =
+`SELECT dv.MaDV, dv.TenDV, dv.DonGia,
+       COUNT(tt.MaTT) AS SoGiaoDichThanhToan,
+       COALESCE(SUM(CASE WHEN tt.MaTT IS NOT NULL THEN lh.SoLuong ELSE 0 END), 0) AS TongSoLuongSuDung,
+       COALESCE(SUM(CASE WHEN tt.PhuongThuc = 'Tiền mặt' THEN tt.SoTien ELSE 0 END), 0) AS ThuTienMat,
+       COALESCE(SUM(CASE WHEN tt.PhuongThuc = 'Chuyển khoản' THEN tt.SoTien ELSE 0 END), 0) AS ThuChuyenKhoan,
+       COALESCE(SUM(CASE WHEN tt.PhuongThuc = 'Thẻ' THEN tt.SoTien ELSE 0 END), 0) AS ThuQuaThe,
+       COALESCE(SUM(tt.SoTien), 0) AS TongDoanhThuThucThu
+FROM DICH_VU dv
+LEFT JOIN LICH_HEN lh ON dv.MaDV = lh.MaDV AND lh.TrangThai = 'Hoàn thành'
+LEFT JOIN THANH_TOAN tt ON lh.MaLich = tt.MaLich AND tt.TrangThaiTT = 'Đã thanh toán'
+GROUP BY dv.MaDV, dv.TenDV, dv.DonGia
+ORDER BY TongDoanhThuThucThu DESC;`;
+
+    // Render Report 2
+    let sLich = 0, sHT = 0, sXL = 0, sHuy = 0, sPhut = 0, sDT = 0;
+    document.getElementById('rep2TableBody').innerHTML = rep2.map((r, i) => {
+      sLich += r.TongLich; sHT += r.HoanThanh; sXL += r.DangXuLy; sHuy += r.DaHuy; sPhut += r.TongPhut; sDT += r.DoanhThu;
+      return `<tr>
+        <td style="text-align:center;">${i + 1}</td>
+        <td style="text-align:center;"><strong>${r.MaNV}</strong></td>
+        <td><strong>${r.HoTen}</strong></td>
+        <td>${r.CaLamViec}</td>
+        <td style="text-align:center;">${r.TrangThai}</td>
+        <td style="text-align:center;">${r.TongLich}</td>
+        <td style="text-align:center;font-weight:bold;color:#15803d;">${r.HoanThanh}</td>
+        <td style="text-align:center;">${r.DangXuLy}</td>
+        <td style="text-align:center;color:#b91c1c;">${r.DaHuy}</td>
+        <td class="num">${r.TongPhut.toLocaleString('vi-VN')} phút</td>
+        <td class="num"><strong>${fmtMoney(r.DoanhThu)}</strong></td>
+      </tr>`;
+    }).join('');
+
+    document.getElementById('rep2TableFoot').innerHTML = `<tr style="background:#f1f5f9;font-weight:bold;">
+      <td colspan="5" style="text-align:center;">TỔNG CỘNG KHỐI CHĂM SÓC THÚ CƯNG</td>
+      <td style="text-align:center;">${sLich}</td>
+      <td style="text-align:center;">${sHT}</td>
+      <td style="text-align:center;">${sXL}</td>
+      <td style="text-align:center;">${sHuy}</td>
+      <td class="num">${sPhut.toLocaleString('vi-VN')} phút</td>
+      <td class="num" style="color:#b91c1c;">${fmtMoney(sDT)}</td>
+    </tr>`;
+
+    document.getElementById('rep2SqlBox').textContent =
+`SELECT nv.MaNV, nv.HoTen AS TenNhanVien, nv.CaLamViec, nv.TrangThai,
+       COUNT(lh.MaLich) AS TongSoLichPhanCong,
+       SUM(CASE WHEN lh.TrangThai = 'Hoàn thành' THEN 1 ELSE 0 END) AS SoLichHoanThanh,
+       SUM(CASE WHEN lh.TrangThai IN ('Đang thực hiện', 'Đã xác nhận', 'Mới tạo') THEN 1 ELSE 0 END) AS SoLichDangXuLy,
+       SUM(CASE WHEN lh.TrangThai IN ('Đã hủy', 'Không đến') THEN 1 ELSE 0 END) AS SoLichHuy,
+       COALESCE(SUM(CASE WHEN lh.TrangThai = 'Hoàn thành' THEN dv.ThoiLuongDuKien * lh.SoLuong ELSE 0 END), 0) AS TongSoPhutPhucVu,
+       COALESCE(SUM(CASE WHEN tt.TrangThaiTT = 'Đã thanh toán' THEN tt.SoTien ELSE 0 END), 0) AS DoanhThuDongGop
+FROM NHAN_VIEN nv
+LEFT JOIN LICH_HEN lh ON nv.MaNV = lh.MaNV
+LEFT JOIN DICH_VU dv ON lh.MaDV = dv.MaDV
+LEFT JOIN THANH_TOAN tt ON lh.MaLich = tt.MaLich
+WHERE nv.ChucVu = 'Nhân viên chăm sóc'
+GROUP BY nv.MaNV, nv.HoTen, nv.CaLamViec, nv.TrangThai
+ORDER BY DoanhThuDongGop DESC, SoLichHoanThanh DESC;`;
+  }
+
+  function exportReportXlsx(type) {
+    if (STATE.usingApi) {
+      window.location.href = `/api/export_xlsx?type=${type}`;
+      return;
+    }
+    // Fallback Excel XML table download if opened directly via file://
+    const paperId = type === 1 ? 'report1Paper' : 'report2Paper';
+    const fname = type === 1 ? 'Bao_Cao_Doanh_Thu_Dich_Vu_PetCare.xls' : 'Bao_Cao_Hieu_Suat_Nhan_Vien_PetCare.xls';
+    const html = `<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel" xmlns="http://www.w3.org/TR/REC-html40"><head><meta charset="UTF-8"></head><body>` +
+      document.getElementById(paperId).innerHTML + `</body></html>`;
+    const blob = new Blob(['\ufeff', html], { type: 'application/vnd.ms-excel;charset=utf-8' });
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = fname;
+    a.click();
+  }
+
+  function exportReportWord(paperId, filename) {
+    const content = document.getElementById(paperId).innerHTML;
+    const html = `<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:w="urn:schemas-microsoft-com:office:word" xmlns="http://www.w3.org/TR/REC-html40">
+      <head><meta charset="utf-8"><style>
+        body { font-family: 'Times New Roman', serif; font-size: 13pt; }
+        table { width: 100%; border-collapse: collapse; margin-top: 12px; }
+        th, td { border: 1px solid #000; padding: 6px; }
+        th { background: #e2e8f0; }
+      </style></head><body>${content}</body></html>`;
+    const blob = new Blob(['\ufeff', html], { type: 'application/msword;charset=utf-8' });
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = filename;
+    a.click();
+  }
+
+  function exportReportCsv(type) {
+    const { rep1, rep2 } = computeReportsData();
+    let lines = [];
+    if (type === 1) {
+      lines.push('"TRUNG TÂM CHĂM SÓC THÚ CƯNG PETCARE SPA & CLINIC"');
+      lines.push('"BÁO CÁO TỔNG HỢP DOANH THU DỊCH VỤ (MẪU BC-01/TC-KT)"');
+      lines.push('"Người lập: Phạm Ngọc Lan (Lễ tân - Thu ngân)","Người nhận: Đỗ Thanh Hương (Quản lý cơ sở)"');
+      lines.push('');
+      lines.push('"Mã DV","Tên Dịch Vụ","Đơn Giá (VNĐ)","Số Giao Dịch","Tổng Số Lượng","Thu Tiền Mặt","Thu Chuyển Khoản","Thu Thẻ","Tổng Thực Thu"');
+      rep1.forEach(r => {
+        lines.push(`"${r.MaDV}","${r.TenDV}",${r.DonGia},${r.SoGD},${r.TongSL},${r.TienMat},${r.ChuyenKhoan},${r.QuaThe},${r.TongThu}`);
+      });
+    } else {
+      lines.push('"TRUNG TÂM CHĂM SÓC THÚ CƯNG PETCARE SPA & CLINIC"');
+      lines.push('"BÁO CÁO HIỆU SUẤT LÀM VIỆC CỦA NHÂN VIÊN (MẪU BC-02/NS-ĐH)"');
+      lines.push('"Người lập: Đỗ Thanh Hương (Quản lý cơ sở)","Người nhận: Bộ phận Nhân sự - Tiền lương & Ban Giám đốc"');
+      lines.push('');
+      lines.push('"Mã NV","Họ Tên Nhân Viên","Ca Làm Việc","Trạng Thái","Tổng Lịch Phân Công","Lịch Hoàn Thành","Đang Xử Lý","Đã Hủy","Tổng Phút Phục Vụ","Doanh Thu Đóng Góp"');
+      rep2.forEach(r => {
+        lines.push(`"${r.MaNV}","${r.HoTen}","${r.CaLamViec}","${r.TrangThai}",${r.TongLich},${r.HoanThanh},${r.DangXuLy},${r.DaHuy},${r.TongPhut},${r.DoanhThu}`);
+      });
+    }
+    const blob = new Blob(['\ufeff' + lines.join('\r\n')], { type: 'text/csv;charset=utf-8' });
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = type === 1 ? 'Bao_Cao_Doanh_Thu_Dich_Vu_PetCare.csv' : 'Bao_Cao_Hieu_Suat_Nhan_Vien_PetCare.csv';
+    a.click();
+  }
+
+  window.addEventListener('DOMContentLoaded', initApp);
+</script>
+</body>
+</html>

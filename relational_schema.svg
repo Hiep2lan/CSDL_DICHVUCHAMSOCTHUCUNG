@@ -1,0 +1,173 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1230 780" width="100%" style="background:#f8fafc;font-family:Segoe UI,Arial,sans-serif;">
+<defs><marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M 0 1 L 10 5 L 0 9 z" fill="#1d4ed8"/></marker></defs>
+<text x="615" y="34" text-anchor="middle" font-size="19" font-weight="bold" fill="#0f172a">LƯỢC ĐỒ QUAN HỆ (RELATIONAL SCHEMA) ÁNH XẠ TỪ ERD.DRAWIO (CHUẨN HÓA 3NF)</text>
+<text x="615" y="55" text-anchor="middle" font-size="12" fill="#475569">Đã loại bỏ MaKH bắc cầu khỏi LICH_HEN và loại bỏ thuộc tính dẫn xuất ThanhTien khỏi bảng vật lý THANH_TOAN</text>
+<path d="M 50 360 L 22 360 L 22 121 L 50 121" fill="none" stroke="#1d4ed8" stroke-width="2" marker-end="url(#arrow)"/>
+<text x="26" y="352" font-size="10.5" font-weight="bold" fill="#b91c1c">N (1,1)</text>
+<text x="26" y="113" font-size="10.5" font-weight="bold" fill="#15803d">1 (1,N)</text>
+<path d="M 460 290 L 410 290 L 410 336 L 360 336" fill="none" stroke="#1d4ed8" stroke-width="2" marker-end="url(#arrow)"/>
+<text x="415" y="282" font-size="10.5" font-weight="bold" fill="#b91c1c">N (1,1)</text>
+<text x="366" y="328" font-size="10.5" font-weight="bold" fill="#15803d">1 (0,N)</text>
+<path d="M 770 338 L 820 338 L 820 246 L 870 246" fill="none" stroke="#1d4ed8" stroke-width="2" marker-end="url(#arrow)"/>
+<text x="775" y="330" font-size="10.5" font-weight="bold" fill="#b91c1c">N (1,1)</text>
+<text x="825" y="238" font-size="10.5" font-weight="bold" fill="#15803d">1 (0,N)</text>
+<path d="M 770 314 L 805 314 L 805 586 L 680 586" fill="none" stroke="#1d4ed8" stroke-width="2" marker-end="url(#arrow)"/>
+<text x="775" y="306" font-size="10.5" font-weight="bold" fill="#b91c1c">N (1,1)</text>
+<text x="745" y="578" font-size="10.5" font-weight="bold" fill="#15803d">1 (0,N)</text>
+<path d="M 290 610 L 255 610 L 255 266 L 460 266" fill="none" stroke="#1d4ed8" stroke-width="2" marker-end="url(#arrow)"/>
+<text x="260" y="602" font-size="10.5" font-weight="bold" fill="#b91c1c">1 (1,1)</text>
+<text x="412" y="258" font-size="10.5" font-weight="bold" fill="#15803d">1 (0,1)</text>
+<rect x="50" y="75" width="310" height="160" rx="6" fill="#ffffff" stroke="#1e3a8a" stroke-width="2"/>
+<rect x="50" y="75" width="310" height="32" rx="6" fill="#1e3a8a"/>
+<text x="205.0" y="96" text-anchor="middle" font-size="13.5" font-weight="bold" fill="#ffffff">KHACH_HANG</text>
+<rect x="58" y="113" width="42" height="16" rx="3" fill="#fef3c7"/>
+<text x="79" y="124" text-anchor="middle" font-size="10" font-weight="bold" fill="#92400e">PK</text>
+<text x="106" y="125" font-size="12" font-weight="bold" fill="#0f172a" text-decoration="underline">MaKH</text>
+<text x="352" y="125" text-anchor="end" font-size="10.5" fill="#475569">VARCHAR(10) NOT NULL</text>
+<rect x="52" y="133" width="306" height="24" fill="#f1f5f9"/>
+<text x="106" y="149" font-size="12" font-weight="normal" fill="#0f172a">HoTen</text>
+<text x="352" y="149" text-anchor="end" font-size="10.5" fill="#475569">NVARCHAR(100) NOT NULL</text>
+<rect x="58" y="161" width="42" height="16" rx="3" fill="#f3e8ff"/>
+<text x="79" y="172" text-anchor="middle" font-size="10" font-weight="bold" fill="#6b21a8">UQ</text>
+<text x="106" y="173" font-size="12" font-weight="normal" fill="#0f172a">SDT</text>
+<text x="352" y="173" text-anchor="end" font-size="10.5" fill="#475569">VARCHAR(15) NOT NULL</text>
+<rect x="52" y="181" width="306" height="24" fill="#f1f5f9"/>
+<rect x="58" y="185" width="42" height="16" rx="3" fill="#f3e8ff"/>
+<text x="79" y="196" text-anchor="middle" font-size="10" font-weight="bold" fill="#6b21a8">UQ</text>
+<text x="106" y="197" font-size="12" font-weight="normal" fill="#0f172a">Email</text>
+<text x="352" y="197" text-anchor="end" font-size="10.5" fill="#475569">VARCHAR(100) NULL</text>
+<text x="106" y="221" font-size="12" font-weight="normal" fill="#0f172a">DiaChi</text>
+<text x="352" y="221" text-anchor="end" font-size="10.5" fill="#475569">NVARCHAR(255) NULL</text>
+<rect x="50" y="290" width="310" height="256" rx="6" fill="#ffffff" stroke="#1e3a8a" stroke-width="2"/>
+<rect x="50" y="290" width="310" height="32" rx="6" fill="#1e3a8a"/>
+<text x="205.0" y="311" text-anchor="middle" font-size="13.5" font-weight="bold" fill="#ffffff">THU_CUNG</text>
+<rect x="58" y="328" width="42" height="16" rx="3" fill="#fef3c7"/>
+<text x="79" y="339" text-anchor="middle" font-size="10" font-weight="bold" fill="#92400e">PK</text>
+<text x="106" y="340" font-size="12" font-weight="bold" fill="#0f172a" text-decoration="underline">MaThuCung</text>
+<text x="352" y="340" text-anchor="end" font-size="10.5" fill="#475569">VARCHAR(10) NOT NULL</text>
+<rect x="52" y="348" width="306" height="24" fill="#f1f5f9"/>
+<rect x="58" y="352" width="42" height="16" rx="3" fill="#dbeafe"/>
+<text x="79" y="363" text-anchor="middle" font-size="10" font-weight="bold" fill="#1e40af">FK</text>
+<text x="106" y="364" font-size="12" font-weight="bold" fill="#0f172a" font-style="italic">MaKH</text>
+<text x="352" y="364" text-anchor="end" font-size="10.5" fill="#475569">VARCHAR(10) NOT NULL</text>
+<text x="106" y="388" font-size="12" font-weight="normal" fill="#0f172a">TenThuCung</text>
+<text x="352" y="388" text-anchor="end" font-size="10.5" fill="#475569">NVARCHAR(100) NOT NULL</text>
+<rect x="52" y="396" width="306" height="24" fill="#f1f5f9"/>
+<text x="106" y="412" font-size="12" font-weight="normal" fill="#0f172a">Loai</text>
+<text x="352" y="412" text-anchor="end" font-size="10.5" fill="#475569">NVARCHAR(50) NOT NULL</text>
+<text x="106" y="436" font-size="12" font-weight="normal" fill="#0f172a">Giong</text>
+<text x="352" y="436" text-anchor="end" font-size="10.5" fill="#475569">NVARCHAR(100) NULL</text>
+<rect x="52" y="444" width="306" height="24" fill="#f1f5f9"/>
+<text x="106" y="460" font-size="12" font-weight="normal" fill="#0f172a">GioiTinh</text>
+<text x="352" y="460" text-anchor="end" font-size="10.5" fill="#475569">NVARCHAR(20) NOT NULL</text>
+<text x="106" y="484" font-size="12" font-weight="normal" fill="#0f172a">Tuoi</text>
+<text x="352" y="484" text-anchor="end" font-size="10.5" fill="#475569">INT NOT NULL (1..360)</text>
+<rect x="52" y="492" width="306" height="24" fill="#f1f5f9"/>
+<text x="106" y="508" font-size="12" font-weight="normal" fill="#0f172a">CanNang</text>
+<text x="352" y="508" text-anchor="end" font-size="10.5" fill="#475569">DECIMAL(5,2) NOT NULL</text>
+<text x="106" y="532" font-size="12" font-weight="normal" fill="#0f172a">GhiChu</text>
+<text x="352" y="532" text-anchor="end" font-size="10.5" fill="#475569">NVARCHAR(500) NULL</text>
+<rect x="460" y="220" width="310" height="232" rx="6" fill="#ffffff" stroke="#1e3a8a" stroke-width="2"/>
+<rect x="460" y="220" width="310" height="32" rx="6" fill="#1e3a8a"/>
+<text x="615.0" y="241" text-anchor="middle" font-size="13.5" font-weight="bold" fill="#ffffff">LICH_HEN</text>
+<rect x="468" y="258" width="42" height="16" rx="3" fill="#fef3c7"/>
+<text x="489" y="269" text-anchor="middle" font-size="10" font-weight="bold" fill="#92400e">PK</text>
+<text x="516" y="270" font-size="12" font-weight="bold" fill="#0f172a" text-decoration="underline">MaLich</text>
+<text x="762" y="270" text-anchor="end" font-size="10.5" fill="#475569">VARCHAR(10) NOT NULL</text>
+<rect x="462" y="278" width="306" height="24" fill="#f1f5f9"/>
+<rect x="468" y="282" width="42" height="16" rx="3" fill="#dbeafe"/>
+<text x="489" y="293" text-anchor="middle" font-size="10" font-weight="bold" fill="#1e40af">FK</text>
+<text x="516" y="294" font-size="12" font-weight="bold" fill="#0f172a" font-style="italic">MaThuCung</text>
+<text x="762" y="294" text-anchor="end" font-size="10.5" fill="#475569">VARCHAR(10) NOT NULL</text>
+<rect x="468" y="306" width="42" height="16" rx="3" fill="#dbeafe"/>
+<text x="489" y="317" text-anchor="middle" font-size="10" font-weight="bold" fill="#1e40af">FK</text>
+<text x="516" y="318" font-size="12" font-weight="bold" fill="#0f172a" font-style="italic">MaDV</text>
+<text x="762" y="318" text-anchor="end" font-size="10.5" fill="#475569">VARCHAR(10) NOT NULL</text>
+<rect x="462" y="326" width="306" height="24" fill="#f1f5f9"/>
+<rect x="468" y="330" width="42" height="16" rx="3" fill="#dbeafe"/>
+<text x="489" y="341" text-anchor="middle" font-size="10" font-weight="bold" fill="#1e40af">FK</text>
+<text x="516" y="342" font-size="12" font-weight="bold" fill="#0f172a" font-style="italic">MaNV</text>
+<text x="762" y="342" text-anchor="end" font-size="10.5" fill="#475569">VARCHAR(10) NOT NULL</text>
+<text x="516" y="366" font-size="12" font-weight="normal" fill="#0f172a">NgayGioHen</text>
+<text x="762" y="366" text-anchor="end" font-size="10.5" fill="#475569">DATETIME NOT NULL</text>
+<rect x="462" y="374" width="306" height="24" fill="#f1f5f9"/>
+<text x="516" y="390" font-size="12" font-weight="normal" fill="#0f172a">SoLuong</text>
+<text x="762" y="390" text-anchor="end" font-size="10.5" fill="#475569">INT NOT NULL DEFAULT 1</text>
+<text x="516" y="414" font-size="12" font-weight="normal" fill="#0f172a">TrangThai</text>
+<text x="762" y="414" text-anchor="end" font-size="10.5" fill="#475569">NVARCHAR(50) NOT NULL</text>
+<rect x="462" y="422" width="306" height="24" fill="#f1f5f9"/>
+<text x="516" y="438" font-size="12" font-weight="normal" fill="#0f172a">GhiChu</text>
+<text x="762" y="438" text-anchor="end" font-size="10.5" fill="#475569">NVARCHAR(500) NULL</text>
+<rect x="870" y="200" width="310" height="256" rx="6" fill="#ffffff" stroke="#1e3a8a" stroke-width="2"/>
+<rect x="870" y="200" width="310" height="32" rx="6" fill="#1e3a8a"/>
+<text x="1025.0" y="221" text-anchor="middle" font-size="13.5" font-weight="bold" fill="#ffffff">NHAN_VIEN</text>
+<rect x="878" y="238" width="42" height="16" rx="3" fill="#fef3c7"/>
+<text x="899" y="249" text-anchor="middle" font-size="10" font-weight="bold" fill="#92400e">PK</text>
+<text x="926" y="250" font-size="12" font-weight="bold" fill="#0f172a" text-decoration="underline">MaNV</text>
+<text x="1172" y="250" text-anchor="end" font-size="10.5" fill="#475569">VARCHAR(10) NOT NULL</text>
+<rect x="872" y="258" width="306" height="24" fill="#f1f5f9"/>
+<text x="926" y="274" font-size="12" font-weight="normal" fill="#0f172a">HoTen</text>
+<text x="1172" y="274" text-anchor="end" font-size="10.5" fill="#475569">NVARCHAR(100) NOT NULL</text>
+<text x="926" y="298" font-size="12" font-weight="normal" fill="#0f172a">NgaySinh</text>
+<text x="1172" y="298" text-anchor="end" font-size="10.5" fill="#475569">DATE NOT NULL</text>
+<rect x="872" y="306" width="306" height="24" fill="#f1f5f9"/>
+<text x="926" y="322" font-size="12" font-weight="normal" fill="#0f172a">GioiTinh</text>
+<text x="1172" y="322" text-anchor="end" font-size="10.5" fill="#475569">NVARCHAR(10) NOT NULL</text>
+<rect x="878" y="334" width="42" height="16" rx="3" fill="#f3e8ff"/>
+<text x="899" y="345" text-anchor="middle" font-size="10" font-weight="bold" fill="#6b21a8">UQ</text>
+<text x="926" y="346" font-size="12" font-weight="normal" fill="#0f172a">SDT</text>
+<text x="1172" y="346" text-anchor="end" font-size="10.5" fill="#475569">VARCHAR(15) NOT NULL</text>
+<rect x="872" y="354" width="306" height="24" fill="#f1f5f9"/>
+<text x="926" y="370" font-size="12" font-weight="normal" fill="#0f172a">ChucVu</text>
+<text x="1172" y="370" text-anchor="end" font-size="10.5" fill="#475569">NVARCHAR(50) NOT NULL</text>
+<text x="926" y="394" font-size="12" font-weight="normal" fill="#0f172a">CaLamViec</text>
+<text x="1172" y="394" text-anchor="end" font-size="10.5" fill="#475569">NVARCHAR(50) NOT NULL</text>
+<rect x="872" y="402" width="306" height="24" fill="#f1f5f9"/>
+<text x="926" y="418" font-size="12" font-weight="normal" fill="#0f172a">Luong</text>
+<text x="1172" y="418" text-anchor="end" font-size="10.5" fill="#475569">DECIMAL(12,2) NOT NULL</text>
+<text x="926" y="442" font-size="12" font-weight="normal" fill="#0f172a">TrangThai</text>
+<text x="1172" y="442" text-anchor="end" font-size="10.5" fill="#475569">NVARCHAR(50) NOT NULL</text>
+<rect x="290" y="540" width="310" height="184" rx="6" fill="#ffffff" stroke="#1e3a8a" stroke-width="2"/>
+<rect x="290" y="540" width="310" height="32" rx="6" fill="#1e3a8a"/>
+<text x="445.0" y="561" text-anchor="middle" font-size="13.5" font-weight="bold" fill="#ffffff">THANH_TOAN</text>
+<rect x="298" y="578" width="42" height="16" rx="3" fill="#fef3c7"/>
+<text x="319" y="589" text-anchor="middle" font-size="10" font-weight="bold" fill="#92400e">PK</text>
+<text x="346" y="590" font-size="12" font-weight="bold" fill="#0f172a" text-decoration="underline">MaTT</text>
+<text x="592" y="590" text-anchor="end" font-size="10.5" fill="#475569">VARCHAR(10) NOT NULL</text>
+<rect x="292" y="598" width="306" height="24" fill="#f1f5f9"/>
+<rect x="298" y="602" width="42" height="16" rx="3" fill="#dbeafe"/>
+<text x="319" y="613" text-anchor="middle" font-size="10" font-weight="bold" fill="#1e40af">FK,UQ</text>
+<text x="346" y="614" font-size="12" font-weight="bold" fill="#0f172a" font-style="italic">MaLich</text>
+<text x="592" y="614" text-anchor="end" font-size="10.5" fill="#475569">VARCHAR(10) NOT NULL</text>
+<text x="346" y="638" font-size="12" font-weight="normal" fill="#0f172a">ThoiGianThanhToan</text>
+<text x="592" y="638" text-anchor="end" font-size="10.5" fill="#475569">DATETIME NOT NULL</text>
+<rect x="292" y="646" width="306" height="24" fill="#f1f5f9"/>
+<text x="346" y="662" font-size="12" font-weight="normal" fill="#0f172a">SoTien</text>
+<text x="592" y="662" text-anchor="end" font-size="10.5" fill="#475569">DECIMAL(12,2) NOT NULL</text>
+<text x="346" y="686" font-size="12" font-weight="normal" fill="#0f172a">PhuongThuc</text>
+<text x="592" y="686" text-anchor="end" font-size="10.5" fill="#475569">NVARCHAR(50) NOT NULL</text>
+<rect x="292" y="694" width="306" height="24" fill="#f1f5f9"/>
+<text x="346" y="710" font-size="12" font-weight="normal" fill="#0f172a">TrangThaiTT</text>
+<text x="592" y="710" text-anchor="end" font-size="10.5" fill="#475569">NVARCHAR(50) NOT NULL</text>
+<rect x="680" y="540" width="310" height="160" rx="6" fill="#ffffff" stroke="#1e3a8a" stroke-width="2"/>
+<rect x="680" y="540" width="310" height="32" rx="6" fill="#1e3a8a"/>
+<text x="835.0" y="561" text-anchor="middle" font-size="13.5" font-weight="bold" fill="#ffffff">DICH_VU</text>
+<rect x="688" y="578" width="42" height="16" rx="3" fill="#fef3c7"/>
+<text x="709" y="589" text-anchor="middle" font-size="10" font-weight="bold" fill="#92400e">PK</text>
+<text x="736" y="590" font-size="12" font-weight="bold" fill="#0f172a" text-decoration="underline">MaDV</text>
+<text x="982" y="590" text-anchor="end" font-size="10.5" fill="#475569">VARCHAR(10) NOT NULL</text>
+<rect x="682" y="598" width="306" height="24" fill="#f1f5f9"/>
+<rect x="688" y="602" width="42" height="16" rx="3" fill="#f3e8ff"/>
+<text x="709" y="613" text-anchor="middle" font-size="10" font-weight="bold" fill="#6b21a8">UQ</text>
+<text x="736" y="614" font-size="12" font-weight="normal" fill="#0f172a">TenDV</text>
+<text x="982" y="614" text-anchor="end" font-size="10.5" fill="#475569">NVARCHAR(150) NOT NULL</text>
+<text x="736" y="638" font-size="12" font-weight="normal" fill="#0f172a">DonGia</text>
+<text x="982" y="638" text-anchor="end" font-size="10.5" fill="#475569">DECIMAL(12,2) NOT NULL</text>
+<rect x="682" y="646" width="306" height="24" fill="#f1f5f9"/>
+<text x="736" y="662" font-size="12" font-weight="normal" fill="#0f172a">ThoiLuongDuKien</text>
+<text x="982" y="662" text-anchor="end" font-size="10.5" fill="#475569">INT NOT NULL (Phút)</text>
+<text x="736" y="686" font-size="12" font-weight="normal" fill="#0f172a">MoTaDichVu</text>
+<text x="982" y="686" text-anchor="end" font-size="10.5" fill="#475569">NVARCHAR(500) NULL</text>
+<rect x="50" y="730" width="1130" height="34" rx="6" fill="#eff6ff" stroke="#bfdbfe" stroke-width="1"/>
+<text x="615" y="751" text-anchor="middle" font-size="12" fill="#1e3a8a" font-weight="bold">Chú giải ánh xạ từ ERD.drawio: [PK] Khóa chính (gạch chân)  |  [FK] Khóa ngoại ánh xạ từ mối kết hợp 1:N (in nghiêng)  |  [FK,UQ] Khóa ngoại 1:1 (THANH_TOAN.MaLich)  |  [UQ] Ràng buộc duy nhất</text>
+</svg>
