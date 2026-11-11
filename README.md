@@ -367,13 +367,15 @@ if __name__ == "__main__":
 
 ## 👥 7. Thành viên thực hiện
 
-> *(Cập nhật Họ tên và Mã sinh viên của nhóm trước khi nộp bài)*
+> *(Cập nhật Họ tên và Mã sinh viên của Thành viên 4 & 5 trước khi nộp bài)*
 
 | STT | Họ và Tên | Mã Sinh Viên | Vai trò | Phân công công việc chi tiết |
 | :-: | :--- | :---: | :---: | :--- |
-| 1 | **Nguyễn Bá Đức Nhân** | `B24DCCN427` | Nhóm trưởng | - Phân tích yêu cầu nghiệp vụ thực tế (Mục 1).<br>- Thiết kế sơ đồ ERD chuẩn Chen (`ERD.drawio`) & ánh xạ Lược đồ quan hệ (Mục 2, Mục 3).<br>- Kiểm tra phụ thuộc hàm và chuẩn hóa 3NF/BCNF (Mục 4). |
-| 2 | **Trần Trọng Nghĩa** | `B24DCCN423` | Thành viên | - Viết script DDL khởi tạo bảng, ràng buộc toàn vẹn và dữ liệu mẫu (`csdl_cham_soc_thu_cung.sql`).<br>- Xây dựng Backend Python RESTful API (`app.py`) và kết nối CSDL SQLite (`petcare.db`).<br>- Xây dựng 2 màn hình nhập liệu & kịch bản kiểm thử ràng buộc (Mục 5). |
-| 3 | **Hoàng Quý Phước** | `B24DCCN456` | Thành viên | - Xây dựng màn hình Tìm kiếm đa tiêu chí kết nối 6 bảng (Mục 6).<br>- Thiết kế truy vấn SQL thống kê và biểu mẫu cho 2 Báo cáo nghiệp vụ, chức năng xuất file `.xlsx`, `.doc`, `.csv`, PDF (Mục 7).<br>- Tổng hợp báo cáo thuyết minh (`.docx`) và tài liệu `README.md` (Mục 8). |
+| 1 | **Nguyễn Bá Đức Nhân** | `B24DCCN427` | Nhóm trưởng | - Điều phối chung tiến độ nhóm; khảo sát và phân tích yêu cầu dữ liệu gắn với 6 quy trình nghiệp vụ thực tế (**Mục 1**).<br>- Thiết kế Biểu đồ Thực thể - Liên kết (ERD) chuẩn ký hiệu Chen (`ERD.drawio`, `erd_diagram.svg`) (**Mục 2**).<br>- Rà soát tổng thể sự đồng bộ giữa thiết kế CSDL, mã nguồn và báo cáo nghiệm thu. |
+| 2 | **Trần Trọng Nghĩa** | `B24DCCN423` | Thành viên | - Ánh xạ sơ đồ ERD sang Lược đồ Quan hệ (`relational_schema.svg`) và đặc tả chi tiết cấu trúc 6 bảng dữ liệu (**Mục 3**).<br>- Phân tích phụ thuộc hàm (FD), chứng minh và chuẩn hóa lược đồ từ 1NF $\rightarrow$ 2NF $\rightarrow$ 3NF / BCNF (**Mục 4**).<br>- Viết script SQL DDL khởi tạo bảng, thiết lập ràng buộc toàn vẹn (`PK`, `FK`, `UNIQUE`, `CHECK`) và dữ liệu mẫu (`csdl_cham_soc_thu_cung.sql`, `petcare.db`). |
+| 3 | **Hoàng Quý Phước** | `B24DCCN456` | Thành viên | - Xây dựng Backend Python RESTful API (`app.py`) kết nối và xử lý giao dịch với CSDL SQLite (`petcare.db`).<br>- Phát triển 2 màn hình nhập liệu: Đăng ký Hồ sơ Thú cưng & Khách hàng và Tiếp nhận & Đặt lịch hẹn (**Mục 5**).<br>- Xây dựng kịch bản kiểm thử ràng buộc toàn vẹn và kiểm tra quy tắc nghiệp vụ chống trùng lịch hẹn (`JULIANDAY`). |
+| 4 | ***(Thành viên 4 - Cập nhật tên)*** | `B24DCCN...` | Thành viên | - Thiết kế giao diện Web SPA (`index.html`), trực quan hóa lược đồ và tích hợp chế độ *In-Memory SQL Simulator*.<br>- Xây dựng màn hình và truy vấn SQL Tìm kiếm & Tra cứu đa tiêu chí kết nối 6 bảng (`INNER JOIN`, `LEFT JOIN`) (**Mục 6**).<br>- Kiểm thử chức năng lọc động đa điều kiện, hiển thị SQL thời gian thực và trải nghiệm người dùng (UI/UX). |
+| 5 | ***(Thành viên 5 - Cập nhật tên)*** | `B24DCCN...` | Thành viên | - Thiết kế các truy vấn SQL thống kê đa chiều (`GROUP BY`, `SUM(CASE WHEN ...)`) cho 2 Báo cáo nghiệp vụ: Doanh thu dịch vụ & Hiệu suất nhân viên (**Mục 7**).<br>- Xây dựng chức năng kết xuất báo cáo thực tế ra file Excel (`.xlsx`), Word (`.doc`), CSV (`.csv`) và biểu mẫu in PDF.<br>- Biên soạn Báo cáo thuyết minh Bài tập lớn (`.docx`) và tài liệu hướng dẫn cài đặt `README.md` (**Mục 8**). |
 
 ---
 
