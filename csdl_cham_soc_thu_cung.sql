@@ -172,11 +172,14 @@ INSERT INTO THANH_TOAN (MaTT, MaLich, ThoiGianThanhToan, SoTien, PhuongThuc, Tra
 -- VALUES ('TC008', 'KH002', 'Kem', 'Mèo', 'Ragdoll', 'Cái', 14, 4.1, 'Lông dài mượt, đã tiêm đủ mũi');
 
 -- [MỤC 5 - MÀN HÌNH NHẬP 2: TIẾP NHẬN & ĐẶT LỊCH HẸN CHĂM SÓC (BẢNG LICH_HEN)]
--- Bước 1: Kiểm tra nhân viên có đang làm việc và không bị trùng lịch trong khung giờ hẹn
+-- Bước 1: Kiểm tra nhân viên đang làm việc, đúng ca và không bị chồng lấn thời gian thực hiện theo ThoiLuongDuKien của dịch vụ
 -- SELECT TrangThai, CaLamViec FROM NHAN_VIEN WHERE MaNV = ?;
--- SELECT COUNT(*) FROM LICH_HEN
--- WHERE MaNV = ? AND TrangThai NOT IN ('Đã hủy', 'Không đến')
---   AND ABS( CAST((JULIANDAY(NgayGioHen) - JULIANDAY(?)) * 1440 AS INTEGER) ) < 60;
+-- SELECT lh.MaLich, lh.NgayGioHen, dv.TenDV, dv.ThoiLuongDuKien, lh.SoLuong
+-- FROM LICH_HEN lh
+-- JOIN DICH_VU dv ON lh.MaDV = dv.MaDV
+-- WHERE lh.MaNV = :MaNV AND lh.TrangThai NOT IN ('Đã hủy', 'Không đến')
+--   AND DATETIME(:NgayGioHenMoi) < DATETIME(lh.NgayGioHen, '+' || (CASE WHEN lh.MaDV='DV005' THEN 60 ELSE dv.ThoiLuongDuKien * lh.SoLuong END) || ' minutes')
+--   AND DATETIME(lh.NgayGioHen) < DATETIME(:NgayGioHenMoi, '+' || :ThoiLuongMoi || ' minutes');
 -- Bước 2: Thêm lịch hẹn mới
 -- INSERT INTO LICH_HEN (MaLich, MaThuCung, MaDV, MaNV, NgayGioHen, SoLuong, TrangThai, GhiChu)
 -- VALUES ('LH012', 'TC001', 'DV001', 'NV004', '2026-11-12 09:00:00', 1, 'Đã xác nhận', 'Tắm định kỳ hàng tuần');

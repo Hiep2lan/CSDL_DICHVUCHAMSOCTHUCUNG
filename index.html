@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Hệ Thống Quản Lý Dịch Vụ Chăm Sóc Thú Cưng - PetCare CSDL (Chuẩn 3NF)</title>
+  <title>PetCare Spa &amp; Clinic — Quản Lý Dịch Vụ &amp; Đặt Lịch Chăm Sóc Thú Cưng</title>
   <style>
     :root {
       --primary: #1e3a8a;
@@ -21,40 +21,106 @@
       --text: #0f172a;
       --muted: #475569;
     }
+    body.customer-view {
+      --primary: #0f766e;
+      --primary-light: #0d9488;
+      --accent: #14b8a6;
+      --bg: #f0fdfa;
+      --border: #cbd5e1;
+    }
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body {
       font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
       background: var(--bg);
       color: var(--text);
       line-height: 1.5;
+      transition: background 0.25s ease;
     }
+
+    /* Header */
     header {
-      background: linear-gradient(135deg, #0f172a 0%, #1e3a8a 60%, #1d4ed8 100%);
+      background: linear-gradient(135deg, #0f172a 0%, #1e3a8a 58%, #1d4ed8 100%);
       color: #fff;
-      padding: 18px 28px;
+      padding: 16px 28px;
       display: flex;
       justify-content: space-between;
       align-items: center;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+      flex-wrap: wrap;
+      gap: 14px;
+      box-shadow: 0 4px 14px rgba(15,23,42,0.16);
     }
-    .brand h1 { font-size: 20px; font-weight: 700; letter-spacing: 0.3px; }
-    .brand p { font-size: 13px; color: #bfdbfe; margin-top: 2px; }
+    body.customer-view header {
+      background: linear-gradient(135deg, #134e4a 0%, #0f766e 55%, #0d9488 100%);
+    }
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 13px;
+    }
+    .brand-logo {
+      width: 44px;
+      height: 44px;
+      border-radius: 12px;
+      background: rgba(255,255,255,0.16);
+      border: 1px solid rgba(255,255,255,0.28);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 22px;
+      flex-shrink: 0;
+    }
+    .brand h1 { font-size: 20px; font-weight: 700; letter-spacing: 0.2px; }
+    .brand p { font-size: 13px; color: #dbeafe; margin-top: 2px; }
+    body.customer-view .brand p { color: #ccfbf1; }
+
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+    .mode-switch-bar {
+      display: flex;
+      gap: 5px;
+      background: rgba(15,23,42,0.38);
+      padding: 4px;
+      border-radius: 999px;
+      border: 1px solid rgba(255,255,255,0.24);
+    }
+    .mode-btn {
+      border: none;
+      background: transparent;
+      color: #e2e8f0;
+      font-size: 12.5px;
+      font-weight: 600;
+      padding: 6px 14px;
+      border-radius: 999px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .mode-btn:hover { color: #fff; }
+    .mode-btn.active {
+      background: #fff;
+      color: var(--primary);
+      box-shadow: 0 2px 6px rgba(0,0,0,0.18);
+    }
     .status-badge {
-      background: rgba(255,255,255,0.15);
-      border: 1px solid rgba(255,255,255,0.3);
+      background: rgba(255,255,255,0.14);
+      border: 1px solid rgba(255,255,255,0.28);
       padding: 6px 14px;
       border-radius: 999px;
       font-size: 12.5px;
       display: flex;
       align-items: center;
       gap: 8px;
+      white-space: nowrap;
     }
     .dot { width: 9px; height: 9px; border-radius: 50%; background: #4ade80; display: inline-block; }
 
     /* Navigation Tabs */
     .nav-tabs {
       background: #fff;
-      border-bottom: 2px solid var(--border);
+      border-bottom: 2px solid #e2e8f0;
       display: flex;
       gap: 4px;
       padding: 0 24px;
@@ -78,20 +144,50 @@
       border-bottom-color: var(--primary-light);
       background: #eff6ff;
     }
+    body.customer-view .tab-btn.active {
+      background: #f0fdfa;
+    }
+    body.customer-view #navTab2 { order: 1; }
+    body.customer-view #navTab1 { order: 2; }
+    body.customer-view #navTabSearch { order: 3; }
 
-    .container { max-width: 1380px; margin: 22px auto; padding: 0 20px; }
+    .container { max-width: 1380px; margin: 20px auto; padding: 0 20px; }
     .tab-pane { display: none; }
     .tab-pane.active { display: block; }
+
+    /* KPI Strip (Admin only) */
+    .kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 14px;
+      margin-bottom: 18px;
+    }
+    @media (max-width: 1024px) { .kpi-grid { grid-template-columns: repeat(2, 1fr); } }
+    @media (max-width: 560px) { .kpi-grid { grid-template-columns: 1fr; } }
+    .kpi-card {
+      background: #fff;
+      border: 1px solid #e2e8f0;
+      border-radius: 10px;
+      padding: 14px 16px;
+      box-shadow: 0 1px 3px rgba(15,23,42,0.04);
+      border-left: 4px solid var(--primary-light);
+    }
+    .kpi-card.kpi-green { border-left-color: #16a34a; }
+    .kpi-card.kpi-amber { border-left-color: #d97706; }
+    .kpi-card.kpi-sky { border-left-color: #0284c7; }
+    .kpi-label { font-size: 12px; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: 0.3px; }
+    .kpi-value { font-size: 22px; font-weight: 800; color: var(--text); margin: 4px 0 2px; }
+    .kpi-sub { font-size: 12px; color: #64748b; }
 
     .grid-2 { display: grid; grid-template-columns: 440px 1fr; gap: 22px; align-items: start; }
     @media (max-width: 1024px) { .grid-2 { grid-template-columns: 1fr; } }
 
     .card {
       background: var(--card);
-      border: 1px solid var(--border);
-      border-radius: 10px;
+      border: 1px solid #dbe2ea;
+      border-radius: 12px;
       padding: 20px;
-      box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+      box-shadow: 0 1px 4px rgba(15,23,42,0.05);
       margin-bottom: 20px;
     }
     .card-header {
@@ -107,7 +203,7 @@
     .card-title { font-size: 16.5px; font-weight: 700; color: var(--primary); }
     .badge {
       display: inline-block;
-      padding: 3px 9px;
+      padding: 3px 10px;
       border-radius: 999px;
       font-size: 11.5px;
       font-weight: 600;
@@ -117,10 +213,12 @@
     .badge-amber { background: #fef3c7; color: #92400e; }
     .badge-red { background: #fee2e2; color: #991b1b; }
     .badge-purple { background: #f3e8ff; color: #6b21a8; }
+    .badge-teal { background: #ccfbf1; color: #115e59; }
 
     /* Form styles */
     .form-group { margin-bottom: 13px; }
     .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    @media (max-width: 560px) { .form-row { grid-template-columns: 1fr; } }
     label {
       display: block;
       font-size: 12.5px;
@@ -132,16 +230,22 @@
     input, select, textarea {
       width: 100%;
       padding: 8px 11px;
-      border: 1px solid #94a3b8;
-      border-radius: 6px;
+      border: 1px solid #cbd5e1;
+      border-radius: 7px;
       font-size: 13.5px;
       font-family: inherit;
       background: #fff;
+      color: var(--text);
     }
     input:focus, select:focus, textarea:focus {
       outline: none;
       border-color: var(--primary-light);
-      box-shadow: 0 0 0 3px rgba(37,99,235,0.15);
+      box-shadow: 0 0 0 3px rgba(37,99,235,0.14);
+    }
+    body.customer-view input:focus,
+    body.customer-view select:focus,
+    body.customer-view textarea:focus {
+      box-shadow: 0 0 0 3px rgba(13,148,136,0.16);
     }
     input.invalid, select.invalid {
       border-color: var(--danger);
@@ -149,11 +253,37 @@
     }
     .hint { font-size: 11.5px; color: var(--muted); margin-top: 3px; }
 
+    .section-box {
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      padding: 13px 14px;
+      border-radius: 9px;
+      margin-bottom: 14px;
+    }
+    .section-box.soft-blue {
+      background: #eff6ff;
+      border-color: #bfdbfe;
+    }
+    body.customer-view .section-box.soft-blue {
+      background: #f0fdfa;
+      border-color: #99f6e4;
+    }
+    .section-box.soft-green {
+      background: #f0fdf4;
+      border-color: #bbf7d0;
+    }
+    .section-heading {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--primary);
+      margin-bottom: 8px;
+    }
+
     /* Buttons */
     .btn-bar { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 14px; }
     .btn {
       padding: 8px 14px;
-      border-radius: 6px;
+      border-radius: 7px;
       font-size: 13px;
       font-weight: 600;
       border: 1px solid transparent;
@@ -161,6 +291,7 @@
       transition: all 0.15s;
       display: inline-flex;
       align-items: center;
+      justify-content: center;
       gap: 6px;
     }
     .btn-primary { background: var(--primary-light); color: #fff; }
@@ -193,27 +324,31 @@
     }
     .alert ul { margin-left: 18px; margin-top: 5px; }
 
-    /* SQL Box */
-    .sql-box {
-      background: #0f172a;
-      color: #e2e8f0;
-      font-family: 'Consolas', 'Courier New', monospace;
-      font-size: 12.5px;
-      padding: 12px 15px;
-      border-radius: 8px;
-      overflow-x: auto;
-      margin-top: 12px;
-      border: 1px solid #334155;
-      white-space: pre-wrap;
+    /* Service Cards for Customer View */
+    .service-cards-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 12px;
     }
-    .sql-label {
-      font-size: 11px;
-      text-transform: uppercase;
-      letter-spacing: 0.7px;
-      color: #38bdf8;
-      font-weight: 700;
-      margin-bottom: 4px;
-      display: block;
+    .service-card-item {
+      border: 1px solid #cbd5e1;
+      border-radius: 10px;
+      padding: 13px 14px;
+      background: #f8fafc;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: 8px;
+      transition: border-color 0.2s, box-shadow 0.2s, transform 0.15s;
+    }
+    .service-card-item:hover {
+      border-color: var(--primary-light);
+      box-shadow: 0 4px 12px rgba(13,148,136,0.1);
+      transform: translateY(-1px);
+    }
+    .service-card-item.selected {
+      border: 2px solid var(--primary-light);
+      background: #f0fdfa;
     }
 
     /* Tables */
@@ -238,7 +373,7 @@
     tr:hover td { background: #f8fafc; }
     .num { text-align: right; font-variant-numeric: tabular-nums; }
 
-    /* Official Report Paper Styling (Mục 7) */
+    /* Official Report Paper Styling */
     .report-paper {
       background: #fff;
       border: 1px solid #94a3b8;
@@ -293,204 +428,253 @@
     .sign-space { height: 65px; }
 
     @media print {
-      header, .nav-tabs, .no-print { display: none !important; }
+      header, .nav-tabs, .no-print, .kpi-grid { display: none !important; }
       body { background: #fff; }
       .container { max-width: 100%; margin: 0; padding: 0; }
       .card { border: none; box-shadow: none; padding: 0; }
       .report-paper { border: none; box-shadow: none; padding: 10px; }
     }
+
+    /* Role-based visibility */
+    .customer-only { display: none; }
+    body.customer-view .admin-only { display: none !important; }
+    body.customer-view .customer-only { display: block !important; }
+    body.customer-view .customer-only-flex { display: flex !important; }
+    .customer-only-flex { display: none; }
   </style>
 </head>
 <body>
 
 <header>
   <div class="brand">
-    <h1>HỆ THỐNG CƠ SỞ DỮ LIỆU QUẢN LÝ DỊCH VỤ CHĂM SÓC THÚ CƯNG (PETCARE SPA &amp; CLINIC)</h1>
-    <p>Demo Bài Tập Lớn CSDL: Mô hình ER, Quan hệ 3NF, 2 Màn hình Nhập (Validation), 1 Màn hình Tìm kiếm &amp; 2 Báo cáo Thực tế</p>
+    <div class="brand-logo" aria-hidden="true">🐾</div>
+    <div>
+      <h1 id="appHeaderTitle">PetCare Spa &amp; Clinic</h1>
+      <p id="appHeaderSub">Hệ thống Quản lý Dịch vụ, Lịch hẹn &amp; Chăm sóc Thú cưng</p>
+    </div>
   </div>
-  <div class="status-badge">
-    <span class="dot"></span>
-    <span id="dbStatusText">CSDL SQLite 3NF: Đang hoạt động</span>
+  <div class="header-actions">
+    <div class="mode-switch-bar" title="Chuyển đổi giữa giao diện Quầy Lễ tân / Quản lý và Cổng Khách hàng Đặt lịch">
+      <button type="button" id="btnViewAdmin" class="mode-btn active" onclick="setAppRoleView('admin')">Quầy Lễ Tân &amp; Quản Lý</button>
+      <button type="button" id="btnViewCustomer" class="mode-btn" onclick="setAppRoleView('customer')">Khách Hàng Đặt Lịch</button>
+    </div>
+    <div class="status-badge">
+      <span class="dot"></span>
+      <span id="dbStatusText">Đang đồng bộ dữ liệu...</span>
+    </div>
   </div>
 </header>
 
 <nav class="nav-tabs">
-  <button class="tab-btn active" onclick="switchTab('tab-input1', this)">Mục 5.1: Tiếp Nhận Khách Hàng &amp; Thú Cưng (KHACH_HANG &rarr; THU_CUNG)</button>
-  <button class="tab-btn" onclick="switchTab('tab-input2', this)">Mục 5.2: Đặt Lịch Hẹn Chăm Sóc (LICH_HEN)</button>
-  <button class="tab-btn" onclick="switchTab('tab-search', this)">Mục 6: Tìm Kiếm Lịch Hẹn &amp; Hồ Sơ</button>
-  <button class="tab-btn" onclick="switchTab('tab-report1', this)">Mục 7.1: Báo Cáo Doanh Thu Dịch Vụ</button>
-  <button class="tab-btn" onclick="switchTab('tab-report2', this)">Mục 7.2: Báo Cáo Hiệu Suất Nhân Viên</button>
-  <button class="tab-btn" onclick="switchTab('tab-schema', this)">Mục 1-4: Lược Đồ ER, Quan Hệ &amp; Chuẩn Hóa 3NF</button>
+  <button class="tab-btn active" id="navTab1" onclick="switchTab('tab-input1', this)">Tiếp nhận &amp; Hồ sơ</button>
+  <button class="tab-btn" id="navTab2" onclick="switchTab('tab-input2', this)">Đặt lịch &amp; Thu ngân</button>
+  <button class="tab-btn" id="navTabSearch" onclick="switchTab('tab-search', this)">Tra cứu lịch hẹn</button>
+  <button class="tab-btn admin-only" id="navTabCatalog" onclick="switchTab('tab-catalog', this)">Dịch vụ &amp; Nhân sự</button>
+  <button class="tab-btn admin-only" id="navTabRep1" onclick="switchTab('tab-report1', this)">Báo cáo doanh thu</button>
+  <button class="tab-btn admin-only" id="navTabRep2" onclick="switchTab('tab-report2', this)">Báo cáo nhân sự</button>
 </nav>
 
 <div class="container">
 
-  <!-- ======================= MỤC 5.1: MÀN HÌNH NHẬP 1 (KHACH_HANG & THU_CUNG) ======================= -->
+  <!-- Thống kê nhanh cho Quầy Lễ Tân & Quản Lý -->
+  <div class="kpi-grid admin-only">
+    <div class="kpi-card">
+      <div class="kpi-label">Lịch hẹn chờ &amp; đang phục vụ</div>
+      <div class="kpi-value" id="kpiActiveBookings">0</div>
+      <div class="kpi-sub">Chờ xác nhận, đã hẹn &amp; đang chăm sóc</div>
+    </div>
+    <div class="kpi-card kpi-green">
+      <div class="kpi-label">Lịch hẹn hoàn thành</div>
+      <div class="kpi-value" id="kpiDoneBookings">0</div>
+      <div class="kpi-sub">Tổng lượt chăm sóc đã hoàn tất</div>
+    </div>
+    <div class="kpi-card kpi-sky">
+      <div class="kpi-label">Khách hàng &amp; Thú cưng</div>
+      <div class="kpi-value" id="kpiCustomersPets">0 khách • 0 bé</div>
+      <div class="kpi-sub">Hồ sơ thành viên đang quản lý</div>
+    </div>
+    <div class="kpi-card kpi-amber">
+      <div class="kpi-label">Doanh thu đã thu</div>
+      <div class="kpi-value" id="kpiRevenue">0 đ</div>
+      <div class="kpi-sub">Tổng thực thu tại quầy &amp; chuyển khoản</div>
+    </div>
+  </div>
+
+  <!-- Banner định danh dành cho Khách hàng Đặt lịch -->
+  <div id="customerPortalBanner" class="customer-only card" style="background:linear-gradient(135deg,#f0fdfa 0%,#ecfdf5 100%);border:1px solid #5eead4;margin-bottom:18px;">
+    <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:14px;">
+      <div style="flex:1;min-width:260px;">
+        <div style="font-size:16.5px;font-weight:700;color:#0f766e;">Chào mừng Quý khách đến với PetCare Spa &amp; Clinic!</div>
+        <div style="font-size:13px;color:#334155;margin-top:3px;">Nhập số điện thoại của bạn để xem hồ sơ thú cưng và lịch hẹn, hoặc đăng ký mới chỉ trong 30 giây.</div>
+        <div id="custPortalStatus" style="margin-top:8px;font-size:13px;font-weight:600;"></div>
+      </div>
+      <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
+        <input type="text" id="custPortalPhone" placeholder="Nhập SĐT của bạn (VD: 0901234567)" style="width:250px;" oninput="applyCustomerPhoneFilter(this.value)" />
+        <button type="button" class="btn btn-primary" onclick="applyCustomerPhoneFilter(document.getElementById('custPortalPhone').value, true)">Tra cứu hồ sơ</button>
+        <button type="button" id="btnCustClearPhone" class="btn btn-secondary" style="display:none;" onclick="clearCustomerPhoneFilter()">Đổi SĐT</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ======================= TAB 1: TIẾP NHẬN & HỒ SƠ ======================= -->
   <div id="tab-input1" class="tab-pane active">
     <div class="grid-2">
       <div class="card">
         <div class="card-header">
-          <div class="card-title">Màn hình 1: Tiếp nhận Khách hàng &amp; Đăng ký Hồ sơ Thú cưng</div>
-          <span class="badge badge-blue">Mục 5 - Kiểm tra toàn vẹn</span>
+          <div class="card-title" id="titleScreen1">Tiếp nhận Khách hàng &amp; Hồ sơ Thú cưng</div>
+          <span class="badge badge-blue" id="badgeScreen1">Quầy lễ tân</span>
         </div>
 
-        <div style="background:#f8fafc;border:1px solid #e2e8f0;padding:10px 12px;border-radius:8px;margin-bottom:14px;">
-          <div style="font-size:12px;font-weight:700;color:#1e3a8a;margin-bottom:6px;">BỘ NÚT DEMO KIỂM TRA TÍNH ĐÚNG ĐẮN DỮ LIỆU (VALIDATION DEMO):</div>
-          <div class="btn-bar" style="margin-top:0;">
-            <button type="button" class="btn btn-success" onclick="demoNewCustomerAndPet()">Điền Mẫu: Khách Hàng Mới + Thú Cưng Mới</button>
-            <button type="button" class="btn btn-success" onclick="demoPetValid()">Điền Mẫu: Khách Cũ + Thú Cưng Mới</button>
-            <button type="button" class="btn btn-danger-outline" onclick="demoPetError('kh_sdt')">Demo Lỗi SĐT Khách Hàng</button>
-            <button type="button" class="btn btn-danger-outline" onclick="demoPetError('pk')">Demo Lỗi Trùng PK (TC001)</button>
-            <button type="button" class="btn btn-danger-outline" onclick="demoPetError('check')">Demo Lỗi CHECK (Cân Nặng Âm)</button>
-            <button type="button" class="btn btn-danger-outline" onclick="demoPetError('fk')">Demo Lỗi FK (KH999)</button>
-          </div>
+        <div id="petEditModeBanner" style="display:none;background:#fef3c7;border:1px solid #f59e0b;color:#92400e;padding:9px 12px;border-radius:8px;margin-bottom:12px;font-size:12.5px;justify-content:space-between;align-items:center;gap:8px;">
+          <span id="petEditModeText">Đang chỉnh sửa hồ sơ hiện có.</span>
+          <button type="button" class="btn btn-secondary" style="padding:4px 10px;font-size:11.5px;" onclick="resetPetForm()">Hủy chỉnh sửa</button>
         </div>
 
         <div id="petAlert" class="alert"></div>
 
         <form id="petForm" onsubmit="submitPetForm(event)" novalidate>
-          <!-- BƯỚC 1: CHỌN HOẶC THÊM MỚI KHÁCH HÀNG (BẢNG CHA KHACH_HANG) -->
-          <div style="background:#eff6ff;border:1px solid #bfdbfe;padding:12px 14px;border-radius:8px;margin-bottom:14px;">
+          <!-- Phần 1: Thông tin chủ nuôi -->
+          <div class="section-box soft-blue">
             <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;margin-bottom:10px;">
-              <div style="font-size:13px;font-weight:700;color:#1e3a8a;">BƯỚC 1: THÔNG TIN CHỦ SỞ HỮU (BẢNG CHA: KHACH_HANG)</div>
-              <div style="display:flex;gap:6px;">
-                <button type="button" id="btnModeExistingKH" class="btn btn-primary" style="padding:5px 10px;font-size:12px;" onclick="setCustomerMode('existing')">Khách hàng đã có hồ sơ</button>
-                <button type="button" id="btnModeNewKH" class="btn btn-secondary" style="padding:5px 10px;font-size:12px;" onclick="setCustomerMode('new')">+ Đăng ký Khách hàng mới</button>
+              <div class="section-heading" style="margin-bottom:0;">1. Thông tin chủ nuôi</div>
+              <div id="custModeSwitchBtns" class="admin-only" style="display:flex;gap:6px;">
+                <button type="button" id="btnModeExistingKH" class="btn btn-primary" style="padding:5px 10px;font-size:12px;" onclick="setCustomerMode('existing')">Khách đã có hồ sơ</button>
+                <button type="button" id="btnModeNewKH" class="btn btn-secondary" style="padding:5px 10px;font-size:12px;" onclick="setCustomerMode('new')">+ Khách hàng mới</button>
               </div>
             </div>
 
-            <!-- Chọn khách hàng đã có sẵn -->
+            <!-- Chọn khách hàng đã có hồ sơ -->
             <div id="existingCustomerBox" class="form-group" style="margin-bottom:0;">
-              <label>Chọn Chủ Sở Hữu (MaKH - Khóa ngoại tham chiếu KHACH_HANG) <span class="req">*</span></label>
-              <select id="tc_makh" onchange="onSelectCustomerChange(this.value)" required></select>
-              <div class="hint">Nếu khách hàng mới lần đầu đến tiệm, hãy bấm nút <strong>"+ Đăng ký Khách hàng mới"</strong> ở góc phải phía trên.</div>
+              <div class="admin-only">
+                <label>Tìm nhanh hoặc chọn khách hàng <span class="req">*</span></label>
+                <div style="display:grid;grid-template-columns:165px 1fr;gap:8px;">
+                  <input type="text" id="filter_kh_input" placeholder="Tìm SĐT hoặc tên..." oninput="filterCustomerDropdown(this.value)" />
+                  <select id="tc_makh" onchange="onSelectCustomerChange(this.value)" required></select>
+                </div>
+                <div class="hint">Nhập số điện thoại để lọc nhanh, hoặc chọn "+ Thêm khách hàng mới" nếu khách lần đầu ghé tiệm.</div>
+              </div>
+              <div id="custOwnerReadonlyBox" class="customer-only" style="background:#fff;border:1px solid #99f6e4;border-radius:7px;padding:9px 12px;">
+                <div style="font-size:12px;color:#0f766e;font-weight:700;">Hồ sơ chủ nuôi đang sử dụng:</div>
+                <div id="custOwnerReadonlyText" style="font-size:13.5px;font-weight:600;color:#0f172a;margin-top:2px;"></div>
+              </div>
             </div>
 
-            <!-- Nhập khách hàng mới vào bảng KHACH_HANG -->
+            <!-- Nhập thông tin khách hàng mới -->
             <div id="newCustomerBox" style="display:none;">
+              <input type="hidden" id="kh_makh" />
               <div class="form-row">
                 <div class="form-group">
-                  <label>Mã Khách Hàng Mới (MaKH - PK) <span class="req">*</span></label>
-                  <input type="text" id="kh_makh" placeholder="VD: KH007" />
-                  <div class="hint">Định dạng: KH + số (Khóa chính bảng KHACH_HANG)</div>
-                </div>
-                <div class="form-group">
-                  <label>Họ và Tên Khách Hàng (HoTen) <span class="req">*</span></label>
+                  <label>Họ và tên <span class="req">*</span></label>
                   <input type="text" id="kh_hoten" placeholder="VD: Đặng Quốc Khánh" />
                 </div>
+                <div class="form-group">
+                  <label>Số điện thoại <span class="req">*</span></label>
+                  <input type="text" id="kh_sdt" placeholder="VD: 0968889999" />
+                  <div class="hint">Gồm 10–11 chữ số, bắt đầu bằng số 0</div>
+                </div>
               </div>
               <div class="form-row">
                 <div class="form-group">
-                  <label>Số Điện Thoại (SDT - UNIQUE) <span class="req">*</span></label>
-                  <input type="text" id="kh_sdt" placeholder="VD: 0968889999" />
-                  <div class="hint">Ràng buộc CHECK: 10-11 chữ số, bắt đầu bằng số 0, không trùng</div>
-                </div>
-                <div class="form-group">
-                  <label>Email (Email - UNIQUE)</label>
+                  <label>Email</label>
                   <input type="email" id="kh_email" placeholder="VD: khanh.dang@gmail.com" />
                 </div>
+                <div class="form-group">
+                  <label>Địa chỉ liên hệ</label>
+                  <input type="text" id="kh_diachi" placeholder="VD: 108 Láng Hạ, Đống Đa, Hà Nội" />
+                </div>
               </div>
-              <div class="form-group" style="margin-bottom:8px;">
-                <label>Địa Chỉ Liên Hệ (DiaChi)</label>
-                <input type="text" id="kh_diachi" placeholder="VD: 108 Láng Hạ, Đống Đa, Hà Nội" />
-              </div>
-              <div style="display:flex;justify-content:flex-end;">
-                <button type="button" class="btn btn-success" style="padding:6px 12px;font-size:12px;" onclick="submitCustomerOnly()">Chỉ Lưu Khách Hàng Mới Này Vào KHACH_HANG</button>
+              <div class="admin-only" style="display:flex;justify-content:flex-end;gap:8px;">
+                <button type="button" id="btnSaveCustomerOnly" class="btn btn-success" style="padding:6px 12px;font-size:12px;" onclick="submitCustomerOnly()">Chỉ lưu thông tin khách hàng</button>
               </div>
             </div>
           </div>
 
-          <!-- BƯỚC 2: THÔNG TIN THÚ CƯNG (BẢNG CON THU_CUNG) -->
-          <div style="font-size:13px;font-weight:700;color:#1e3a8a;margin-bottom:8px;">BƯỚC 2: THÔNG TIN HỒ SƠ THÚ CƯNG (BẢNG CON: THU_CUNG)</div>
-          <div class="form-row">
-            <div class="form-group">
-              <label>Mã Thú Cưng (MaThuCung - PK) <span class="req">*</span></label>
-              <input type="text" id="tc_matc" placeholder="VD: TC008" required />
-              <div class="hint">Định dạng: TC + số (Duy nhất, không trùng lặp)</div>
+          <!-- Phần 2: Thông tin thú cưng -->
+          <div id="petFormFieldsWrap">
+            <div class="section-heading">2. Thông tin bé thú cưng</div>
+            <input type="hidden" id="tc_matc" />
+            <div class="form-row">
+              <div class="form-group">
+                <label>Tên thú cưng <span class="req">*</span></label>
+                <input type="text" id="tc_ten" placeholder="VD: Milo, Kem, Bông..." required />
+              </div>
+              <div class="form-group">
+                <label>Loài <span class="req">*</span></label>
+                <select id="tc_loai">
+                  <option value="Chó">Chó</option>
+                  <option value="Mèo">Mèo</option>
+                  <option value="Hamster">Hamster</option>
+                  <option value="Thỏ">Thỏ</option>
+                </select>
+              </div>
             </div>
-            <div class="form-group">
-              <label>Tên Thú Cưng (TenThuCung) <span class="req">*</span></label>
-              <input type="text" id="tc_ten" placeholder="VD: Kem, Bông..." required />
-            </div>
-          </div>
 
-          <div class="form-row">
-            <div class="form-group">
-              <label>Loài (Loai) <span class="req">*</span></label>
-              <select id="tc_loai">
-                <option value="Chó">Chó</option>
-                <option value="Mèo">Mèo</option>
-                <option value="Hamster">Hamster</option>
-                <option value="Thỏ">Thỏ</option>
-              </select>
+            <div class="form-row">
+              <div class="form-group">
+                <label>Giống</label>
+                <input type="text" id="tc_giong" placeholder="VD: Poodle, Anh lông ngắn..." />
+              </div>
+              <div class="form-group">
+                <label>Giới tính <span class="req">*</span></label>
+                <select id="tc_gioitinh">
+                  <option value="Đực">Đực</option>
+                  <option value="Cái">Cái</option>
+                  <option value="Chưa xác định">Chưa xác định</option>
+                </select>
+              </div>
             </div>
-            <div class="form-group">
-              <label>Giống (Giong)</label>
-              <input type="text" id="tc_giong" placeholder="VD: Poodle, Anh lông ngắn..." />
-            </div>
-          </div>
 
-          <div class="form-row">
-            <div class="form-group">
-              <label>Giới Tính (GioiTinh) <span class="req">*</span></label>
-              <select id="tc_gioitinh">
-                <option value="Đực">Đực</option>
-                <option value="Cái">Cái</option>
-                <option value="Chưa xác định">Chưa xác định</option>
-              </select>
+            <div class="form-row">
+              <div class="form-group">
+                <label>Độ tuổi (tháng) <span class="req">*</span></label>
+                <div style="display:grid;grid-template-columns:92px 1fr;gap:6px;">
+                  <input type="number" id="tc_tuoi" placeholder="VD: 14" min="1" max="360" required />
+                  <input type="month" id="tc_birthmonth" title="Chọn tháng/năm sinh để tự động tính số tháng tuổi" onchange="calcMonthsFromBirth(this.value)" />
+                </div>
+                <div class="hint">Nhập số tháng (1–360) hoặc chọn tháng/năm sinh</div>
+              </div>
+              <div class="form-group">
+                <label>Cân nặng (kg) <span class="req">*</span></label>
+                <input type="number" step="0.1" id="tc_cannang" placeholder="VD: 4.2" min="0.1" max="150" required />
+                <div class="hint">Từ 0.1 đến 150 kg</div>
+              </div>
             </div>
-            <div class="form-group">
-              <label>Tuổi (Tháng tuổi - Tuoi) <span class="req">*</span></label>
-              <input type="number" id="tc_tuoi" placeholder="VD: 14" min="1" max="360" required />
-              <div class="hint">Ràng buộc CHECK: 0 &lt; Tuoi &lt;= 360 tháng</div>
-            </div>
-          </div>
 
-          <div class="form-row">
             <div class="form-group">
-              <label>Cân Nặng (kg - CanNang) <span class="req">*</span></label>
-              <input type="number" step="0.1" id="tc_cannang" placeholder="VD: 4.2" min="0.1" max="150" required />
-              <div class="hint">Ràng buộc CHECK: 0 &lt; CanNang &lt;= 150 kg</div>
+              <label>Lưu ý sức khỏe / Dị ứng</label>
+              <input type="text" id="tc_ghichu" placeholder="Tình trạng da, lông, dị ứng sữa tắm, tính cách..." />
             </div>
-            <div class="form-group">
-              <label>Ghi Chú Sức Khỏe / Lưu Ý (GhiChu)</label>
-              <input type="text" id="tc_ghichu" placeholder="Tình trạng da, lông, dị ứng sữa tắm..." />
-            </div>
-          </div>
 
-          <div class="btn-bar">
-            <button type="submit" id="btnSubmitPetMain" class="btn btn-primary">Lưu Hồ Sơ Thú Cưng Vào CSDL</button>
-            <button type="button" class="btn btn-secondary" onclick="resetPetForm()">Làm Mới Form</button>
+            <div class="btn-bar">
+              <button type="submit" id="btnSubmitPetMain" class="btn btn-primary">Lưu hồ sơ thú cưng</button>
+              <button type="button" class="btn btn-secondary" onclick="resetPetForm()">Làm mới</button>
+            </div>
           </div>
         </form>
-
-        <div class="sql-box">
-          <span class="sql-label">Câu lệnh SQL thực thi &amp; kiểm tra ràng buộc (Mục 5.1):</span>
-          <div id="petSqlLog">-- Ràng buộc trên bảng KHACH_HANG &amp; THU_CUNG:
--- 1. KHACH_HANG: PRIMARY KEY (MaKH), UNIQUE (SDT, Email), CHECK (LENGTH(SDT) BETWEEN 10 AND 11 AND SDT GLOB '0[0-9]*')
--- 2. THU_CUNG: PRIMARY KEY (MaThuCung), FOREIGN KEY (MaKH) REFERENCES KHACH_HANG(MaKH)
---    CHECK (Tuoi > 0 AND Tuoi <= 360), CHECK (CanNang > 0 AND CanNang <= 150)</div>
-        </div>
       </div>
 
       <div style="display:flex;flex-direction:column;gap:16px;">
-        <div class="card">
+        <!-- Thẻ thông tin cá nhân dành cho Khách hàng -->
+        <div id="custProfileCard" class="card customer-only" style="margin-bottom:0;"></div>
+
+        <!-- Danh sách hồ sơ thú cưng -->
+        <div class="card" style="margin-bottom:0;">
           <div class="card-header">
-            <div class="card-title">Danh sách Hồ sơ Thú cưng trong CSDL (<span id="petCount">0</span> bản ghi)</div>
-            <span class="badge badge-green">Bảng con THU_CUNG (N)</span>
+            <div class="card-title"><span id="petListTitle">Danh sách Hồ sơ Thú cưng</span> (<span id="petCount">0</span>)</div>
+            <span class="badge badge-green">Sẵn sàng đặt lịch</span>
           </div>
           <div class="table-wrap">
             <table>
               <thead>
                 <tr>
-                  <th>Mã TC (PK)</th>
-                  <th>Tên Thú Cưng</th>
-                  <th>Loài / Giống</th>
-                  <th>Giới Tính</th>
-                  <th class="num">Tuổi (tháng)</th>
-                  <th class="num">Cân Nặng</th>
-                  <th>Chủ Sở Hữu (FK MaKH)</th>
-                  <th>Ghi Chú Đặc Điểm</th>
+                  <th>Tên thú cưng</th>
+                  <th>Loài &amp; Giống</th>
+                  <th>Giới tính</th>
+                  <th class="num">Tuổi</th>
+                  <th class="num">Cân nặng</th>
+                  <th class="admin-only">Chủ nuôi</th>
+                  <th>Lưu ý sức khỏe</th>
+                  <th>Thao tác</th>
                 </tr>
               </thead>
               <tbody id="petTableBody"></tbody>
@@ -498,20 +682,22 @@
           </div>
         </div>
 
-        <div class="card">
+        <!-- Danh sách khách hàng (Chỉ Lễ tân / Quản lý) -->
+        <div class="card admin-only" style="margin-bottom:0;">
           <div class="card-header">
-            <div class="card-title">Danh sách Khách hàng hiện có (<span id="customerCount">0</span> bản ghi)</div>
-            <span class="badge badge-blue">Bảng cha KHACH_HANG (1)</span>
+            <div class="card-title">Danh sách Khách hàng (<span id="customerCount">0</span>)</div>
+            <span class="badge badge-blue">Khách hàng thành viên</span>
           </div>
           <div class="table-wrap">
             <table>
               <thead>
                 <tr>
-                  <th>Mã KH (PK)</th>
-                  <th>Họ và Tên Khách Hàng</th>
-                  <th>Số Điện Thoại</th>
+                  <th>Họ và tên</th>
+                  <th>Số điện thoại</th>
                   <th>Email</th>
-                  <th>Địa Chỉ Liên Hệ</th>
+                  <th>Địa chỉ</th>
+                  <th class="num">Số thú cưng</th>
+                  <th>Thao tác</th>
                 </tr>
               </thead>
               <tbody id="customerTableBody"></tbody>
@@ -522,118 +708,172 @@
     </div>
   </div>
 
-  <!-- ======================= MỤC 5.2: MÀN HÌNH NHẬP 2 (LICH_HEN) ======================= -->
+  <!-- ======================= TAB 2: ĐẶT LỊCH & THU NGÂN ======================= -->
   <div id="tab-input2" class="tab-pane">
+    <!-- Bảng giá dịch vụ trực quan cho Khách hàng -->
+    <div class="customer-only card" style="margin-bottom:16px;">
+      <div class="card-header">
+        <div class="card-title">Bảng Giá &amp; Thời Lượng Dịch Vụ Spa Chăm Sóc Thú Cưng</div>
+        <span class="badge badge-teal">Niêm yết minh bạch</span>
+      </div>
+      <div id="customerServiceCards" class="service-cards-grid"></div>
+    </div>
+
     <div class="grid-2">
       <div class="card">
         <div class="card-header">
-          <div class="card-title">Màn hình 2: Tiếp nhận &amp; Đặt Lịch Hẹn (Bảng LICH_HEN)</div>
-          <span class="badge badge-blue">Đã chuẩn hóa 3NF</span>
-        </div>
-
-        <div style="background:#f8fafc;border:1px solid #e2e8f0;padding:10px 12px;border-radius:8px;margin-bottom:14px;">
-          <div style="font-size:12px;font-weight:700;color:#1e3a8a;margin-bottom:6px;">BỘ NÚT DEMO KIỂM TRA QUY TẮC NGHIỆP VỤ &amp; TOÀN VẸN DỮ LIỆU:</div>
-          <div class="btn-bar" style="margin-top:0;">
-            <button type="button" class="btn btn-danger-outline" onclick="demoBookingError('off_staff')">Demo Lỗi: Nhân Viên Nghỉ Phép (NV006)</button>
-            <button type="button" class="btn btn-danger-outline" onclick="demoBookingError('wrong_shift')">Demo Lỗi: Sai Ca Làm Việc</button>
-            <button type="button" class="btn btn-danger-outline" onclick="demoBookingError('overlap')">Demo Lỗi: Trùng Lịch Nhân Viên</button>
-            <button type="button" class="btn btn-success" onclick="demoBookingValid()">Điền Lịch Hẹn Hợp Lệ Mẫu</button>
-          </div>
+          <div class="card-title" id="titleScreen2">Tiếp nhận &amp; Đặt Lịch Hẹn</div>
+          <span class="badge badge-blue" id="badgeScreen2">Kiểm tra lịch trống tự động</span>
         </div>
 
         <div id="bookingAlert" class="alert"></div>
 
         <form id="bookingForm" onsubmit="submitBookingForm(event)" novalidate>
-          <div class="form-row">
-            <div class="form-group">
-              <label>Mã Lịch Hẹn (MaLich - PK) <span class="req">*</span></label>
-              <input type="text" id="lh_malich" placeholder="VD: LH012" required />
+          <input type="hidden" id="lh_malich" />
+
+          <!-- Bước 1: Chọn thú cưng -->
+          <div class="section-box soft-blue">
+            <div class="section-heading">1. Chọn thú cưng cần chăm sóc</div>
+
+            <!-- Bộ lọc dành cho Lễ tân -->
+            <div id="adminBookingFilterRow" class="form-row admin-only">
+              <div class="form-group" style="margin-bottom:8px;">
+                <label>Tìm nhanh chủ nuôi / thú cưng</label>
+                <input type="text" id="lh_search_pet" placeholder="Gõ SĐT, tên khách hoặc tên bé..." oninput="filterBookingPetDropdown(this.value)" />
+              </div>
+              <div class="form-group" style="margin-bottom:8px;">
+                <label>Lọc theo khách hàng</label>
+                <select id="lh_filter_kh" onchange="onBookingCustomerFilterChange(this.value)"></select>
+              </div>
             </div>
-            <div class="form-group">
-              <label>Thú Cưng Đặt Lịch (MaThuCung - FK) <span class="req">*</span></label>
+
+            <!-- Hướng dẫn định danh dành cho Khách hàng -->
+            <div id="custBookingPrompt" class="customer-only" style="margin-bottom:10px;">
+              <div id="custBookingPromptMatched" style="display:none;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;background:#fff;border:1px solid #99f6e4;border-radius:7px;padding:8px 11px;">
+                <span id="custBookingMatchedText" style="font-size:12.5px;color:#0f766e;font-weight:600;"></span>
+                <button type="button" class="btn btn-secondary" style="padding:3px 9px;font-size:11.5px;" onclick="goToCustomerAddPet()">+ Thêm bé mới</button>
+              </div>
+              <div id="custBookingPromptUnmatched" style="background:#fff;border:1px dashed #0d9488;border-radius:7px;padding:10px 12px;">
+                <div style="font-size:12.5px;font-weight:600;color:#0f766e;margin-bottom:6px;">Đã có hồ sơ? Nhập SĐT để chọn thú cưng của bạn:</div>
+                <div style="display:flex;gap:6px;flex-wrap:wrap;align-items:center;">
+                  <input type="text" id="custBookingQuickPhone" placeholder="Nhập SĐT (VD: 0901234567)" style="flex:1;min-width:170px;" oninput="syncQuickPhoneFromBooking(this.value)" />
+                  <button type="button" class="btn btn-primary" style="padding:7px 12px;font-size:12px;" onclick="applyCustomerPhoneFilter(document.getElementById('custBookingQuickPhone').value, true)">Tra cứu</button>
+                </div>
+                <div style="margin-top:7px;font-size:12px;color:#475569;">
+                  Khách mới lần đầu đặt lịch?
+                  <button type="button" onclick="goToNewCustomerRegistration()" style="background:none;border:none;color:#0f766e;font-weight:700;text-decoration:underline;cursor:pointer;font-size:12px;">Đăng ký hồ sơ thú cưng tại đây</button>
+                </div>
+              </div>
+            </div>
+
+            <div class="form-group" style="margin-bottom:8px;">
+              <label>Thú cưng <span class="req">*</span></label>
               <select id="lh_matc" onchange="updateOwnerPreview()" required></select>
             </div>
-          </div>
-
-          <div class="form-group">
-            <label>Khách Hàng Sở Hữu (Suy dẫn tự động từ MaThuCung theo chuẩn 3NF)</label>
-            <input type="text" id="lh_owner_preview" readonly style="background:#f1f5f9;color:#1e3a8a;font-weight:600;" />
-            <div class="hint">Chuẩn 3NF: Không lưu dư thừa MaKH trong LICH_HEN vì MaThuCung &rarr; MaKH</div>
-          </div>
-
-          <div class="form-row">
-            <div class="form-group">
-              <label>Dịch Vụ Sử Dụng (MaDV - FK) <span class="req">*</span></label>
-              <select id="lh_madv" onchange="updatePricePreview()" required></select>
-            </div>
-            <div class="form-group">
-              <label>Số Lượng (SoLuong) <span class="req">*</span></label>
-              <input type="number" id="lh_soluong" value="1" min="1" max="30" oninput="updatePricePreview()" required />
-              <div class="hint">Tạm tính: <strong id="lh_price_preview" style="color:#15803d;">0 đ</strong></div>
+            <div>
+              <input type="text" id="lh_owner_preview" readonly style="background:#fff;color:var(--primary);font-weight:600;font-size:12.5px;padding:6px 10px;" />
             </div>
           </div>
 
+          <!-- Bước 2: Chọn dịch vụ & khung giờ hẹn -->
+          <div class="section-box soft-green">
+            <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:6px;margin-bottom:8px;">
+              <div class="section-heading" style="color:#14532d;margin-bottom:0;">2. Chọn gói dịch vụ &amp; Khung giờ hẹn</div>
+              <button type="button" id="btnToggleCombo" class="btn btn-secondary" style="padding:4px 10px;font-size:11.5px;" onclick="toggleComboService()">+ Thêm dịch vụ đi kèm (Combo)</button>
+            </div>
+            <div class="form-row">
+              <div class="form-group" style="margin-bottom:8px;">
+                <label>Dịch vụ chính <span class="req">*</span></label>
+                <select id="lh_madv" onchange="onBookingTimeOrServiceChange()" required></select>
+              </div>
+              <div class="form-group" style="margin-bottom:8px;">
+                <label>Số lượng <span class="req">*</span></label>
+                <input type="number" id="lh_soluong" value="1" min="1" max="30" oninput="onBookingTimeOrServiceChange()" required />
+              </div>
+            </div>
+
+            <!-- Gói dịch vụ đi kèm thứ 2 (Combo nối tiếp) -->
+            <div id="lh_combo_box" style="display:none;background:#fff;border:1px dashed #16a34a;padding:9px 11px;border-radius:7px;margin-bottom:9px;">
+              <div style="font-size:12px;font-weight:700;color:#15803d;margin-bottom:5px;">Dịch vụ đi kèm (tự động xếp nối tiếp ngay sau dịch vụ chính):</div>
+              <div class="form-row">
+                <div class="form-group" style="margin-bottom:0;">
+                  <label>Dịch vụ đi kèm</label>
+                  <select id="lh_combo_madv" onchange="onBookingTimeOrServiceChange()"></select>
+                </div>
+                <div class="form-group" style="margin-bottom:0;">
+                  <label>Số lượng</label>
+                  <input type="number" id="lh_combo_soluong" value="1" min="1" max="10" oninput="onBookingTimeOrServiceChange()" />
+                </div>
+              </div>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group" style="margin-bottom:2px;">
+                <label>Ngày &amp; giờ bắt đầu <span class="req">*</span></label>
+                <input type="datetime-local" id="lh_ngaygio" onchange="onBookingTimeOrServiceChange()" required />
+              </div>
+              <div class="form-group" style="margin-bottom:2px;">
+                <label>Chi phí dự kiến &amp; Thời gian</label>
+                <div style="background:#fff;border:1px solid #cbd5e1;border-radius:7px;padding:7px 10px;font-size:12.5px;">
+                  <div>Tổng tạm tính: <strong id="lh_price_preview" style="color:#15803d;">0 đ</strong></div>
+                  <div id="lh_duration_preview" style="color:var(--primary);font-size:11.5px;margin-top:2px;">Thời lượng: 60 phút</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Bước 3: Chuyên viên & Ghi chú -->
           <div class="form-row">
             <div class="form-group">
-              <label>Nhân Viên Phụ Trách (MaNV - FK) <span class="req">*</span></label>
+              <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;">
+                <label style="margin-bottom:0;">Chuyên viên chăm sóc <span class="req">*</span></label>
+                <button type="button" class="btn btn-secondary" style="padding:2px 8px;font-size:11px;color:var(--primary);border-color:#93c5fd;" onclick="autoPickAvailableStaff()">Tự chọn chuyên viên rảnh</button>
+              </div>
               <select id="lh_manv" required></select>
-              <div class="hint">Chỉ phân công NV đang làm việc &amp; đúng ca</div>
+              <div class="hint" id="lh_staff_hint">Hệ thống tự động kiểm tra lịch trống theo khung giờ đã chọn</div>
             </div>
-            <div class="form-group">
-              <label>Ngày Giờ Hẹn (NgayGioHen) <span class="req">*</span></label>
-              <input type="datetime-local" id="lh_ngaygio" required />
-            </div>
-          </div>
-
-          <div class="form-row">
-            <div class="form-group">
-              <label>Trạng Thái Lịch Hẹn (TrangThai) <span class="req">*</span></label>
+            <div id="lh_trangthai_group" class="form-group admin-only">
+              <label>Trạng thái tiếp nhận <span class="req">*</span></label>
               <select id="lh_trangthai">
-                <option value="Mới tạo">Mới tạo</option>
+                <option value="Mới tạo">Chờ xác nhận</option>
                 <option value="Đã xác nhận" selected>Đã xác nhận</option>
                 <option value="Đang thực hiện">Đang thực hiện</option>
                 <option value="Hoàn thành">Hoàn thành</option>
               </select>
+              <div class="hint">Có thể cập nhật trực tiếp trên bảng danh sách</div>
             </div>
-            <div class="form-group">
-              <label>Ghi Chú Yêu Cầu (GhiChu)</label>
-              <input type="text" id="lh_ghichu" placeholder="Ghi chú kiểu cắt, lưu ý..." />
-            </div>
+          </div>
+
+          <div class="form-group">
+            <label>Ghi chú yêu cầu</label>
+            <input type="text" id="lh_ghichu" placeholder="Ghi chú kiểu cắt tỉa, lưu ý sức khỏe hoặc yêu cầu riêng..." />
           </div>
 
           <div class="btn-bar">
-            <button type="submit" class="btn btn-primary">Tạo Lịch Hẹn Mới</button>
-            <button type="button" class="btn btn-secondary" onclick="resetBookingForm()">Làm Mới</button>
+            <button type="submit" id="btnSubmitBooking" class="btn btn-primary">Xác nhận đặt lịch hẹn</button>
+            <button type="button" class="btn btn-secondary" onclick="resetBookingForm()">Làm mới</button>
           </div>
         </form>
-
-        <div class="sql-box">
-          <span class="sql-label">Câu lệnh SQL thực thi &amp; kiểm tra trùng lịch (Mục 5.2):</span>
-          <div id="bookingSqlLog">-- Kiểm tra nhân viên đang làm việc & không trùng lịch hẹn trong vòng 60 phút:
-SELECT COUNT(*) FROM LICH_HEN
-WHERE MaNV = :MaNV AND TrangThai NOT IN ('Đã hủy', 'Không đến')
-  AND ABS((JULIANDAY(NgayGioHen) - JULIANDAY(:NgayGioHen)) * 1440) < 60;</div>
-        </div>
       </div>
 
       <div class="card">
         <div class="card-header">
-          <div class="card-title">Danh sách Lịch hẹn Chăm sóc Thú cưng (<span id="bookingCount">0</span> lịch hẹn)</div>
-          <span class="badge badge-purple">Bảng nghiệp vụ trung tâm LICH_HEN</span>
+          <div class="card-title"><span id="bookingListTitle">Danh sách Lịch hẹn &amp; Thu ngân</span> (<span id="bookingCount">0</span>)</div>
+          <span class="badge badge-purple" id="bookingListBadge">Cập nhật trạng thái &amp; thanh toán</span>
         </div>
         <div class="table-wrap">
           <table>
             <thead>
               <tr>
-                <th>Mã Lịch</th>
-                <th>Ngày Giờ Hẹn</th>
-                <th>Thú Cưng &amp; Chủ Nuôi</th>
-                <th>Dịch Vụ</th>
+                <th>Mã lịch</th>
+                <th>Thời gian hẹn</th>
+                <th>Thú cưng &amp; Chủ nuôi</th>
+                <th>Dịch vụ</th>
                 <th class="num">SL</th>
-                <th class="num">Thành Tiền</th>
-                <th>Nhân Viên &amp; Ca</th>
-                <th>Trạng Thái</th>
-                <th>Phương Thức TT</th>
+                <th class="num">Thành tiền</th>
+                <th>Chuyên viên &amp; Ca</th>
+                <th>Trạng thái</th>
+                <th>Thanh toán</th>
               </tr>
             </thead>
             <tbody id="bookingTableBody"></tbody>
@@ -643,53 +883,56 @@ WHERE MaNV = :MaNV AND TrangThai NOT IN ('Đã hủy', 'Không đến')
     </div>
   </div>
 
-  <!-- ======================= MỤC 6: MÀN HÌNH TÌM KIẾM ĐA TIÊU CHÍ ======================= -->
+  <!-- ======================= TAB 3: TRA CỨU LỊCH HẸN ======================= -->
   <div id="tab-search" class="tab-pane">
     <div class="card">
       <div class="card-header">
-        <div class="card-title">Mục 6: Màn hình Tìm kiếm &amp; Tra cứu Lịch hẹn Chăm sóc Thú cưng Đa tiêu chí</div>
-        <span class="badge badge-blue">Kết nối 6 bảng (JOIN KHACH_HANG, THU_CUNG, LICH_HEN, DICH_VU, NHAN_VIEN, THANH_TOAN)</span>
+        <div class="card-title" id="searchCardTitle">Tra cứu &amp; Lọc Lịch hẹn Chăm sóc</div>
+        <span class="badge badge-blue" id="searchCardBadge">Tìm kiếm nhanh đa tiêu chí</span>
       </div>
 
-      <form onsubmit="runSearch(event)" style="background:#f8fafc;padding:16px;border-radius:8px;border:1px solid #cbd5e1;margin-bottom:16px;">
+      <form onsubmit="runSearch(event)" style="background:#f8fafc;padding:16px;border-radius:9px;border:1px solid #cbd5e1;margin-bottom:16px;">
         <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:12px;">
           <div>
-            <label>Từ khóa (Mã lịch, Tên KH, SĐT, Tên thú cưng)</label>
-            <input type="text" id="s_kw" placeholder="VD: Tuấn, 0901, Milo, LH001..." oninput="runSearch()" />
+            <label>Từ khóa</label>
+            <input type="text" id="s_kw" placeholder="Mã lịch, tên khách, SĐT, tên thú cưng..." oninput="runSearch()" />
           </div>
           <div>
-            <label>Loài Thú Cưng</label>
+            <label>Loài thú cưng</label>
             <select id="s_loai" onchange="runSearch()">
               <option value="">-- Tất cả loài --</option>
               <option value="Chó">Chó</option>
               <option value="Mèo">Mèo</option>
+              <option value="Hamster">Hamster</option>
+              <option value="Thỏ">Thỏ</option>
             </select>
           </div>
           <div>
-            <label>Dịch Vụ Chăm Sóc</label>
+            <label>Gói dịch vụ</label>
             <select id="s_madv" onchange="runSearch()">
               <option value="">-- Tất cả dịch vụ --</option>
             </select>
           </div>
-          <div>
-            <label>Nhân Viên Thực Hiện</label>
+          <div id="s_manv_wrap" class="admin-only">
+            <label>Chuyên viên phụ trách</label>
             <select id="s_manv" onchange="runSearch()">
-              <option value="">-- Tất cả nhân viên --</option>
+              <option value="">-- Tất cả chuyên viên --</option>
             </select>
           </div>
           <div>
-            <label>Trạng Thái Lịch Hẹn</label>
-            <select id="s_trangthai" onchange="runSearch()">
+            <label>Trạng thái lịch hẹn</label>
+            <select id="s_trangthai" onchange="ACTIVE_FILTER_ONLY = false; runSearch()">
               <option value="">-- Tất cả trạng thái --</option>
-              <option value="Hoàn thành">Hoàn thành</option>
-              <option value="Đang thực hiện">Đang thực hiện</option>
+              <option value="Mới tạo">Chờ xác nhận</option>
               <option value="Đã xác nhận">Đã xác nhận</option>
-              <option value="Mới tạo">Mới tạo</option>
+              <option value="Đang thực hiện">Đang thực hiện</option>
+              <option value="Hoàn thành">Hoàn thành</option>
               <option value="Đã hủy">Đã hủy</option>
+              <option value="Không đến">Không đến</option>
             </select>
           </div>
           <div>
-            <label>Từ Ngày - Đến Ngày</label>
+            <label>Từ ngày – Đến ngày</label>
             <div style="display:flex;gap:6px;">
               <input type="date" id="s_tungay" onchange="runSearch()" />
               <input type="date" id="s_denngay" onchange="runSearch()" />
@@ -698,13 +941,15 @@ WHERE MaNV = :MaNV AND TrangThai NOT IN ('Đã hủy', 'Không đến')
         </div>
         <div class="btn-bar" style="margin-top:12px;justify-content:space-between;align-items:center;">
           <div style="display:flex;gap:8px;flex-wrap:wrap;">
-            <button type="submit" class="btn btn-primary">Tìm Kiếm Ngay</button>
-            <button type="button" class="btn btn-secondary" onclick="resetSearch()">Xóa Bộ Lọc (Xem Tất Cả)</button>
-            <button type="button" class="btn btn-secondary" onclick="quickFilter('Chó','Hoàn thành')">Lọc nhanh: Chó + Đã hoàn thành</button>
-            <button type="button" class="btn btn-secondary" onclick="quickFilter('Mèo','')">Lọc nhanh: Hồ sơ Mèo</button>
+            <button type="submit" class="btn btn-primary">Tìm kiếm</button>
+            <button type="button" class="btn btn-secondary" onclick="resetSearch()">Xem tất cả</button>
+            <button type="button" class="btn btn-secondary" onclick="quickFilterActive()">Đang chờ &amp; thực hiện</button>
+            <button type="button" class="btn btn-secondary" onclick="quickFilter('', 'Hoàn thành')">Đã hoàn thành</button>
+            <button type="button" class="btn btn-secondary" onclick="quickFilter('Chó', '')">Tất cả chó</button>
+            <button type="button" class="btn btn-secondary" onclick="quickFilter('Mèo', '')">Tất cả mèo</button>
           </div>
-          <div style="font-size:13.5px;font-weight:700;color:#1e3a8a;">
-            Kết quả tìm thấy: <span id="searchResultCount">0</span> bản ghi | Tổng giá trị: <span id="searchTotalMoney" style="color:#15803d;">0 đ</span>
+          <div style="font-size:13.5px;font-weight:700;color:var(--primary);">
+            Tìm thấy: <span id="searchResultCount">0</span> lịch hẹn &nbsp;|&nbsp; Tổng giá trị: <span id="searchTotalMoney" style="color:#15803d;">0 đ</span>
           </div>
         </div>
       </form>
@@ -713,50 +958,92 @@ WHERE MaNV = :MaNV AND TrangThai NOT IN ('Đã hủy', 'Không đến')
         <table>
           <thead>
             <tr>
-              <th>Mã Lịch</th>
-              <th>Ngày Giờ Hẹn</th>
-              <th>Khách Hàng &amp; SĐT</th>
-              <th>Thú Cưng (Loài - Giống)</th>
-              <th>Dịch Vụ Đăng Ký</th>
-              <th class="num">Đơn Giá &times; SL</th>
-              <th class="num">Thành Tiền</th>
-              <th>Nhân Viên Phụ Trách</th>
-              <th>Trạng Thái Lịch</th>
-              <th>Thanh Toán</th>
-              <th>Ghi Chú Kết Quả</th>
+              <th>Mã lịch</th>
+              <th>Thời gian hẹn</th>
+              <th>Khách hàng &amp; SĐT</th>
+              <th>Thú cưng</th>
+              <th>Gói dịch vụ</th>
+              <th class="num">Đơn giá &times; SL</th>
+              <th class="num">Thành tiền</th>
+              <th>Chuyên viên</th>
+              <th>Trạng thái</th>
+              <th>Thanh toán</th>
+              <th>Ghi chú</th>
             </tr>
           </thead>
           <tbody id="searchTableBody"></tbody>
         </table>
       </div>
+    </div>
+  </div>
 
-      <div class="sql-box">
-        <span class="sql-label">Câu lệnh SQL truy vấn tìm kiếm thực tế (Mục 6):</span>
-        <div id="searchSqlBox"></div>
+  <!-- ======================= TAB 4: DỊCH VỤ & NHÂN SỰ (ADMIN ONLY) ======================= -->
+  <div id="tab-catalog" class="tab-pane">
+    <div id="catalogAlert" class="alert"></div>
+    <div style="display:grid;grid-template-columns:1fr;gap:18px;">
+      <div class="card" style="margin-bottom:0;">
+        <div class="card-header">
+          <div class="card-title">Bảng giá &amp; Thời lượng Gói dịch vụ</div>
+          <span class="badge badge-blue">Cập nhật trực tiếp</span>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Tên gói dịch vụ</th>
+                <th>Mô tả quy trình</th>
+                <th class="num">Đơn giá (VNĐ)</th>
+                <th class="num">Thời lượng (Phút)</th>
+                <th>Thao tác</th>
+              </tr>
+            </thead>
+            <tbody id="serviceCatalogBody"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="card" style="margin-bottom:0;">
+        <div class="card-header">
+          <div class="card-title">Đội ngũ Nhân sự &amp; Ca làm việc</div>
+          <span class="badge badge-green">Điều phối ca trực</span>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Họ và tên</th>
+                <th>Chức vụ</th>
+                <th>Số điện thoại</th>
+                <th>Ca làm việc</th>
+                <th>Trạng thái làm việc</th>
+              </tr>
+            </thead>
+            <tbody id="staffCatalogBody"></tbody>
+          </table>
+        </div>
       </div>
     </div>
   </div>
 
-  <!-- ======================= MỤC 7.1: BÁO CÁO 1 (DOANH THU DỊCH VỤ) ======================= -->
+  <!-- ======================= TAB 5: BÁO CÁO DOANH THU (ADMIN ONLY) ======================= -->
   <div id="tab-report1" class="tab-pane">
     <div class="card">
       <div class="card-header no-print">
         <div>
-          <div class="card-title">Mục 7 - Báo cáo 1: Báo cáo Tổng hợp Doanh thu Dịch vụ Chăm sóc Thú cưng</div>
+          <div class="card-title">Báo cáo Tổng hợp Doanh thu Dịch vụ</div>
           <div style="font-size:13px;color:#475569;margin-top:3px;">
-            <strong>Ai tạo báo cáo:</strong> Nhân viên Thu ngân / Lễ tân trưởng (Phạm Ngọc Lan) &nbsp;|&nbsp;
-            <strong>Gửi cho ai:</strong> Chủ cơ sở / Quản lý cửa hàng (Đỗ Thanh Hương) để đối soát quỹ &amp; phân tích hiệu quả dịch vụ.
+            <strong>Người lập:</strong> Phạm Ngọc Lan (Lễ tân - Thu ngân) &nbsp;|&nbsp;
+            <strong>Người nhận:</strong> Đỗ Thanh Hương (Quản lý cơ sở) để đối soát quỹ &amp; phân tích hiệu quả dịch vụ.
           </div>
         </div>
         <div class="btn-bar" style="margin-top:0;">
-          <button class="btn btn-success" onclick="exportReportXlsx(1)">Xuất File Excel (.xlsx)</button>
-          <button class="btn btn-primary" onclick="exportReportWord('report1Paper', 'Bao_Cao_Doanh_Thu_Dich_Vu_PetCare.doc')">Xuất File Word (.doc)</button>
-          <button class="btn btn-secondary" onclick="exportReportCsv(1)">Xuất File CSV (.csv)</button>
-          <button class="btn btn-secondary" onclick="window.print()">In Báo Cáo / Xuất PDF</button>
+          <button class="btn btn-success" onclick="exportReportXlsx(1)">Xuất Excel (.xlsx)</button>
+          <button class="btn btn-primary" onclick="exportReportWord('report1Paper', 'Bao_Cao_Doanh_Thu_Dich_Vu_PetCare.doc')">Xuất Word (.doc)</button>
+          <button class="btn btn-secondary" onclick="exportReportCsv(1)">Xuất CSV (.csv)</button>
+          <button class="btn btn-secondary" onclick="window.print()">In / Xuất PDF</button>
         </div>
       </div>
 
-      <!-- Biểu mẫu Báo cáo chuẩn thực tế -->
       <div id="report1Paper" class="report-paper">
         <div class="report-top">
           <div class="report-org">
@@ -778,8 +1065,8 @@ WHERE MaNV = :MaNV AND TrangThai NOT IN ('Đã hủy', 'Không đến')
         </div>
 
         <div class="report-meta-box">
-          <div><strong>1. Người lập báo cáo:</strong> Bà <strong>Phạm Ngọc Lan</strong> – Chức vụ: Nhân viên Lễ tân &amp; Thu ngân (Mã NV: NV005).</div>
-          <div><strong>2. Người nhận báo cáo:</strong> Bà <strong>Đỗ Thanh Hương</strong> – Chức vụ: Quản lý cơ sở / Chủ cửa hàng (Mã NV: NV001).</div>
+          <div><strong>1. Người lập báo cáo:</strong> Bà <strong>Phạm Ngọc Lan</strong> – Chức vụ: Nhân viên Lễ tân &amp; Thu ngân.</div>
+          <div><strong>2. Người nhận báo cáo:</strong> Bà <strong>Đỗ Thanh Hương</strong> – Chức vụ: Quản lý cơ sở / Chủ cửa hàng.</div>
           <div><strong>3. Mục đích sử dụng thực tế:</strong> Đối soát tổng số tiền thực thu tại quầy theo từng phương thức thanh toán (Tiền mặt, Chuyển khoản, Thẻ), đánh giá tỷ trọng doanh thu của từng nhóm dịch vụ để điều chỉnh bảng giá, nhập vật tư tiêu hao và xây dựng gói combo khuyến mãi.</div>
         </div>
 
@@ -804,7 +1091,7 @@ WHERE MaNV = :MaNV AND TrangThai NOT IN ('Đã hủy', 'Không đến')
 
         <div style="margin-top:14px;font-size:14px;">
           <div>- <strong>Tổng số tiền thực thu (bằng số):</strong> <span id="rep1TotalTextNum" style="font-weight:bold;"></span></div>
-          <div>- <strong>Nhận xét nghiệp vụ:</strong> Các giao dịch hoàn thành đều đã đối chiếu khớp 100% giữa bảng <code>LICH_HEN</code> và bảng <code>THANH_TOAN</code>. Dịch vụ Grooming trọn gói và Khách sạn thú cưng VIP mang lại nguồn thu chủ lực.</div>
+          <div>- <strong>Nhận xét nghiệp vụ:</strong> Các giao dịch hoàn thành đều đã đối chiếu khớp 100% giữa sổ theo dõi lịch hẹn dịch vụ và chứng từ thu ngân thực tế tại quầy. Dịch vụ Grooming trọn gói và Khách sạn thú cưng VIP mang lại nguồn thu chủ lực.</div>
         </div>
 
         <div class="report-sign">
@@ -831,34 +1118,28 @@ WHERE MaNV = :MaNV AND TrangThai NOT IN ('Đã hủy', 'Không đến')
           </div>
         </div>
       </div>
-
-      <div class="sql-box no-print">
-        <span class="sql-label">Câu lệnh SQL tổng hợp Báo cáo 1 (Mục 7.1):</span>
-        <div id="rep1SqlBox"></div>
-      </div>
     </div>
   </div>
 
-  <!-- ======================= MỤC 7.2: BÁO CÁO 2 (HIỆU SUẤT NHÂN VIÊN) ======================= -->
+  <!-- ======================= TAB 6: BÁO CÁO NHÂN SỰ (ADMIN ONLY) ======================= -->
   <div id="tab-report2" class="tab-pane">
     <div class="card">
       <div class="card-header no-print">
         <div>
-          <div class="card-title">Mục 7 - Báo cáo 2: Báo cáo Hiệu suất Làm việc của Nhân viên &amp; Tình hình Thực hiện Lịch hẹn</div>
+          <div class="card-title">Báo cáo Hiệu suất Nhân viên &amp; Tình hình Lịch hẹn</div>
           <div style="font-size:13px;color:#475569;margin-top:3px;">
-            <strong>Ai tạo báo cáo:</strong> Quản lý cơ sở (Đỗ Thanh Hương) &nbsp;|&nbsp;
-            <strong>Gửi cho ai:</strong> Bộ phận Hành chính Nhân sự - Kế toán tiền lương &amp; Ban Giám đốc để tính thưởng KPI và điều phối nhân sự.
+            <strong>Người lập:</strong> Đỗ Thanh Hương (Quản lý cơ sở) &nbsp;|&nbsp;
+            <strong>Người nhận:</strong> Bộ phận Nhân sự - Tiền lương &amp; Ban Giám đốc để tính thưởng KPI và điều phối ca trực.
           </div>
         </div>
         <div class="btn-bar" style="margin-top:0;">
-          <button class="btn btn-success" onclick="exportReportXlsx(2)">Xuất File Excel (.xlsx)</button>
-          <button class="btn btn-primary" onclick="exportReportWord('report2Paper', 'Bao_Cao_Hieu_Suat_Nhan_Vien_PetCare.doc')">Xuất File Word (.doc)</button>
-          <button class="btn btn-secondary" onclick="exportReportCsv(2)">Xuất File CSV (.csv)</button>
-          <button class="btn btn-secondary" onclick="window.print()">In Báo Cáo / Xuất PDF</button>
+          <button class="btn btn-success" onclick="exportReportXlsx(2)">Xuất Excel (.xlsx)</button>
+          <button class="btn btn-primary" onclick="exportReportWord('report2Paper', 'Bao_Cao_Hieu_Suat_Nhan_Vien_PetCare.doc')">Xuất Word (.doc)</button>
+          <button class="btn btn-secondary" onclick="exportReportCsv(2)">Xuất CSV (.csv)</button>
+          <button class="btn btn-secondary" onclick="window.print()">In / Xuất PDF</button>
         </div>
       </div>
 
-      <!-- Biểu mẫu Báo cáo 2 chuẩn thực tế -->
       <div id="report2Paper" class="report-paper">
         <div class="report-top">
           <div class="report-org">
@@ -880,7 +1161,7 @@ WHERE MaNV = :MaNV AND TrangThai NOT IN ('Đã hủy', 'Không đến')
         </div>
 
         <div class="report-meta-box">
-          <div><strong>1. Người lập báo cáo:</strong> Bà <strong>Đỗ Thanh Hương</strong> – Chức vụ: Quản lý cơ sở (Mã NV: NV001).</div>
+          <div><strong>1. Người lập báo cáo:</strong> Bà <strong>Đỗ Thanh Hương</strong> – Chức vụ: Quản lý cơ sở.</div>
           <div><strong>2. Người nhận báo cáo:</strong> <strong>Bộ phận Nhân sự - Kế toán Tiền lương &amp; Ban Giám đốc Trung tâm PetCare</strong>.</div>
           <div><strong>3. Mục đích sử dụng thực tế:</strong> Đánh giá khối lượng công việc thực tế (số lịch hẹn hoàn thành, tổng số phút trực tiếp chăm sóc thú cưng, doanh thu đóng góp) của từng kỹ thuật viên theo ca làm việc; làm căn cứ tính phụ cấp tay nghề, thưởng KPI cuối tháng và phân bổ lại lịch trực ca.</div>
         </div>
@@ -906,7 +1187,7 @@ WHERE MaNV = :MaNV AND TrangThai NOT IN ('Đã hủy', 'Không đến')
         </table>
 
         <div style="margin-top:14px;font-size:14px;">
-          <div>- <strong>Đánh giá chung:</strong> Đội ngũ kỹ thuật viên chăm sóc thú cưng đảm bảo tiến độ phục vụ khách hàng theo đúng ca được phân công; nhân viên Trần Quốc Bảo (NV004) và Nguyễn Văn Khoa (NV002) đạt hiệu suất phục vụ và đóng góp doanh thu cao nhất kỳ.</div>
+          <div>- <strong>Đánh giá chung:</strong> Đội ngũ kỹ thuật viên chăm sóc thú cưng đảm bảo tiến độ phục vụ khách hàng theo đúng ca được phân công; chuyên viên Trần Quốc Bảo và Nguyễn Văn Khoa đạt hiệu suất phục vụ và đóng góp doanh thu cao nhất kỳ.</div>
         </div>
 
         <div class="report-sign">
@@ -933,110 +1214,13 @@ WHERE MaNV = :MaNV AND TrangThai NOT IN ('Đã hủy', 'Không đến')
           </div>
         </div>
       </div>
-
-      <div class="sql-box no-print">
-        <span class="sql-label">Câu lệnh SQL tổng hợp Báo cáo 2 (Mục 7.2):</span>
-        <div id="rep2SqlBox"></div>
-      </div>
-    </div>
-  </div>
-
-  <!-- ======================= MỤC 1-4: LƯỢC ĐỒ ER, QUAN HỆ & CHUẨN HÓA 3NF ======================= -->
-  <div id="tab-schema" class="tab-pane">
-    <div class="card">
-      <div class="card-header">
-        <div class="card-title">Tổng hợp Kiểm tra Lược đồ, Mô hình Quan hệ &amp; Chuẩn hóa 3NF (Mục 1, 2, 3, 4)</div>
-        <span class="badge badge-green">Đã rà soát &amp; chuẩn hóa 3NF</span>
-      </div>
-
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-bottom:18px;">
-        <div style="background:#eff6ff;border-left:4px solid #1d4ed8;padding:14px 16px;border-radius:6px;">
-          <h3 style="font-size:15px;color:#1e3a8a;margin-bottom:6px;">Các điểm đã phát hiện &amp; hiệu chỉnh trên Lược đồ gốc:</h3>
-          <ul style="margin-left:18px;font-size:13.5px;line-height:1.6;">
-            <li><strong>Lỗi 1 (Mức quan niệm ERD):</strong> Trong file <code>ERD_Cham_soc_thu_cung (1).drawio</code> cũ, các thuộc tính khóa ngoại (<code>MaKH</code> ở <code>THU_CUNG</code>; <code>MaKH, MaThuCung, MaDV, MaNV</code> ở <code>LICH_HEN</code>; <code>MaLich</code> ở <code>THANH_TOAN</code>) đang được vẽ thành hình elip trên thực thể. <em>Đã sửa:</em> Loại bỏ elip khóa ngoại trên ERD (vì đã có hình thoi mối kết hợp biểu diễn) và chỉ đưa khóa ngoại vào Mô hình Quan hệ ở Mục 3.</li>
-            <li><strong>Lỗi 2 (Vi phạm chuẩn 3NF trong bảng LICH_HEN):</strong> Bảng <code>LICH_HEN</code> cũ lưu cả <code>MaThuCung</code> và <code>MaKH</code>, tạo ra phụ thuộc hàm bắc cầu <code>MaLich &rarr; MaThuCung &rarr; MaKH</code> và mối kết hợp vòng dư thừa <code>ĐẶT</code>. <em>Đã sửa:</em> Loại bỏ cột dư thừa <code>MaKH</code> khỏi <code>LICH_HEN</code> để đạt chuẩn 3NF.</li>
-            <li><strong>Lỗi 3 (Thuộc tính dẫn xuất trong THANH_TOAN):</strong> <code>ThanhTien</code> được tính từ <code>DonGia &times; SoLuong</code>. <em>Đã sửa:</em> Ký hiệu elip nét đứt (thuộc tính dẫn xuất) trên ERD và loại bỏ lưu trữ dư thừa khi chuẩn hóa 3NF.</li>
-          </ul>
-        </div>
-
-        <div style="background:#f0fdf4;border-left:4px solid #15803d;padding:14px 16px;border-radius:6px;">
-          <h3 style="font-size:15px;color:#14532d;margin-bottom:6px;">Lược đồ Quan hệ sau khi Chuẩn hóa 3NF (6 Bảng cốt lõi):</h3>
-          <ol style="margin-left:18px;font-size:13.5px;line-height:1.7;">
-            <li><strong>KHACH_HANG</strong>(<u>MaKH</u>, HoTen, SDT, Email, DiaChi)</li>
-            <li><strong>THU_CUNG</strong>(<u>MaThuCung</u>, <em>MaKH</em>, TenThuCung, Loai, Giong, GioiTinh, Tuoi, CanNang, GhiChu)</li>
-            <li><strong>NHAN_VIEN</strong>(<u>MaNV</u>, HoTen, NgaySinh, GioiTinh, SDT, ChucVu, CaLamViec, Luong, TrangThai)</li>
-            <li><strong>DICH_VU</strong>(<u>MaDV</u>, TenDV, DonGia, ThoiLuongDuKien, MoTaDichVu)</li>
-            <li><strong>LICH_HEN</strong>(<u>MaLich</u>, <em>MaThuCung</em>, <em>MaDV</em>, <em>MaNV</em>, NgayGioHen, SoLuong, TrangThai, GhiChu)</li>
-            <li><strong>THANH_TOAN</strong>(<u>MaTT</u>, <em>MaLich</em>, ThoiGianThanhToan, SoTien, PhuongThuc, TrangThaiTT)</li>
-          </ol>
-        </div>
-      </div>
-
-      <h3 style="font-size:15.5px;color:#1e3a8a;margin-bottom:10px;">Bảng Tổng hợp Kiểm tra Chuẩn hóa 3NF (Mục 4):</h3>
-      <div class="table-wrap">
-        <table>
-          <thead>
-            <tr>
-              <th>Tên Bảng</th>
-              <th>Khóa Chính (PK)</th>
-              <th>Các Phụ Thuộc Hàm (Functional Dependencies)</th>
-              <th>Kiểm Tra Ban Đầu</th>
-              <th>Xử Lý Chuẩn Hóa 3NF</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td><strong>KHACH_HANG</strong></td>
-              <td><code>MaKH</code></td>
-              <td><code>MaKH &rarr; HoTen, SDT, Email, DiaChi</code><br/><code>SDT &rarr; MaKH</code> (Khóa ứng viên)</td>
-              <td><span class="badge badge-green">Đạt 3NF</span></td>
-              <td>Giữ nguyên. Tất cả thuộc tính đơn trị (1NF), phụ thuộc đầy đủ vào khóa đơn <code>MaKH</code> (2NF), không có phụ thuộc bắc cầu (3NF).</td>
-            </tr>
-            <tr>
-              <td><strong>THU_CUNG</strong></td>
-              <td><code>MaThuCung</code></td>
-              <td><code>MaThuCung &rarr; MaKH, TenThuCung, Loai, Giong, GioiTinh, Tuoi, CanNang, GhiChu</code></td>
-              <td><span class="badge badge-green">Đạt 3NF</span></td>
-              <td>Giữ nguyên. Các thông tin của chủ nuôi (<code>HoTen, SDT...</code>) đã tách riêng sang bảng <code>KHACH_HANG</code>, chỉ giữ khóa ngoại <code>MaKH</code>.</td>
-            </tr>
-            <tr>
-              <td><strong>NHAN_VIEN</strong></td>
-              <td><code>MaNV</code></td>
-              <td><code>MaNV &rarr; HoTen, NgaySinh, GioiTinh, SDT, ChucVu, CaLamViec, Luong, TrangThai</code></td>
-              <td><span class="badge badge-green">Đạt 3NF</span></td>
-              <td>Giữ nguyên. Mức lương <code>Luong</code> và <code>CaLamViec</code> được thỏa thuận theo hợp đồng cá nhân từng nhân viên (<code>MaNV</code>), không phụ thuộc hàm vào <code>ChucVu</code>.</td>
-            </tr>
-            <tr>
-              <td><strong>DICH_VU</strong></td>
-              <td><code>MaDV</code></td>
-              <td><code>MaDV &rarr; TenDV, DonGia, ThoiLuongDuKien, MoTaDichVu</code></td>
-              <td><span class="badge badge-green">Đạt 3NF</span></td>
-              <td>Giữ nguyên. Mọi thuộc tính không khóa phụ thuộc trực tiếp vào khóa chính <code>MaDV</code>.</td>
-            </tr>
-            <tr>
-              <td><strong>LICH_HEN</strong></td>
-              <td><code>MaLich</code></td>
-              <td>Thiết kế cũ: <code>MaLich &rarr; MaThuCung, MaKH, MaDV, MaNV, NgayGioHen, SoLuong, TrangThai, GhiChu</code><br/>Mà: <code>MaThuCung &rarr; MaKH</code></td>
-              <td><span class="badge badge-red">Vi phạm 3NF (Phụ thuộc bắc cầu)</span></td>
-              <td><strong>Đã chuẩn hóa về 3NF:</strong> Tồn tại phụ thuộc bắc cầu <code>MaLich &rarr; MaThuCung &rarr; MaKH</code>. Loại bỏ cột <code>MaKH</code> khỏi bảng <code>LICH_HEN</code> (truy xuất chủ nuôi qua phép kết nối với <code>THU_CUNG</code>).</td>
-            </tr>
-            <tr>
-              <td><strong>THANH_TOAN</strong></td>
-              <td><code>MaTT</code></td>
-              <td>Thiết kế cũ có cả <code>ThanhTien</code> và <code>SoTien</code>, trong đó <code>MaTT &rarr; MaLich &rarr; ThanhTien (DonGia &times; SoLuong)</code></td>
-              <td><span class="badge badge-amber">Dư thừa thuộc tính dẫn xuất</span></td>
-              <td><strong>Đã chuẩn hóa về 3NF:</strong> Loại bỏ cột dẫn xuất <code>ThanhTien</code> lưu cứng trong bảng vật lý, chỉ lưu <code>SoTien</code> thực thu và tính <code>ThanhTien</code> qua truy vấn kết nối để tránh dị thường cập nhật.</td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
     </div>
   </div>
 
 </div>
 
 <script>
-  // ======================= EMBEDDED FALLBACK DATA (100% IDENTICAL TO SQLITE DB) =======================
+  // Dữ liệu mặc định khi mở trực tiếp tệp cục bộ
   const STATE = {
     usingApi: false,
     khach_hang: [
@@ -1097,14 +1281,73 @@ WHERE MaNV = :MaNV AND TrangThai NOT IN ('Đã hủy', 'Không đến')
     ]
   };
 
+  let CUSTOMER_MODE = 'existing';
+  let EDIT_PET_ID = null;
+  let EDIT_KH_ID = null;
+  let APP_ROLE_VIEW = 'admin';
+  let CUSTOMER_PHONE_FILTER = '';
+  let COMBO_ENABLED = false;
+
+  function escHtml(str) {
+    return String(str ?? '')
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;');
+  }
+
   function fmtMoney(n) {
     return Number(n || 0).toLocaleString('vi-VN') + ' đ';
+  }
+
+  function displayStatusLabel(st) {
+    if (st === 'Mới tạo') return 'Chờ xác nhận';
+    return st;
+  }
+
+  function updateHeaderStatusBadge() {
+    const el = document.getElementById('dbStatusText');
+    if (!el) return;
+    if (APP_ROLE_VIEW === 'customer') {
+      el.textContent = 'Mở cửa: 08:00 – 21:00 • Hotline: 1900 6868';
+    } else {
+      el.textContent = STATE.usingApi
+        ? 'Trực tuyến • Đã đồng bộ dữ liệu'
+        : 'Chế độ làm việc cục bộ';
+    }
+  }
+
+  function getMatchedCustomer() {
+    const clean = (CUSTOMER_PHONE_FILTER || '').replace(/\s+/g, '').trim();
+    if (clean.length < 4) return null;
+    const exact = STATE.khach_hang.find(k => k.SDT === clean);
+    if (exact) return exact;
+    if (clean.length >= 9) {
+      return STATE.khach_hang.find(k => k.SDT.includes(clean)) || null;
+    }
+    return null;
+  }
+
+  function renderAdminStats() {
+    const activeCount = STATE.lich_hen.filter(l =>
+      ['Mới tạo', 'Đã xác nhận', 'Đang thực hiện'].includes(l.TrangThai)
+    ).length;
+    const doneCount = STATE.lich_hen.filter(l => l.TrangThai === 'Hoàn thành').length;
+    const revenue = STATE.thanh_toan
+      .filter(t => t.TrangThaiTT === 'Đã thanh toán')
+      .reduce((sum, t) => sum + Number(t.SoTien || 0), 0);
+
+    document.getElementById('kpiActiveBookings').textContent = activeCount;
+    document.getElementById('kpiDoneBookings').textContent = doneCount;
+    document.getElementById('kpiCustomersPets').textContent = `${STATE.khach_hang.length} khách • ${STATE.thu_cung.length} bé`;
+    document.getElementById('kpiRevenue').textContent = fmtMoney(revenue);
   }
 
   function switchTab(id, btn) {
     document.querySelectorAll('.tab-pane').forEach(el => el.classList.remove('active'));
     document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
-    document.getElementById(id).classList.add('active');
+    const target = document.getElementById(id);
+    if (target) target.classList.add('active');
     if (btn) btn.classList.add('active');
   }
 
@@ -1120,12 +1363,12 @@ WHERE MaNV = :MaNV AND TrangThai NOT IN ('Đã hủy', 'Không đến')
         STATE.lich_hen = data.lich_hen;
         STATE.thanh_toan = data.thanh_toan;
         STATE.usingApi = true;
-        document.getElementById('dbStatusText').textContent = 'CSDL SQLite (petcare.db): Đã kết nối trực tiếp';
       }
     } catch (e) {
       STATE.usingApi = false;
-      document.getElementById('dbStatusText').textContent = 'Chế độ CSDL SQLite Nội bộ (Sẵn sàng)';
     }
+    updateHeaderStatusBadge();
+    renderAdminStats();
     populateSelects();
     renderPetsTable();
     renderBookingsTable();
@@ -1135,7 +1378,213 @@ WHERE MaNV = :MaNV AND TrangThai NOT IN ('Đã hủy', 'Không đến')
     renderReports();
   }
 
-  let CUSTOMER_MODE = 'existing'; // 'existing' or 'new'
+  function refreshCustomerPortalUI() {
+    const matchedKh = getMatchedCustomer();
+    const isCust = APP_ROLE_VIEW === 'customer';
+    const statusEl = document.getElementById('custPortalStatus');
+    const clearBtn = document.getElementById('btnCustClearPhone');
+    const profileCard = document.getElementById('custProfileCard');
+    const ownerRoText = document.getElementById('custOwnerReadonlyText');
+    const promptEl = document.getElementById('custBookingPrompt');
+    const petFieldsWrap = document.getElementById('petFormFieldsWrap');
+
+    if (clearBtn) {
+      clearBtn.style.display = CUSTOMER_PHONE_FILTER ? 'inline-flex' : 'none';
+    }
+
+    if (!isCust) {
+      if (petFieldsWrap) petFieldsWrap.style.display = 'block';
+      return;
+    }
+
+    if (statusEl) {
+      if (!CUSTOMER_PHONE_FILTER) {
+        statusEl.innerHTML = '';
+      } else if (matchedKh) {
+        statusEl.innerHTML = `<span style="color:#0f766e;">✓ Xin chào <strong>${escHtml(matchedKh.HoTen)}</strong>! Hệ thống đã tải hồ sơ thú cưng và lịch hẹn của bạn.</span>`;
+      } else if (CUSTOMER_PHONE_FILTER.length >= 10) {
+        statusEl.innerHTML = `<span style="color:#b45309;">Số điện thoại này lần đầu đến PetCare.</span> <button type="button" class="btn btn-success" style="padding:3px 10px;font-size:12px;margin-left:6px;" onclick="goToNewCustomerRegistration()">Đăng ký hồ sơ mới</button>`;
+      } else {
+        statusEl.innerHTML = `<span style="color:#475569;">Vui lòng nhập đầy đủ số điện thoại (10–11 chữ số) để tra cứu hồ sơ.</span>`;
+      }
+    }
+
+    if (profileCard) {
+      if (matchedKh) {
+        const myPetsCount = STATE.thu_cung.filter(t => t.MaKH === matchedKh.MaKH).length;
+        profileCard.innerHTML = `
+          <div class="card-header" style="margin-bottom:10px;padding-bottom:10px;">
+            <div class="card-title">Hồ sơ Chủ nuôi của bạn</div>
+            <button type="button" class="btn btn-secondary" style="padding:4px 10px;font-size:12px;" onclick="startEditCustomer('${matchedKh.MaKH}')">Cập nhật thông tin</button>
+          </div>
+          <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:10px;font-size:13.5px;">
+            <div><span style="color:#64748b;font-size:12px;display:block;">Họ và tên</span><strong>${escHtml(matchedKh.HoTen)}</strong></div>
+            <div><span style="color:#64748b;font-size:12px;display:block;">Số điện thoại</span><strong>${escHtml(matchedKh.SDT)}</strong></div>
+            <div><span style="color:#64748b;font-size:12px;display:block;">Email</span><strong>${escHtml(matchedKh.Email || 'Chưa cập nhật')}</strong></div>
+            <div><span style="color:#64748b;font-size:12px;display:block;">Địa chỉ</span><strong>${escHtml(matchedKh.DiaChi || 'Chưa cập nhật')}</strong></div>
+            <div><span style="color:#64748b;font-size:12px;display:block;">Số thú cưng</span><span class="badge badge-teal">${myPetsCount} bé</span></div>
+          </div>`;
+      } else {
+        profileCard.innerHTML = `
+          <div style="font-size:13.5px;color:#475569;">
+            <strong style="color:#0f766e;">Bạn đã từng ghé PetCare?</strong> Nhập số điện thoại ở thanh tra cứu phía trên để xem ngay thông tin cá nhân và danh sách thú cưng của bạn. Nếu là khách mới, hãy điền biểu mẫu bên cạnh để đăng ký nhé!
+          </div>`;
+      }
+    }
+
+    if (ownerRoText && matchedKh) {
+      ownerRoText.textContent = `${matchedKh.HoTen} • SĐT: ${matchedKh.SDT}`;
+    }
+
+    const promptMatched = document.getElementById('custBookingPromptMatched');
+    const promptUnmatched = document.getElementById('custBookingPromptUnmatched');
+    const matchedTextEl = document.getElementById('custBookingMatchedText');
+    const quickPhoneEl = document.getElementById('custBookingQuickPhone');
+    if (promptMatched && promptUnmatched) {
+      if (matchedKh) {
+        promptMatched.style.display = 'flex';
+        promptUnmatched.style.display = 'none';
+        if (matchedTextEl) {
+          matchedTextEl.textContent = `Hồ sơ của: ${matchedKh.HoTen} (${matchedKh.SDT})`;
+        }
+      } else {
+        promptMatched.style.display = 'none';
+        promptUnmatched.style.display = 'block';
+        if (quickPhoneEl && document.activeElement !== quickPhoneEl) {
+          quickPhoneEl.value = CUSTOMER_PHONE_FILTER;
+        }
+      }
+    }
+
+    // Trong tab-input1 chế độ Khách hàng:
+    if (EDIT_KH_ID) {
+      if (petFieldsWrap) petFieldsWrap.style.display = 'none';
+    } else {
+      if (petFieldsWrap) petFieldsWrap.style.display = 'block';
+      if (matchedKh && !EDIT_PET_ID) {
+        if (CUSTOMER_MODE !== 'existing') setCustomerMode('existing');
+        document.getElementById('tc_makh').value = matchedKh.MaKH;
+      } else if (!matchedKh && !EDIT_PET_ID) {
+        if (CUSTOMER_MODE !== 'new') setCustomerMode('new');
+        if (CUSTOMER_PHONE_FILTER && !document.getElementById('kh_sdt').value) {
+          document.getElementById('kh_sdt').value = CUSTOMER_PHONE_FILTER;
+        }
+      }
+    }
+  }
+
+  function syncQuickPhoneFromBooking(val) {
+    const topInput = document.getElementById('custPortalPhone');
+    if (topInput) topInput.value = val;
+    applyCustomerPhoneFilter(val, false);
+  }
+
+  function goToNewCustomerRegistration() {
+    switchTab('tab-input1', document.getElementById('navTab1'));
+    resetPetForm();
+    setCustomerMode('new');
+    const clean = (CUSTOMER_PHONE_FILTER || '').replace(/\s+/g, '').trim();
+    if (clean) document.getElementById('kh_sdt').value = clean;
+    document.getElementById('kh_hoten').focus();
+  }
+
+  function goToCustomerAddPet() {
+    switchTab('tab-input1', document.getElementById('navTab1'));
+    resetPetForm();
+    const matchedKh = getMatchedCustomer();
+    if (matchedKh) {
+      setCustomerMode('existing');
+      document.getElementById('tc_makh').value = matchedKh.MaKH;
+    }
+    document.getElementById('tc_ten').focus();
+  }
+
+  function setAppRoleView(role) {
+    APP_ROLE_VIEW = role;
+    const isCust = role === 'customer';
+    document.body.classList.toggle('customer-view', isCust);
+    document.getElementById('btnViewAdmin').classList.toggle('active', !isCust);
+    document.getElementById('btnViewCustomer').classList.toggle('active', isCust);
+
+    document.getElementById('appHeaderTitle').textContent = 'PetCare Spa & Clinic';
+    document.getElementById('appHeaderSub').textContent = isCust
+      ? 'Cổng Đặt Lịch Chăm Sóc & Spa Thú Cưng Trực Tuyến'
+      : 'Hệ thống Quản lý Dịch vụ, Lịch hẹn & Chăm sóc Thú cưng';
+
+    document.getElementById('navTab1').textContent = isCust
+      ? 'Thú cưng & Hồ sơ của tôi'
+      : 'Tiếp nhận & Hồ sơ';
+    document.getElementById('navTab2').textContent = isCust
+      ? 'Đặt lịch Spa & Chăm sóc'
+      : 'Đặt lịch & Thu ngân';
+    document.getElementById('navTabSearch').textContent = isCust
+      ? 'Lịch hẹn của tôi'
+      : 'Tra cứu lịch hẹn';
+
+    document.getElementById('titleScreen1').textContent = isCust
+      ? 'Hồ sơ Thú cưng & Thông tin liên hệ'
+      : 'Tiếp nhận Khách hàng & Hồ sơ Thú cưng';
+    document.getElementById('badgeScreen1').textContent = isCust ? 'Hồ sơ trực tuyến' : 'Quầy lễ tân';
+    document.getElementById('petListTitle').textContent = isCust ? 'Thú cưng của tôi' : 'Danh sách Hồ sơ Thú cưng';
+
+    document.getElementById('titleScreen2').textContent = isCust
+      ? 'Đặt Lịch Chăm Sóc Trực Tuyến'
+      : 'Tiếp nhận & Đặt Lịch Hẹn';
+    document.getElementById('badgeScreen2').textContent = isCust ? 'Xác nhận nhanh chóng' : 'Kiểm tra lịch trống tự động';
+    document.getElementById('bookingListTitle').textContent = isCust ? 'Lịch hẹn của tôi' : 'Danh sách Lịch hẹn & Thu ngân';
+    document.getElementById('bookingListBadge').textContent = isCust ? 'Theo dõi tiến độ chăm sóc' : 'Cập nhật trạng thái & thanh toán';
+
+    document.getElementById('searchCardTitle').textContent = isCust ? 'Lịch hẹn của tôi' : 'Tra cứu & Lọc Lịch hẹn Chăm sóc';
+    document.getElementById('searchCardBadge').textContent = isCust ? 'Theo dõi lịch sử dịch vụ' : 'Tìm kiếm nhanh đa tiêu chí';
+
+    if (isCust) {
+      resetPetForm();
+      switchTab('tab-input2', document.getElementById('navTab2'));
+    } else {
+      CUSTOMER_PHONE_FILTER = '';
+      const topInput = document.getElementById('custPortalPhone');
+      if (topInput) topInput.value = '';
+      const activePane = document.querySelector('.tab-pane.active');
+      if (!activePane) {
+        switchTab('tab-input1', document.getElementById('navTab1'));
+      }
+      resetPetForm();
+    }
+
+    updateHeaderStatusBadge();
+    populateSelects();
+    refreshCustomerPortalUI();
+    renderPetsTable();
+    renderBookingsTable();
+    runSearch();
+  }
+
+  function applyCustomerPhoneFilter(phone, explicitSubmit) {
+    CUSTOMER_PHONE_FILTER = (phone || '').replace(/\s+/g, '').trim();
+    const matchedKh = getMatchedCustomer();
+    if (matchedKh) {
+      setCustomerMode('existing');
+      document.getElementById('tc_makh').value = matchedKh.MaKH;
+      const filterKhEl = document.getElementById('lh_filter_kh');
+      if (filterKhEl) filterKhEl.value = matchedKh.MaKH;
+      onBookingCustomerFilterChange(matchedKh.MaKH);
+    } else {
+      filterBookingPetDropdown('');
+      if (explicitSubmit && CUSTOMER_PHONE_FILTER.length > 0 && CUSTOMER_PHONE_FILTER.length < 10) {
+        alert('Vui lòng nhập đầy đủ số điện thoại (10–11 chữ số) để tra cứu hồ sơ.');
+      }
+    }
+    refreshCustomerPortalUI();
+    renderPetsTable();
+    renderBookingsTable();
+    runSearch();
+  }
+
+  function clearCustomerPhoneFilter() {
+    const topInput = document.getElementById('custPortalPhone');
+    if (topInput) topInput.value = '';
+    applyCustomerPhoneFilter('', false);
+  }
 
   function nextCustomerId() {
     const nums = STATE.khach_hang.map(k => parseInt(k.MaKH.replace(/\D/g, ''), 10) || 0);
@@ -1150,22 +1599,30 @@ WHERE MaNV = :MaNV AND TrangThai NOT IN ('Đã hủy', 'Không đến')
     const btnEx = document.getElementById('btnModeExistingKH');
     const btnNew = document.getElementById('btnModeNewKH');
     const btnMain = document.getElementById('btnSubmitPetMain');
+    const petFieldsWrap = document.getElementById('petFormFieldsWrap');
 
     if (mode === 'new') {
       exBox.style.display = 'none';
       newBox.style.display = 'block';
-      btnEx.className = 'btn btn-secondary';
-      btnNew.className = 'btn btn-primary';
-      btnMain.textContent = 'Lưu Khách Hàng Mới + Hồ Sơ Thú Cưng Vào CSDL';
-      if (!document.getElementById('kh_makh').value) {
+      if (btnEx) btnEx.className = 'btn btn-secondary';
+      if (btnNew) btnNew.className = 'btn btn-primary';
+      if (petFieldsWrap) petFieldsWrap.style.display = EDIT_KH_ID ? 'none' : 'block';
+      btnMain.textContent = EDIT_PET_ID
+        ? 'Cập nhật hồ sơ thú cưng'
+        : (APP_ROLE_VIEW === 'customer' ? 'Đăng ký hồ sơ' : 'Lưu khách hàng & thú cưng');
+      if (!document.getElementById('kh_makh').value && !EDIT_KH_ID) {
         document.getElementById('kh_makh').value = nextCustomerId();
       }
     } else {
+      EDIT_KH_ID = null;
+      const saveOnlyBtn = document.getElementById('btnSaveCustomerOnly');
+      if (saveOnlyBtn) saveOnlyBtn.textContent = 'Chỉ lưu thông tin khách hàng';
       exBox.style.display = 'block';
       newBox.style.display = 'none';
-      btnEx.className = 'btn btn-primary';
-      btnNew.className = 'btn btn-secondary';
-      btnMain.textContent = 'Lưu Hồ Sơ Thú Cưng Vào CSDL';
+      if (btnEx) btnEx.className = 'btn btn-primary';
+      if (btnNew) btnNew.className = 'btn btn-secondary';
+      if (petFieldsWrap) petFieldsWrap.style.display = 'block';
+      btnMain.textContent = EDIT_PET_ID ? 'Cập nhật hồ sơ thú cưng' : 'Lưu hồ sơ thú cưng';
     }
   }
 
@@ -1175,95 +1632,569 @@ WHERE MaNV = :MaNV AND TrangThai NOT IN ('Đã hủy', 'Không đến')
     }
   }
 
-  function populateSelects() {
+  function filterCustomerDropdown(keyword) {
+    const kw = (keyword || '').trim().toLowerCase();
     const khSel = document.getElementById('tc_makh');
-    khSel.innerHTML = STATE.khach_hang.map(kh =>
-      `<option value="${kh.MaKH}">${kh.MaKH} - ${kh.HoTen} (${kh.SDT})</option>`
+    if (!khSel) return;
+    const currentVal = khSel.value;
+    const filtered = STATE.khach_hang.filter(kh =>
+      !kw || `${kh.HoTen} ${kh.SDT}`.toLowerCase().includes(kw)
+    );
+    khSel.innerHTML = filtered.map(kh =>
+      `<option value="${kh.MaKH}">${escHtml(kh.HoTen)} (${escHtml(kh.SDT)})</option>`
     ).join('') +
-      `<option value="__NEW__" style="font-weight:bold;color:#1d4ed8;">+ Đăng ký Khách hàng mới...</option>` +
-      `<option value="KH999">KH999 - Khách hàng không tồn tại (Test lỗi FK)</option>`;
+      `<option value="__NEW__" style="font-weight:bold;color:#1d4ed8;">+ Thêm khách hàng mới...</option>`;
+    if (filtered.length > 0) {
+      khSel.value = filtered.some(k => k.MaKH === currentVal) ? currentVal : filtered[0].MaKH;
+    }
+  }
 
-    const tcSel = document.getElementById('lh_matc');
-    tcSel.innerHTML = STATE.thu_cung.map(tc => {
-      const kh = STATE.khach_hang.find(k => k.MaKH === tc.MaKH);
-      return `<option value="${tc.MaThuCung}">${tc.MaThuCung} - ${tc.TenThuCung} (${tc.Loai} ${tc.Giong}) - Chủ: ${kh ? kh.HoTen : tc.MaKH}</option>`;
-    }).join('');
+  function calcMonthsFromBirth(ymValue) {
+    if (!ymValue) return;
+    const parts = ymValue.split('-');
+    if (parts.length < 2) return;
+    const y = parseInt(parts[0], 10);
+    const m = parseInt(parts[1], 10);
+    const now = new Date();
+    const refYear = now.getFullYear(), refMonth = now.getMonth() + 1;
+    let months = (refYear - y) * 12 + (refMonth - m);
+    if (months < 1) months = 1;
+    if (months > 360) months = 360;
+    document.getElementById('tc_tuoi').value = String(months);
+  }
+
+  function calcStaffMinutes(madv, sl) {
+    const dv = STATE.dich_vu.find(d => d.MaDV === madv);
+    if (!dv) return 60;
+    if (madv === 'DV005') return 60;
+    return Number(dv.ThoiLuongDuKien || 60) * Math.max(1, Number(sl || 1));
+  }
+
+  function evaluateStaffAvailability(nv, ngaygioStr, totalMinutes) {
+    if (nv.TrangThai !== 'Đang làm việc') {
+      return { ok: false, icon: '⛔', label: nv.TrangThai };
+    }
+    if (!ngaygioStr || ngaygioStr.length < 16) {
+      return { ok: true, icon: '✅', label: 'Đang rảnh' };
+    }
+    const dtStart = new Date(ngaygioStr.slice(0, 16).replace(' ', 'T'));
+    if (isNaN(dtStart.getTime())) return { ok: true, icon: '✅', label: 'Đang rảnh' };
+    const dtEnd = new Date(dtStart.getTime() + totalMinutes * 60000);
+    const hrStart = dtStart.getHours() + dtStart.getMinutes() / 60.0;
+    const hrEnd = dtEnd.getHours() + dtEnd.getMinutes() / 60.0 + (dtEnd.getDate() !== dtStart.getDate() ? 24.0 : 0.0);
+
+    const ca = nv.CaLamViec || '';
+    let sMin = 8, sMax = 21;
+    if (ca.includes('Ca sáng')) { sMin = 8; sMax = 12; }
+    else if (ca.includes('Ca chiều')) { sMin = 13; sMax = 17; }
+    else if (ca.includes('Ca tối')) { sMin = 17; sMax = 21; }
+    else if (ca.includes('Hành chính')) { sMin = 8; sMax = 17; }
+
+    if (!(hrStart >= sMin && hrStart < sMax)) {
+      return { ok: false, icon: '🕒', label: 'Ngoài ca làm việc' };
+    }
+    if (hrEnd > sMax) {
+      return { ok: false, icon: '🕒', label: `Quá giờ tan ca (${dtEnd.toTimeString().slice(0, 5)})` };
+    }
+
+    for (const lh of STATE.lich_hen) {
+      if (lh.MaNV !== nv.MaNV || lh.TrangThai === 'Đã hủy' || lh.TrangThai === 'Không đến') continue;
+      const exStart = new Date(lh.NgayGioHen.slice(0, 16).replace(' ', 'T'));
+      const exDur = calcStaffMinutes(lh.MaDV, lh.SoLuong);
+      const exEnd = new Date(exStart.getTime() + exDur * 60000);
+      if (dtStart < exEnd && exStart < dtEnd) {
+        return {
+          ok: false,
+          icon: '⏳',
+          label: `Đã kín lịch ${exStart.toTimeString().slice(0, 5)}–${exEnd.toTimeString().slice(0, 5)}`
+        };
+      }
+    }
+    return { ok: true, icon: '✅', label: 'Đang rảnh' };
+  }
+
+  function selectServiceFromCard(madv) {
+    const dvSel = document.getElementById('lh_madv');
+    if (dvSel) {
+      dvSel.value = madv;
+      onBookingTimeOrServiceChange();
+    }
+    document.querySelectorAll('.service-card-item').forEach(el => {
+      el.classList.toggle('selected', el.getAttribute('data-madv') === madv);
+    });
+    const formEl = document.getElementById('bookingForm');
+    if (formEl) formEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+
+  function populateSelects() {
+    filterCustomerDropdown(document.getElementById('filter_kh_input')?.value || '');
+
+    const khFilterSel = document.getElementById('lh_filter_kh');
+    if (khFilterSel) {
+      const curKhFilter = khFilterSel.value;
+      khFilterSel.innerHTML = `<option value="">-- Tất cả khách hàng (${STATE.khach_hang.length}) --</option>` +
+        STATE.khach_hang.map(kh => `<option value="${kh.MaKH}">${escHtml(kh.HoTen)} (${escHtml(kh.SDT)})</option>`).join('');
+      if (curKhFilter && STATE.khach_hang.some(k => k.MaKH === curKhFilter)) {
+        khFilterSel.value = curKhFilter;
+      }
+    }
+
+    filterBookingPetDropdown(document.getElementById('lh_search_pet')?.value || '');
 
     const dvSel = document.getElementById('lh_madv');
+    const comboDvSel = document.getElementById('lh_combo_madv');
     const sDvSel = document.getElementById('s_madv');
+    const curDv = dvSel.value;
     dvSel.innerHTML = STATE.dich_vu.map(dv =>
-      `<option value="${dv.MaDV}">${dv.MaDV} - ${dv.TenDV} (${fmtMoney(dv.DonGia)})</option>`
+      `<option value="${dv.MaDV}">${escHtml(dv.TenDV)} (${fmtMoney(dv.DonGia)} • ${dv.ThoiLuongDuKien} phút)</option>`
     ).join('');
+    if (curDv && STATE.dich_vu.some(d => d.MaDV === curDv)) dvSel.value = curDv;
+
+    if (comboDvSel) {
+      const curCombo = comboDvSel.value;
+      comboDvSel.innerHTML = STATE.dich_vu.map(dv =>
+        `<option value="${dv.MaDV}">${escHtml(dv.TenDV)} (+${fmtMoney(dv.DonGia)} • +${dv.ThoiLuongDuKien} phút)</option>`
+      ).join('');
+      if (curCombo && STATE.dich_vu.some(d => d.MaDV === curCombo)) {
+        comboDvSel.value = curCombo;
+      } else if (STATE.dich_vu.length > 3) {
+        comboDvSel.value = 'DV004';
+      }
+    }
+
+    const curSearchDv = sDvSel.value;
     sDvSel.innerHTML = `<option value="">-- Tất cả dịch vụ --</option>` + STATE.dich_vu.map(dv =>
-      `<option value="${dv.MaDV}">${dv.MaDV} - ${dv.TenDV}</option>`
+      `<option value="${dv.MaDV}">${escHtml(dv.TenDV)}</option>`
     ).join('');
+    if (curSearchDv) sDvSel.value = curSearchDv;
 
-    const nvSel = document.getElementById('lh_manv');
     const sNvSel = document.getElementById('s_manv');
-    nvSel.innerHTML = STATE.nhan_vien.map(nv =>
-      `<option value="${nv.MaNV}">${nv.MaNV} - ${nv.HoTen} | ${nv.CaLamViec} [${nv.TrangThai}]</option>`
-    ).join('');
-    sNvSel.innerHTML = `<option value="">-- Tất cả nhân viên --</option>` + STATE.nhan_vien.map(nv =>
-      `<option value="${nv.MaNV}">${nv.MaNV} - ${nv.HoTen} (${nv.ChucVu})</option>`
-    ).join('');
+    if (sNvSel) {
+      const curSearchNv = sNvSel.value;
+      sNvSel.innerHTML = `<option value="">-- Tất cả chuyên viên --</option>` +
+        STATE.nhan_vien.filter(nv => nv.ChucVu === 'Nhân viên chăm sóc').map(nv =>
+          `<option value="${nv.MaNV}">${escHtml(nv.HoTen)}</option>`
+        ).join('');
+      if (curSearchNv) sNvSel.value = curSearchNv;
+    }
 
+    const custCards = document.getElementById('customerServiceCards');
+    if (custCards) {
+      const selectedMadv = dvSel.value;
+      custCards.innerHTML = STATE.dich_vu.map(dv => `
+        <div class="service-card-item ${dv.MaDV === selectedMadv ? 'selected' : ''}" data-madv="${dv.MaDV}">
+          <div>
+            <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:8px;">
+              <strong style="color:#0f766e;font-size:13.5px;">${escHtml(dv.TenDV)}</strong>
+              <span class="badge badge-green" style="white-space:nowrap;">${fmtMoney(dv.DonGia)}</span>
+            </div>
+            <div style="font-size:12px;color:#475569;margin-top:5px;">${escHtml(dv.MoTaDichVu || '')}</div>
+          </div>
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-top:4px;padding-top:8px;border-top:1px solid #e2e8f0;">
+            <span style="font-size:12px;font-weight:600;color:#0f172a;">⏱ ${dv.ThoiLuongDuKien} phút</span>
+            <button type="button" class="btn btn-primary" style="padding:5px 11px;font-size:12px;" onclick="selectServiceFromCard('${dv.MaDV}')">Chọn gói này</button>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    renderCatalogManagementTables();
     updateOwnerPreview();
+    onBookingTimeOrServiceChange();
+  }
+
+  function onBookingCustomerFilterChange(makh) {
+    filterBookingPetDropdown(document.getElementById('lh_search_pet')?.value || '', makh);
+  }
+
+  function filterBookingPetDropdown(searchKw, explicitMaKH) {
+    const tcSel = document.getElementById('lh_matc');
+    if (!tcSel) return;
+    const prevVal = tcSel.value;
+    const kw = (searchKw || '').trim().toLowerCase();
+    const filterKh = explicitMaKH !== undefined ? explicitMaKH : (document.getElementById('lh_filter_kh')?.value || '');
+
+    if (APP_ROLE_VIEW === 'customer') {
+      const matchedKh = getMatchedCustomer();
+      if (!matchedKh) {
+        tcSel.innerHTML = `<option value="">-- Vui lòng nhập SĐT hoặc đăng ký hồ sơ trước --</option>`;
+        updateOwnerPreview();
+        return;
+      }
+      const myPets = STATE.thu_cung.filter(tc => tc.MaKH === matchedKh.MaKH);
+      if (myPets.length === 0) {
+        tcSel.innerHTML = `<option value="">-- Bạn chưa thêm thú cưng nào --</option>`;
+      } else {
+        tcSel.innerHTML = myPets.map(tc =>
+          `<option value="${tc.MaThuCung}">${escHtml(tc.TenThuCung)} (${escHtml(tc.Loai)}${tc.Giong ? ' • ' + escHtml(tc.Giong) : ''})</option>`
+        ).join('');
+        if (myPets.some(t => t.MaThuCung === prevVal)) tcSel.value = prevVal;
+      }
+      updateOwnerPreview();
+      return;
+    }
+
+    const filteredPets = STATE.thu_cung.filter(tc => {
+      if (filterKh && tc.MaKH !== filterKh) return false;
+      if (!kw) return true;
+      const kh = STATE.khach_hang.find(k => k.MaKH === tc.MaKH);
+      const hay = `${tc.TenThuCung} ${tc.Loai} ${tc.Giong} ${kh ? kh.HoTen : ''} ${kh ? kh.SDT : ''}`.toLowerCase();
+      return hay.includes(kw);
+    });
+
+    if (filteredPets.length === 0) {
+      tcSel.innerHTML = `<option value="">-- Không tìm thấy thú cưng phù hợp --</option>`;
+    } else {
+      tcSel.innerHTML = filteredPets.map(tc => {
+        const kh = STATE.khach_hang.find(k => k.MaKH === tc.MaKH);
+        return `<option value="${tc.MaThuCung}">${escHtml(tc.TenThuCung)} (${escHtml(tc.Loai)}${tc.Giong ? ' - ' + escHtml(tc.Giong) : ''}) — ${kh ? escHtml(kh.HoTen) + ' (' + escHtml(kh.SDT) + ')' : ''}</option>`;
+      }).join('');
+      if (filteredPets.some(t => t.MaThuCung === prevVal)) {
+        tcSel.value = prevVal;
+      } else {
+        tcSel.value = filteredPets[0].MaThuCung;
+      }
+    }
+    updateOwnerPreview();
+  }
+
+  function toggleComboService() {
+    COMBO_ENABLED = !COMBO_ENABLED;
+    const box = document.getElementById('lh_combo_box');
+    const btn = document.getElementById('btnToggleCombo');
+    if (box) box.style.display = COMBO_ENABLED ? 'block' : 'none';
+    if (btn) {
+      btn.textContent = COMBO_ENABLED ? '✕ Bỏ dịch vụ đi kèm' : '+ Thêm dịch vụ đi kèm (Combo)';
+      btn.className = COMBO_ENABLED ? 'btn btn-danger-outline' : 'btn btn-secondary';
+    }
+    onBookingTimeOrServiceChange();
+  }
+
+  function onBookingTimeOrServiceChange() {
     updatePricePreview();
+    refreshStaffDropdownAvailability();
+    const selDv = document.getElementById('lh_madv')?.value;
+    document.querySelectorAll('.service-card-item').forEach(el => {
+      el.classList.toggle('selected', el.getAttribute('data-madv') === selDv);
+    });
+  }
+
+  function refreshStaffDropdownAvailability() {
+    const nvSel = document.getElementById('lh_manv');
+    if (!nvSel) return;
+    const prevNv = nvSel.value;
+    const rawDt = document.getElementById('lh_ngaygio')?.value || '';
+    const madv1 = document.getElementById('lh_madv')?.value || 'DV001';
+    const sl1 = parseInt(document.getElementById('lh_soluong')?.value || '1', 10);
+    let totalDur = calcStaffMinutes(madv1, sl1);
+
+    if (COMBO_ENABLED) {
+      const madv2 = document.getElementById('lh_combo_madv')?.value || '';
+      const sl2 = parseInt(document.getElementById('lh_combo_soluong')?.value || '1', 10);
+      if (madv2) totalDur += calcStaffMinutes(madv2, sl2);
+    }
+
+    const specialists = STATE.nhan_vien.filter(nv => nv.ChucVu === 'Nhân viên chăm sóc');
+    let availableCount = 0;
+    nvSel.innerHTML = specialists.map(nv => {
+      const st = evaluateStaffAvailability(nv, rawDt, totalDur);
+      if (st.ok) availableCount++;
+      return `<option value="${nv.MaNV}">${st.icon} ${escHtml(nv.HoTen)} — ${escHtml(nv.CaLamViec)} • ${escHtml(st.label)}</option>`;
+    }).join('');
+
+    if (prevNv && specialists.some(n => n.MaNV === prevNv)) {
+      nvSel.value = prevNv;
+    } else {
+      const firstOk = specialists.find(n => evaluateStaffAvailability(n, rawDt, totalDur).ok);
+      if (firstOk) nvSel.value = firstOk.MaNV;
+    }
+
+    const hintEl = document.getElementById('lh_staff_hint');
+    if (hintEl) {
+      hintEl.innerHTML = `Khung giờ đã chọn có <strong>${availableCount} chuyên viên chăm sóc đang rảnh</strong>.`;
+    }
+  }
+
+  function autoPickAvailableStaff() {
+    const rawDt = document.getElementById('lh_ngaygio')?.value || '';
+    const madv1 = document.getElementById('lh_madv')?.value || 'DV001';
+    const sl1 = parseInt(document.getElementById('lh_soluong')?.value || '1', 10);
+    let totalDur = calcStaffMinutes(madv1, sl1);
+    if (COMBO_ENABLED) {
+      const madv2 = document.getElementById('lh_combo_madv')?.value || '';
+      const sl2 = parseInt(document.getElementById('lh_combo_soluong')?.value || '1', 10);
+      if (madv2) totalDur += calcStaffMinutes(madv2, sl2);
+    }
+    const found = STATE.nhan_vien.find(nv =>
+      nv.ChucVu === 'Nhân viên chăm sóc' && evaluateStaffAvailability(nv, rawDt, totalDur).ok
+    );
+    if (found) {
+      document.getElementById('lh_manv').value = found.MaNV;
+    } else {
+      alert('Hiện không có chuyên viên nào rảnh trong khung giờ này. Vui lòng chọn khung giờ khác!');
+    }
   }
 
   function updateOwnerPreview() {
+    const previewEl = document.getElementById('lh_owner_preview');
+    if (!previewEl) return;
     const matc = document.getElementById('lh_matc').value;
     const tc = STATE.thu_cung.find(t => t.MaThuCung === matc);
-    if (!tc) return;
+    if (!tc) {
+      previewEl.value = APP_ROLE_VIEW === 'customer'
+        ? 'Chưa chọn thú cưng — vui lòng nhập SĐT hoặc đăng ký hồ sơ'
+        : 'Chưa chọn thú cưng';
+      return;
+    }
     const kh = STATE.khach_hang.find(k => k.MaKH === tc.MaKH);
-    document.getElementById('lh_owner_preview').value = kh
-      ? `${kh.MaKH} - ${kh.HoTen} | SĐT: ${kh.SDT} | Đ/c: ${kh.DiaChi}`
-      : tc.MaKH;
+    previewEl.value = kh
+      ? `Chủ nuôi: ${kh.HoTen} • SĐT: ${kh.SDT}${kh.DiaChi ? ' • ' + kh.DiaChi : ''}`
+      : 'Đã chọn thú cưng';
   }
 
   function updatePricePreview() {
     const madv = document.getElementById('lh_madv').value;
     const sl = parseInt(document.getElementById('lh_soluong').value || '0', 10);
     const dv = STATE.dich_vu.find(d => d.MaDV === madv);
-    const total = dv && sl > 0 ? dv.DonGia * sl : 0;
-    document.getElementById('lh_price_preview').textContent = fmtMoney(total);
+    let totalMoney = dv && sl > 0 ? dv.DonGia * sl : 0;
+    let dur1 = calcStaffMinutes(madv, sl);
+    let dur2 = 0;
+
+    if (COMBO_ENABLED) {
+      const madv2 = document.getElementById('lh_combo_madv')?.value;
+      const sl2 = parseInt(document.getElementById('lh_combo_soluong')?.value || '1', 10);
+      const dv2 = STATE.dich_vu.find(d => d.MaDV === madv2);
+      if (dv2 && sl2 > 0) {
+        totalMoney += dv2.DonGia * sl2;
+        dur2 = calcStaffMinutes(madv2, sl2);
+      }
+    }
+
+    document.getElementById('lh_price_preview').textContent = fmtMoney(totalMoney);
+    const durEl = document.getElementById('lh_duration_preview');
+    const rawDt = document.getElementById('lh_ngaygio')?.value || '';
+    if (durEl) {
+      const totalDur = dur1 + dur2;
+      if (rawDt && rawDt.length >= 16) {
+        const dtStart = new Date(rawDt.slice(0, 16).replace(' ', 'T'));
+        const dtEnd = new Date(dtStart.getTime() + totalDur * 60000);
+        const sTime = dtStart.toTimeString().slice(0, 5);
+        const eTime = dtEnd.toTimeString().slice(0, 5);
+        durEl.innerHTML = `Thời lượng: <strong>${totalDur} phút</strong> (${sTime} &rarr; ${eTime})`;
+      } else {
+        durEl.innerHTML = `Thời lượng dự kiến: <strong>${totalDur} phút</strong>`;
+      }
+    }
   }
 
-  function renderPetsTable() {
-    const tbody = document.getElementById('petTableBody');
-    document.getElementById('petCount').textContent = STATE.thu_cung.length;
-    tbody.innerHTML = STATE.thu_cung.map(tc => {
-      const kh = STATE.khach_hang.find(k => k.MaKH === tc.MaKH);
-      return `<tr>
-        <td><strong>${tc.MaThuCung}</strong></td>
-        <td><strong>${tc.TenThuCung}</strong></td>
-        <td><span class="badge ${tc.Loai === 'Chó' ? 'badge-blue' : 'badge-purple'}">${tc.Loai}</span> ${tc.Giong || ''}</td>
-        <td>${tc.GioiTinh}</td>
-        <td class="num">${tc.Tuoi} tháng</td>
-        <td class="num"><strong>${Number(tc.CanNang).toFixed(1)} kg</strong></td>
-        <td>${tc.MaKH} - ${kh ? kh.HoTen : ''}<br/><small style="color:#64748b">${kh ? kh.SDT : ''}</small></td>
-        <td>${tc.GhiChu || ''}</td>
-      </tr>`;
-    }).join('');
+  function renderCatalogManagementTables() {
+    const dvBody = document.getElementById('serviceCatalogBody');
+    if (dvBody) {
+      dvBody.innerHTML = STATE.dich_vu.map(dv => `<tr>
+        <td><strong>${escHtml(dv.TenDV)}</strong></td>
+        <td style="color:#475569;">${escHtml(dv.MoTaDichVu || '')}</td>
+        <td class="num"><input type="number" id="cat_dg_${dv.MaDV}" value="${dv.DonGia}" step="10000" min="0" style="width:115px;padding:5px 7px;text-align:right;" /></td>
+        <td class="num"><input type="number" id="cat_tl_${dv.MaDV}" value="${dv.ThoiLuongDuKien}" min="5" style="width:80px;padding:5px 7px;text-align:right;" /></td>
+        <td><button type="button" class="btn btn-primary" style="padding:5px 11px;font-size:12px;" onclick="saveServiceUpdate('${dv.MaDV}')">Lưu</button></td>
+      </tr>`).join('');
+    }
 
-    const khTbody = document.getElementById('customerTableBody');
-    if (khTbody) {
-      document.getElementById('customerCount').textContent = STATE.khach_hang.length;
-      khTbody.innerHTML = STATE.khach_hang.map(kh => `<tr>
-        <td><strong>${kh.MaKH}</strong></td>
-        <td><strong>${kh.HoTen}</strong></td>
-        <td>${kh.SDT}</td>
-        <td>${kh.Email || ''}</td>
-        <td>${kh.DiaChi || ''}</td>
+    const nvBody = document.getElementById('staffCatalogBody');
+    if (nvBody) {
+      const shifts = ['Ca sáng (08:00-12:00)', 'Ca chiều (13:00-17:00)', 'Ca tối (17:00-21:00)', 'Hành chính (08:00-17:00)'];
+      const statuses = ['Đang làm việc', 'Nghỉ phép', 'Đã nghỉ việc'];
+      nvBody.innerHTML = STATE.nhan_vien.map(nv => `<tr>
+        <td><strong>${escHtml(nv.HoTen)}</strong></td>
+        <td>${escHtml(nv.ChucVu)}</td>
+        <td>${escHtml(nv.SDT || '')}</td>
+        <td>
+          <select onchange="saveStaffUpdate('${nv.MaNV}', this.value, '${nv.TrangThai}')" style="padding:5px 7px;font-size:12.5px;">
+            ${shifts.map(c => `<option value="${c}" ${c === nv.CaLamViec ? 'selected' : ''}>${c}</option>`).join('')}
+          </select>
+        </td>
+        <td>
+          <select onchange="saveStaffUpdate('${nv.MaNV}', '${nv.CaLamViec}', this.value)" style="padding:5px 7px;font-size:12.5px;font-weight:600;color:${nv.TrangThai === 'Đang làm việc' ? '#15803d' : '#b91c1c'};">
+            ${statuses.map(s => `<option value="${s}" ${s === nv.TrangThai ? 'selected' : ''}>${s}</option>`).join('')}
+          </select>
+        </td>
       </tr>`).join('');
     }
   }
 
+  function showCatalogAlert(isOk, msg) {
+    const el = document.getElementById('catalogAlert');
+    if (!el) return;
+    el.className = `alert ${isOk ? 'alert-success' : 'alert-error'} show`;
+    el.innerHTML = msg;
+  }
+
+  async function saveServiceUpdate(madv) {
+    const dg = parseFloat(document.getElementById(`cat_dg_${madv}`).value || '0');
+    const tl = parseInt(document.getElementById(`cat_tl_${madv}`).value || '0', 10);
+    if (isNaN(dg) || dg < 0 || isNaN(tl) || tl <= 0) {
+      showCatalogAlert(false, 'Đơn giá không được âm và thời lượng dịch vụ phải lớn hơn 0 phút.');
+      return;
+    }
+    if (STATE.usingApi) {
+      const res = await fetch('/api/dich_vu/update', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ MaDV: madv, DonGia: dg, ThoiLuongDuKien: tl })
+      });
+      const data = await res.json();
+      if (!res.ok || !data.ok) {
+        showCatalogAlert(false, (data.errors || ['Không thể cập nhật thông tin dịch vụ.']).join('<br/>'));
+        return;
+      }
+    }
+    const dv = STATE.dich_vu.find(d => d.MaDV === madv);
+    if (dv) { dv.DonGia = dg; dv.ThoiLuongDuKien = tl; }
+    populateSelects();
+    renderBookingsTable();
+    runSearch();
+    renderReports();
+    renderAdminStats();
+    showCatalogAlert(true, `Đã cập nhật gói dịch vụ <strong>${escHtml(dv ? dv.TenDV : '')}</strong>: ${fmtMoney(dg)} • ${tl} phút.`);
+  }
+
+  async function saveStaffUpdate(manv, calamviec, trangthai) {
+    if (STATE.usingApi) {
+      const res = await fetch('/api/nhan_vien/update', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ MaNV: manv, CaLamViec: calamviec, TrangThai: trangthai })
+      });
+      const data = await res.json();
+      if (!res.ok || !data.ok) {
+        showCatalogAlert(false, (data.errors || ['Không thể cập nhật thông tin nhân viên.']).join('<br/>'));
+        renderCatalogManagementTables();
+        return;
+      }
+    }
+    const nv = STATE.nhan_vien.find(n => n.MaNV === manv);
+    if (nv) { nv.CaLamViec = calamviec; nv.TrangThai = trangthai; }
+    populateSelects();
+    renderBookingsTable();
+    renderReports();
+    showCatalogAlert(true, `Đã cập nhật lịch làm việc cho <strong>${escHtml(nv ? nv.HoTen : '')}</strong>: ${escHtml(calamviec)} (${escHtml(trangthai)}).`);
+  }
+
+  function bookForPet(matc) {
+    const tc = STATE.thu_cung.find(t => t.MaThuCung === matc);
+    if (!tc) return;
+    switchTab('tab-input2', document.getElementById('navTab2'));
+    if (APP_ROLE_VIEW === 'admin') {
+      const filterKh = document.getElementById('lh_filter_kh');
+      if (filterKh) filterKh.value = tc.MaKH;
+      filterBookingPetDropdown('', tc.MaKH);
+    } else {
+      filterBookingPetDropdown('');
+    }
+    document.getElementById('lh_matc').value = tc.MaThuCung;
+    updateOwnerPreview();
+    document.getElementById('bookingForm').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+
+  function startEditPet(matc) {
+    const tc = STATE.thu_cung.find(t => t.MaThuCung === matc);
+    if (!tc) return;
+    EDIT_PET_ID = tc.MaThuCung;
+    EDIT_KH_ID = null;
+    setCustomerMode('existing');
+    document.getElementById('tc_makh').value = tc.MaKH;
+    document.getElementById('tc_matc').value = tc.MaThuCung;
+    document.getElementById('tc_ten').value = tc.TenThuCung;
+    document.getElementById('tc_loai').value = tc.Loai;
+    document.getElementById('tc_giong').value = tc.Giong || '';
+    document.getElementById('tc_gioitinh').value = tc.GioiTinh;
+    document.getElementById('tc_tuoi').value = tc.Tuoi;
+    document.getElementById('tc_cannang').value = tc.CanNang;
+    document.getElementById('tc_ghichu').value = tc.GhiChu || '';
+    document.getElementById('petEditModeBanner').style.display = 'flex';
+    document.getElementById('petEditModeText').innerHTML = `Đang chỉnh sửa hồ sơ bé <strong>${escHtml(tc.TenThuCung)}</strong>`;
+    document.getElementById('btnSubmitPetMain').textContent = 'Cập nhật hồ sơ thú cưng';
+    refreshCustomerPortalUI();
+    document.getElementById('petForm').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+
+  function startEditCustomer(makh) {
+    const kh = STATE.khach_hang.find(k => k.MaKH === makh);
+    if (!kh) return;
+    EDIT_KH_ID = kh.MaKH;
+    EDIT_PET_ID = null;
+    setCustomerMode('new');
+    document.getElementById('kh_makh').value = kh.MaKH;
+    document.getElementById('kh_hoten').value = kh.HoTen;
+    document.getElementById('kh_sdt').value = kh.SDT;
+    document.getElementById('kh_email').value = kh.Email || '';
+    document.getElementById('kh_diachi').value = kh.DiaChi || '';
+    const saveOnlyBtn = document.getElementById('btnSaveCustomerOnly');
+    if (saveOnlyBtn) saveOnlyBtn.textContent = 'Lưu cập nhật khách hàng';
+    document.getElementById('btnSubmitPetMain').textContent = 'Lưu cập nhật thông tin';
+    document.getElementById('petEditModeBanner').style.display = 'flex';
+    document.getElementById('petEditModeText').innerHTML = `Đang chỉnh sửa thông tin khách hàng <strong>${escHtml(kh.HoTen)}</strong>`;
+    refreshCustomerPortalUI();
+    document.getElementById('petForm').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+
+  function renderPetsTable() {
+    const tbody = document.getElementById('petTableBody');
+    const matchedKh = APP_ROLE_VIEW === 'customer' ? getMatchedCustomer() : null;
+    const visiblePets = STATE.thu_cung.filter(tc => {
+      if (APP_ROLE_VIEW === 'customer') {
+        return matchedKh ? tc.MaKH === matchedKh.MaKH : false;
+      }
+      return true;
+    });
+    document.getElementById('petCount').textContent = visiblePets.length;
+
+    if (visiblePets.length === 0) {
+      const msg = APP_ROLE_VIEW === 'customer'
+        ? 'Nhập số điện thoại của bạn ở thanh tra cứu phía trên để xem hồ sơ thú cưng của bạn, hoặc điền biểu mẫu bên trái nếu là khách mới.'
+        : 'Chưa có hồ sơ thú cưng nào.';
+      tbody.innerHTML = `<tr><td colspan="8" style="text-align:center;padding:20px;color:#64748b;">${msg}</td></tr>`;
+    } else {
+      tbody.innerHTML = visiblePets.map(tc => {
+        const kh = STATE.khach_hang.find(k => k.MaKH === tc.MaKH);
+        return `<tr>
+          <td><strong>${escHtml(tc.TenThuCung)}</strong></td>
+          <td><span class="badge ${tc.Loai === 'Chó' ? 'badge-blue' : 'badge-purple'}">${escHtml(tc.Loai)}</span> ${escHtml(tc.Giong || '')}</td>
+          <td>${escHtml(tc.GioiTinh)}</td>
+          <td class="num">${tc.Tuoi} tháng</td>
+          <td class="num"><strong>${Number(tc.CanNang).toFixed(1)} kg</strong></td>
+          <td class="admin-only">${kh ? escHtml(kh.HoTen) : ''}<br/><small style="color:#64748b">${kh ? escHtml(kh.SDT) : ''}</small></td>
+          <td>${escHtml(tc.GhiChu || '')}</td>
+          <td style="white-space:nowrap;">
+            <button type="button" class="btn btn-primary" style="padding:3px 9px;font-size:11.5px;" onclick="bookForPet('${tc.MaThuCung}')">Đặt lịch</button>
+            <button type="button" class="btn btn-secondary" style="padding:3px 9px;font-size:11.5px;" onclick="startEditPet('${tc.MaThuCung}')">Sửa</button>
+          </td>
+        </tr>`;
+      }).join('');
+    }
+
+    const khTbody = document.getElementById('customerTableBody');
+    if (khTbody) {
+      document.getElementById('customerCount').textContent = STATE.khach_hang.length;
+      khTbody.innerHTML = STATE.khach_hang.map(kh => {
+        const petCount = STATE.thu_cung.filter(t => t.MaKH === kh.MaKH).length;
+        return `<tr>
+          <td><strong>${escHtml(kh.HoTen)}</strong></td>
+          <td>${escHtml(kh.SDT)}</td>
+          <td>${escHtml(kh.Email || '')}</td>
+          <td>${escHtml(kh.DiaChi || '')}</td>
+          <td class="num"><span class="badge badge-blue">${petCount} bé</span></td>
+          <td><button type="button" class="btn btn-secondary" style="padding:3px 9px;font-size:11.5px;" onclick="startEditCustomer('${kh.MaKH}')">Sửa</button></td>
+        </tr>`;
+      }).join('');
+    }
+  }
+
   function statusBadge(st) {
-    if (st === 'Hoàn thành' || st === 'Đã thanh toán') return `<span class="badge badge-green">${st}</span>`;
-    if (st === 'Đang thực hiện' || st === 'Đã xác nhận') return `<span class="badge badge-blue">${st}</span>`;
-    if (st === 'Mới tạo' || st === 'Chưa thanh toán') return `<span class="badge badge-amber">${st}</span>`;
-    return `<span class="badge badge-red">${st}</span>`;
+    const label = displayStatusLabel(st);
+    if (st === 'Hoàn thành' || st === 'Đã thanh toán') return `<span class="badge badge-green">${escHtml(label)}</span>`;
+    if (st === 'Đang thực hiện' || st === 'Đã xác nhận') return `<span class="badge badge-blue">${escHtml(label)}</span>`;
+    if (st === 'Mới tạo' || st === 'Chưa thanh toán') return `<span class="badge badge-amber">${escHtml(label)}</span>`;
+    return `<span class="badge badge-red">${escHtml(label)}</span>`;
   }
 
   function getEnrichedBookings() {
@@ -1273,8 +2204,17 @@ WHERE MaNV = :MaNV AND TrangThai NOT IN ('Đã hủy', 'Không đến')
       const dv = STATE.dich_vu.find(d => d.MaDV === lh.MaDV) || {};
       const nv = STATE.nhan_vien.find(n => n.MaNV === lh.MaNV) || {};
       const tt = STATE.thanh_toan.find(p => p.MaLich === lh.MaLich);
+      const dur = calcStaffMinutes(lh.MaDV, lh.SoLuong);
+      let khungGio = lh.NgayGioHen.slice(0, 16);
+      try {
+        const dtS = new Date(lh.NgayGioHen.slice(0, 16).replace(' ', 'T'));
+        const dtE = new Date(dtS.getTime() + dur * 60000);
+        khungGio = `${lh.NgayGioHen.slice(0, 10)} ${dtS.toTimeString().slice(0, 5)}–${dtE.toTimeString().slice(0, 5)}`;
+      } catch (e) {}
       return {
         ...lh,
+        KhungGio: khungGio,
+        ThoiLuongPhut: (dv.ThoiLuongDuKien || 60) * lh.SoLuong,
         TenThuCung: tc.TenThuCung || lh.TenThuCung || '',
         Loai: tc.Loai || lh.Loai || '',
         Giong: tc.Giong || lh.Giong || '',
@@ -1294,36 +2234,57 @@ WHERE MaNV = :MaNV AND TrangThai NOT IN ('Đã hủy', 'Không đến')
   }
 
   function statusSelectHtml(malich, currentStatus) {
-    const statuses = ['Mới tạo', 'Đã xác nhận', 'Đang thực hiện', 'Hoàn thành', 'Đã hủy', 'Không đến'];
+    if (APP_ROLE_VIEW === 'customer') {
+      return statusBadge(currentStatus);
+    }
+    const statuses = [
+      { val: 'Mới tạo', label: 'Chờ xác nhận' },
+      { val: 'Đã xác nhận', label: 'Đã xác nhận' },
+      { val: 'Đang thực hiện', label: 'Đang thực hiện' },
+      { val: 'Hoàn thành', label: 'Hoàn thành' },
+      { val: 'Đã hủy', label: 'Đã hủy' },
+      { val: 'Không đến', label: 'Không đến' }
+    ];
     let bg = '#fef3c7', color = '#92400e', border = '#fde68a';
     if (currentStatus === 'Hoàn thành') { bg = '#dcfce7'; color = '#166534'; border = '#86efac'; }
     else if (currentStatus === 'Đang thực hiện' || currentStatus === 'Đã xác nhận') { bg = '#dbeafe'; color = '#1e40af'; border = '#93c5fd'; }
     else if (currentStatus === 'Đã hủy' || currentStatus === 'Không đến') { bg = '#fee2e2'; color = '#991b1b'; border = '#fca5a5'; }
 
-    const opts = statuses.map(s => `<option value="${s}" ${s === currentStatus ? 'selected' : ''}>${s}</option>`).join('');
-    return `<select onchange="changeBookingStatus('${malich}', this.value)" title="Nhấp để đổi trạng thái đơn ${malich}" style="width:auto;min-width:126px;padding:4px 8px;font-size:12px;font-weight:700;border-radius:999px;background:${bg};color:${color};border:1px solid ${border};cursor:pointer;">${opts}</select>`;
+    const opts = statuses.map(s => `<option value="${s.val}" ${s.val === currentStatus ? 'selected' : ''}>${s.label}</option>`).join('');
+    return `<select onchange="changeBookingStatus('${malich}', this.value)" title="Đổi trạng thái lịch #${malich}" style="width:auto;min-width:130px;padding:4px 8px;font-size:12px;font-weight:700;border-radius:999px;background:${bg};color:${color};border:1px solid ${border};cursor:pointer;">${opts}</select>`;
   }
 
-  function paymentSelectHtml(malich, currentMethod) {
+  function paymentSelectHtml(malich, currentMethod, bookingStatus) {
+    if (APP_ROLE_VIEW === 'customer') {
+      return statusBadge(currentMethod === 'Chưa thanh toán' ? 'Chưa thanh toán' : `Đã thanh toán (${currentMethod})`);
+    }
+    if (bookingStatus === 'Đã hủy' || bookingStatus === 'Không đến') {
+      return `<select disabled title="Lịch hẹn đã hủy hoặc khách không đến" style="width:auto;min-width:142px;padding:4px 8px;font-size:11.5px;font-weight:700;border-radius:999px;background:#f1f5f9;color:#64748b;border:1px solid #cbd5e1;cursor:not-allowed;"><option>Không thu (${escHtml(bookingStatus)})</option></select>`;
+    }
     const methods = [
-      { val: 'Chưa thanh toán', label: 'Chưa thanh toán' },
-      { val: 'Chuyển khoản', label: 'ĐTT: Chuyển khoản' },
-      { val: 'Tiền mặt', label: 'ĐTT: Tiền mặt' },
-      { val: 'Thẻ', label: 'ĐTT: Quẹt thẻ' }
+      { val: 'Chưa thanh toán', label: 'Chưa thu tiền' },
+      { val: 'Chuyển khoản', label: 'Đã thu • Chuyển khoản' },
+      { val: 'Tiền mặt', label: 'Đã thu • Tiền mặt' },
+      { val: 'Thẻ', label: 'Đã thu • Quẹt thẻ' }
     ];
     let bg = '#fef3c7', color = '#92400e', border = '#fde68a';
     if (currentMethod !== 'Chưa thanh toán') {
       bg = '#dcfce7'; color = '#166534'; border = '#86efac';
     }
     const opts = methods.map(m => `<option value="${m.val}" ${m.val === currentMethod ? 'selected' : ''}>${m.label}</option>`).join('');
-    return `<select onchange="changePaymentMethod('${malich}', this.value)" title="Nhấp để chọn phương thức thanh toán cho đơn ${malich}" style="width:auto;min-width:138px;padding:4px 8px;font-size:12px;font-weight:700;border-radius:999px;background:${bg};color:${color};border:1px solid ${border};cursor:pointer;">${opts}</select>`;
+    return `<select onchange="changePaymentMethod('${malich}', this.value)" title="Cập nhật thanh toán cho lịch #${malich}" style="width:auto;min-width:154px;padding:4px 8px;font-size:12px;font-weight:700;border-radius:999px;background:${bg};color:${color};border:1px solid ${border};cursor:pointer;">${opts}</select>`;
   }
 
   async function changePaymentMethod(malich, newMethod) {
     const lh = STATE.lich_hen.find(l => l.MaLich === malich);
     if (!lh) return;
+    if ((lh.TrangThai === 'Đã hủy' || lh.TrangThai === 'Không đến') && newMethod !== 'Chưa thanh toán') {
+      alert(`Lịch hẹn #${malich} đang ở trạng thái "${lh.TrangThai}" nên không thể ghi nhận thu tiền.`);
+      renderBookingsTable();
+      runSearch();
+      return;
+    }
 
-    let sqlText = '';
     if (STATE.usingApi) {
       const res = await fetch('/api/thanh_toan/method', {
         method: 'POST',
@@ -1332,12 +2293,14 @@ WHERE MaNV = :MaNV AND TrangThai NOT IN ('Đã hủy', 'Không đến')
       });
       const data = await res.json();
       if (!res.ok || !data.ok) {
-        alert((data.errors || ['Lỗi cập nhật phương thức thanh toán']).join('\n'));
+        alert((data.errors || ['Không thể cập nhật thông tin thanh toán.']).join('\n'));
         renderBookingsTable();
         runSearch();
         return;
       }
-      sqlText = data.sql || '';
+      if (data.updated_lh_status) {
+        lh.TrangThai = data.updated_lh_status;
+      }
       if (data.thanh_toan) {
         STATE.thanh_toan.push(data.thanh_toan);
       } else {
@@ -1357,16 +2320,13 @@ WHERE MaNV = :MaNV AND TrangThai NOT IN ('Đã hủy', 'Không đến')
       const nowStr = new Date().toISOString().slice(0, 19).replace('T', ' ');
       const exTt = STATE.thanh_toan.find(t => t.MaLich === malich);
       if (newMethod === 'Chưa thanh toán') {
-        if (exTt) {
-          exTt.TrangThaiTT = 'Chưa thanh toán';
-          sqlText = `UPDATE THANH_TOAN SET TrangThaiTT = 'Chưa thanh toán' WHERE MaLich = '${malich}';`;
-        }
+        if (exTt) exTt.TrangThaiTT = 'Chưa thanh toán';
       } else {
+        if (lh.TrangThai !== 'Hoàn thành') lh.TrangThai = 'Hoàn thành';
         if (exTt) {
           exTt.PhuongThuc = newMethod;
           exTt.TrangThaiTT = 'Đã thanh toán';
           exTt.SoTien = sotien;
-          sqlText = `UPDATE THANH_TOAN SET PhuongThuc = '${newMethod}', TrangThaiTT = 'Đã thanh toán', SoTien = ${sotien} WHERE MaLich = '${malich}';`;
         } else {
           const nums = STATE.thanh_toan.map(t => parseInt(t.MaTT.replace(/\D/g, ''), 10) || 0);
           const nextTt = 'TT' + String(Math.max(0, ...nums) + 1).padStart(3, '0');
@@ -1378,23 +2338,19 @@ WHERE MaNV = :MaNV AND TrangThai NOT IN ('Đã hủy', 'Không đến')
             PhuongThuc: newMethod,
             TrangThaiTT: 'Đã thanh toán'
           });
-          sqlText = `INSERT INTO THANH_TOAN (MaTT, MaLich, ThoiGianThanhToan, SoTien, PhuongThuc, TrangThaiTT) VALUES ('${nextTt}', '${malich}', '${nowStr}', ${sotien}, '${newMethod}', 'Đã thanh toán');`;
         }
       }
     }
 
+    renderAdminStats();
     renderBookingsTable();
     runSearch();
     renderReports();
 
     const alertBox = document.getElementById('bookingAlert');
-    const sqlLog = document.getElementById('bookingSqlLog');
-    if (sqlLog && sqlText) {
-      sqlLog.textContent = `-- [CẬP NHẬT PHƯƠNG THỨC THANH TOÁN ĐƠN ${malich}]\n${sqlText}`;
-    }
     if (alertBox) {
       alertBox.className = 'alert alert-success show';
-      alertBox.innerHTML = `<strong>ĐÃ CẬP NHẬT THANH TOÁN:</strong> Đơn <strong>${malich}</strong> đã được chuyển sang hình thức <strong>"${newMethod}"</strong> trong bảng <code>THANH_TOAN</code> và cập nhật tức thời sang Báo cáo Doanh thu!`;
+      alertBox.innerHTML = `<strong>Đã cập nhật thanh toán:</strong> Lịch hẹn <strong>#${malich}</strong> đã chuyển sang <strong>"${escHtml(newMethod)}"</strong>.`;
     }
   }
 
@@ -1407,8 +2363,6 @@ WHERE MaNV = :MaNV AND TrangThai NOT IN ('Đã hủy', 'Không đến')
     const existingTt = STATE.thanh_toan.find(t => t.MaLich === malich);
     const phuongThuc = existingTt && existingTt.PhuongThuc ? existingTt.PhuongThuc : 'Chuyển khoản';
 
-    let sqlText = `UPDATE LICH_HEN SET TrangThai = '${newStatus}' WHERE MaLich = '${malich}';`;
-
     if (STATE.usingApi) {
       const res = await fetch('/api/lich_hen/status', {
         method: 'POST',
@@ -1417,12 +2371,11 @@ WHERE MaNV = :MaNV AND TrangThai NOT IN ('Đã hủy', 'Không đến')
       });
       const data = await res.json();
       if (!res.ok || !data.ok) {
-        alert((data.errors || ['Lỗi cập nhật trạng thái']).join('\n'));
+        alert((data.errors || ['Không thể cập nhật trạng thái lịch hẹn.']).join('\n'));
         renderBookingsTable();
         runSearch();
         return;
       }
-      if (data.sql) sqlText = data.sql;
       if (data.thanh_toan) {
         STATE.thanh_toan.push(data.thanh_toan);
       } else if (newStatus === 'Hoàn thành') {
@@ -1456,7 +2409,6 @@ WHERE MaNV = :MaNV AND TrangThai NOT IN ('Đã hủy', 'Không đến')
             PhuongThuc: phuongThuc,
             TrangThaiTT: 'Đã thanh toán'
           });
-          sqlText += `\n-- Tự động ghi nhận phiếu thu vào bảng THANH_TOAN:\nINSERT INTO THANH_TOAN (MaTT, MaLich, ThoiGianThanhToan, SoTien, PhuongThuc, TrangThaiTT) VALUES ('${nextTt}', '${malich}', '${nowStr}', ${sotien}, '${phuongThuc}', 'Đã thanh toán');`;
         }
       } else if (newStatus === 'Đã hủy' || newStatus === 'Không đến') {
         const exTt = STATE.thanh_toan.find(t => t.MaLich === malich);
@@ -1465,38 +2417,50 @@ WHERE MaNV = :MaNV AND TrangThai NOT IN ('Đã hủy', 'Không đến')
     }
 
     lh.TrangThai = newStatus;
+    renderAdminStats();
     renderBookingsTable();
     runSearch();
     renderReports();
+    refreshStaffDropdownAvailability();
 
     const alertBox = document.getElementById('bookingAlert');
-    const sqlLog = document.getElementById('bookingSqlLog');
-    if (sqlLog) {
-      sqlLog.textContent = `-- [CẬP NHẬT TRẠNG THÁI ĐƠN ${malich}: '${oldStatus}' -> '${newStatus}']\n${sqlText}`;
-    }
     if (alertBox) {
       alertBox.className = 'alert alert-success show';
-      alertBox.innerHTML = `<strong>ĐÃ CẬP NHẬT TRẠNG THÁI:</strong> Đơn lịch hẹn <strong>${malich}</strong> đã chuyển từ <em>"${oldStatus}"</em> sang <strong>"${newStatus}"</strong>${newStatus === 'Hoàn thành' ? ` (Bạn có thể đổi nhanh Phương thức thanh toán ở cột bên cạnh)` : ''}!`;
+      alertBox.innerHTML = `<strong>Đã cập nhật trạng thái:</strong> Lịch hẹn <strong>#${malich}</strong> đã chuyển từ <em>"${escHtml(displayStatusLabel(oldStatus))}"</em> sang <strong>"${escHtml(displayStatusLabel(newStatus))}"</strong>.`;
     }
   }
 
   function renderBookingsTable() {
-    const rows = getEnrichedBookings();
+    const allRows = getEnrichedBookings();
+    const matchedKh = APP_ROLE_VIEW === 'customer' ? getMatchedCustomer() : null;
+    const rows = allRows.filter(r => {
+      if (APP_ROLE_VIEW === 'customer') {
+        return matchedKh ? r.MaKH === matchedKh.MaKH : false;
+      }
+      return true;
+    });
     document.getElementById('bookingCount').textContent = rows.length;
+    if (rows.length === 0) {
+      const msg = APP_ROLE_VIEW === 'customer'
+        ? 'Nhập số điện thoại của bạn ở thanh tra cứu phía trên để xem lịch hẹn của bạn.'
+        : 'Chưa có lịch hẹn nào.';
+      document.getElementById('bookingTableBody').innerHTML = `<tr><td colspan="9" style="text-align:center;padding:20px;color:#64748b;">${msg}</td></tr>`;
+      return;
+    }
     document.getElementById('bookingTableBody').innerHTML = rows.map(r => `<tr>
-      <td><strong>${r.MaLich}</strong></td>
-      <td>${r.NgayGioHen.slice(0, 16)}</td>
-      <td><strong>${r.TenThuCung}</strong> (${r.Loai})<br/><small style="color:#475569">KH: ${r.TenKhachHang} (${r.SDTKhachHang})</small></td>
-      <td>${r.TenDV}</td>
+      <td><strong>#${r.MaLich}</strong></td>
+      <td style="white-space:nowrap;">${escHtml(r.KhungGio)}</td>
+      <td><strong>${escHtml(r.TenThuCung)}</strong> (${escHtml(r.Loai)})<br/><small style="color:#475569">${escHtml(r.TenKhachHang)} • ${escHtml(r.SDTKhachHang)}</small></td>
+      <td>${escHtml(r.TenDV)}<br/><small style="color:var(--primary);font-weight:600;">⏱ ${r.ThoiLuongPhut} phút</small></td>
       <td class="num">${r.SoLuong}</td>
       <td class="num"><strong>${fmtMoney(r.ThanhTienDuKien)}</strong></td>
-      <td>${r.TenNhanVien}<br/><small style="color:#64748b">${r.CaLamViec}</small></td>
+      <td>${escHtml(r.TenNhanVien)}<br/><small style="color:#64748b">${escHtml(r.CaLamViec)}</small></td>
       <td>${statusSelectHtml(r.MaLich, r.TrangThai)}</td>
-      <td>${paymentSelectHtml(r.MaLich, r.PhuongThucThanhToan)}</td>
+      <td>${paymentSelectHtml(r.MaLich, r.PhuongThucThanhToan, r.TrangThai)}</td>
     </tr>`).join('');
   }
 
-  // ======================= MỤC 5.1: VALIDATION & DEMO CHO KHACH_HANG & THU_CUNG =======================
+  // ======================= HỒ SƠ KHÁCH HÀNG & THÚ CƯNG =======================
   function nextPetId() {
     const nums = STATE.thu_cung.map(t => parseInt(t.MaThuCung.replace(/\D/g, ''), 10) || 0);
     const next = Math.max(0, ...nums) + 1;
@@ -1504,105 +2468,39 @@ WHERE MaNV = :MaNV AND TrangThai NOT IN ('Đã hủy', 'Không đến')
   }
 
   function resetPetForm() {
+    EDIT_PET_ID = null;
+    EDIT_KH_ID = null;
+    document.getElementById('petEditModeBanner').style.display = 'none';
     setCustomerMode('existing');
     document.getElementById('tc_matc').value = nextPetId();
-    document.getElementById('tc_makh').value = 'KH002';
     document.getElementById('kh_makh').value = nextCustomerId();
+    const matchedKh = APP_ROLE_VIEW === 'customer' ? getMatchedCustomer() : null;
+    if (matchedKh) {
+      document.getElementById('tc_makh').value = matchedKh.MaKH;
+    } else if (STATE.khach_hang.length > 0) {
+      document.getElementById('tc_makh').value = STATE.khach_hang[0].MaKH;
+    }
     document.getElementById('kh_hoten').value = '';
     document.getElementById('kh_sdt').value = '';
     document.getElementById('kh_email').value = '';
     document.getElementById('kh_diachi').value = '';
     document.getElementById('tc_ten').value = '';
-    document.getElementById('tc_loai').value = 'Mèo';
+    document.getElementById('tc_loai').value = 'Chó';
     document.getElementById('tc_giong').value = '';
-    document.getElementById('tc_gioitinh').value = 'Cái';
+    document.getElementById('tc_gioitinh').value = 'Đực';
     document.getElementById('tc_tuoi').value = '';
+    if (document.getElementById('tc_birthmonth')) document.getElementById('tc_birthmonth').value = '';
     document.getElementById('tc_cannang').value = '';
     document.getElementById('tc_ghichu').value = '';
     document.getElementById('petAlert').className = 'alert';
     document.querySelectorAll('#petForm input, #petForm select').forEach(el => el.classList.remove('invalid'));
-  }
-
-  function demoNewCustomerAndPet() {
-    resetPetForm();
-    setCustomerMode('new');
-    document.getElementById('kh_makh').value = nextCustomerId();
-    document.getElementById('kh_hoten').value = 'Đặng Quốc Khánh';
-    document.getElementById('kh_sdt').value = '0968889999';
-    document.getElementById('kh_email').value = 'khanh.dang@gmail.com';
-    document.getElementById('kh_diachi').value = '108 Láng Hạ, Đống Đa, Hà Nội';
-
-    document.getElementById('tc_matc').value = nextPetId();
-    document.getElementById('tc_ten').value = 'Bông';
-    document.getElementById('tc_loai').value = 'Chó';
-    document.getElementById('tc_giong').value = 'Bichon Frise';
-    document.getElementById('tc_gioitinh').value = 'Cái';
-    document.getElementById('tc_tuoi').value = '16';
-    document.getElementById('tc_cannang').value = '5.2';
-    document.getElementById('tc_ghichu').value = 'Khách hàng mới lần đầu đến Spa, lông trắng cần tắm dưỡng';
-  }
-
-  function demoPetError(type) {
-    resetPetForm();
-    if (type === 'kh_sdt') {
-      setCustomerMode('new');
-      document.getElementById('kh_makh').value = nextCustomerId();
-      document.getElementById('kh_hoten').value = 'Ngô Văn Hùng';
-      document.getElementById('kh_sdt').value = '12345'; // Sai định dạng CHECK 10-11 số bắt đầu bằng 0
-      document.getElementById('kh_sdt').classList.add('invalid');
-      document.getElementById('tc_matc').value = nextPetId();
-      document.getElementById('tc_ten').value = 'Cún';
-      document.getElementById('tc_loai').value = 'Chó';
-      document.getElementById('tc_tuoi').value = '12';
-      document.getElementById('tc_cannang').value = '6.0';
-    } else if (type === 'pk') {
-      document.getElementById('tc_matc').value = 'TC001';
-      document.getElementById('tc_makh').value = 'KH001';
-      document.getElementById('tc_ten').value = 'Milo Bản Sao';
-      document.getElementById('tc_loai').value = 'Chó';
-      document.getElementById('tc_giong').value = 'Poodle';
-      document.getElementById('tc_tuoi').value = '12';
-      document.getElementById('tc_cannang').value = '4.0';
-      document.getElementById('tc_matc').classList.add('invalid');
-    } else if (type === 'check') {
-      document.getElementById('tc_matc').value = nextPetId();
-      document.getElementById('tc_makh').value = 'KH002';
-      document.getElementById('tc_ten').value = 'Bông';
-      document.getElementById('tc_loai').value = 'Mèo';
-      document.getElementById('tc_giong').value = 'Ragdoll';
-      document.getElementById('tc_tuoi').value = '0';
-      document.getElementById('tc_cannang').value = '-3.5';
-      document.getElementById('tc_tuoi').classList.add('invalid');
-      document.getElementById('tc_cannang').classList.add('invalid');
-    } else if (type === 'fk') {
-      document.getElementById('tc_matc').value = nextPetId();
-      document.getElementById('tc_makh').value = 'KH999';
-      document.getElementById('tc_ten').value = 'Lucky';
-      document.getElementById('tc_loai').value = 'Chó';
-      document.getElementById('tc_giong').value = 'Husky';
-      document.getElementById('tc_tuoi').value = '18';
-      document.getElementById('tc_cannang').value = '16.5';
-      document.getElementById('tc_makh').classList.add('invalid');
-    }
-    submitPetForm(new Event('submit'));
-  }
-
-  function demoPetValid() {
-    resetPetForm();
-    document.getElementById('tc_matc').value = nextPetId();
-    document.getElementById('tc_makh').value = 'KH002';
-    document.getElementById('tc_ten').value = 'Kem';
-    document.getElementById('tc_loai').value = 'Mèo';
-    document.getElementById('tc_giong').value = 'Ragdoll mắt xanh';
-    document.getElementById('tc_gioitinh').value = 'Cái';
-    document.getElementById('tc_tuoi').value = '14';
-    document.getElementById('tc_cannang').value = '4.1';
-    document.getElementById('tc_ghichu').value = 'Lông dài mượt, đã tiêm phòng đầy đủ';
+    refreshCustomerPortalUI();
   }
 
   async function submitCustomerOnly() {
+    const isUpdate = Boolean(EDIT_KH_ID);
     const khPayload = {
-      MaKH: document.getElementById('kh_makh').value.trim(),
+      MaKH: document.getElementById('kh_makh').value.trim() || nextCustomerId(),
       HoTen: document.getElementById('kh_hoten').value.trim(),
       SDT: document.getElementById('kh_sdt').value.trim(),
       Email: document.getElementById('kh_email').value.trim(),
@@ -1610,37 +2508,30 @@ WHERE MaNV = :MaNV AND TrangThai NOT IN ('Đã hủy', 'Không đến')
     };
 
     const errors = [];
-    if (!/^KH\d{3,}$/.test(khPayload.MaKH)) {
-      errors.push("Mã khách hàng (MaKH) phải đúng định dạng 'KHxxx' (VD: KH007).");
-    }
-    if (STATE.khach_hang.some(k => k.MaKH === khPayload.MaKH)) {
-      errors.push(`Vi phạm Khóa chính (PRIMARY KEY): Mã khách hàng '${khPayload.MaKH}' đã tồn tại trong bảng KHACH_HANG.`);
-    }
     if (!khPayload.HoTen) {
-      errors.push("Ràng buộc NOT NULL: Họ tên khách hàng (HoTen) không được để trống.");
+      errors.push('Vui lòng nhập họ và tên khách hàng.');
     }
     if (!/^0\d{9,10}$/.test(khPayload.SDT)) {
-      errors.push(`Vi phạm Ràng buộc CHECK (CHK_KH_SDT): Số điện thoại '${khPayload.SDT}' phải gồm 10-11 chữ số và bắt đầu bằng số 0.`);
+      errors.push('Số điện thoại không hợp lệ (vui lòng nhập 10–11 chữ số và bắt đầu bằng số 0).');
     }
-    if (STATE.khach_hang.some(k => k.SDT === khPayload.SDT)) {
-      errors.push(`Vi phạm Ràng buộc UNIQUE: Số điện thoại '${khPayload.SDT}' đã được đăng ký cho khách hàng khác.`);
+    if (STATE.khach_hang.some(k => k.SDT === khPayload.SDT && k.MaKH !== khPayload.MaKH)) {
+      errors.push('Số điện thoại này đã được đăng ký cho một khách hàng khác.');
     }
-    if (khPayload.Email && STATE.khach_hang.some(k => k.Email && k.Email.toLowerCase() === khPayload.Email.toLowerCase())) {
-      errors.push(`Vi phạm Ràng buộc UNIQUE: Email '${khPayload.Email}' đã tồn tại trong bảng KHACH_HANG.`);
+    if (khPayload.Email && STATE.khach_hang.some(k => k.Email && k.Email.toLowerCase() === khPayload.Email.toLowerCase() && k.MaKH !== khPayload.MaKH)) {
+      errors.push('Địa chỉ email này đã được đăng ký cho một khách hàng khác.');
     }
 
     const alertBox = document.getElementById('petAlert');
-    const sqlLog = document.getElementById('petSqlLog');
-
     if (errors.length > 0) {
       alertBox.className = 'alert alert-error show';
-      alertBox.innerHTML = `<strong>LỖI KHI THÊM KHÁCH HÀNG MỚI (BẢNG KHACH_HANG):</strong><ul>` +
-        errors.map(err => `<li>${err}</li>`).join('') + `</ul>`;
+      alertBox.innerHTML = `<strong>Vui lòng kiểm tra lại thông tin:</strong><ul>` +
+        errors.map(err => `<li>${escHtml(err)}</li>`).join('') + `</ul>`;
       return;
     }
 
     if (STATE.usingApi) {
-      const res = await fetch('/api/khach_hang', {
+      const url = isUpdate ? '/api/khach_hang/update' : '/api/khach_hang';
+      const res = await fetch(url, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(khPayload)
@@ -1648,32 +2539,55 @@ WHERE MaNV = :MaNV AND TrangThai NOT IN ('Đã hủy', 'Không đến')
       const data = await res.json();
       if (!res.ok || !data.ok) {
         alertBox.className = 'alert alert-error show';
-        alertBox.innerHTML = `<strong>LỖI TỪ CSDL:</strong><ul>` + (data.errors || []).map(x => `<li>${x}</li>`).join('') + `</ul>`;
+        alertBox.innerHTML = `<strong>Không thể lưu thông tin:</strong><ul>` + (data.errors || []).map(x => `<li>${escHtml(x)}</li>`).join('') + `</ul>`;
         return;
       }
+      if (data.MaKH) khPayload.MaKH = data.MaKH;
     }
 
-    STATE.khach_hang.push(khPayload);
+    if (isUpdate) {
+      const idx = STATE.khach_hang.findIndex(k => k.MaKH === khPayload.MaKH);
+      if (idx >= 0) STATE.khach_hang[idx] = khPayload;
+      alertBox.className = 'alert alert-success show';
+      alertBox.innerHTML = `<strong>Thành công!</strong> Đã cập nhật thông tin khách hàng <strong>${escHtml(khPayload.HoTen)}</strong>.`;
+      EDIT_KH_ID = null;
+      document.getElementById('petEditModeBanner').style.display = 'none';
+      if (APP_ROLE_VIEW === 'customer') {
+        CUSTOMER_PHONE_FILTER = khPayload.SDT;
+        const topPhone = document.getElementById('custPortalPhone');
+        if (topPhone) topPhone.value = khPayload.SDT;
+      }
+    } else {
+      STATE.khach_hang.push(khPayload);
+      alertBox.className = 'alert alert-success show';
+      alertBox.innerHTML = `<strong>Thành công!</strong> Đã lưu thông tin khách hàng <strong>${escHtml(khPayload.HoTen)}</strong>.`;
+    }
+
+    renderAdminStats();
     populateSelects();
     renderPetsTable();
+    renderBookingsTable();
+    runSearch();
     setCustomerMode('existing');
     document.getElementById('tc_makh').value = khPayload.MaKH;
-
-    const emailVal = khPayload.Email ? `'${khPayload.Email}'` : 'NULL';
-    sqlLog.textContent = `-- [THỰC THI THÀNH CÔNG BƯỚC 1 - BẢNG CHA KHACH_HANG]\nINSERT INTO KHACH_HANG (MaKH, HoTen, SDT, Email, DiaChi)\nVALUES ('${khPayload.MaKH}', '${khPayload.HoTen}', '${khPayload.SDT}', ${emailVal}, '${khPayload.DiaChi}');`;
-    alertBox.className = 'alert alert-success show';
-    alertBox.innerHTML = `<strong>THÀNH CÔNG:</strong> Đã thêm khách hàng mới <strong>${khPayload.HoTen} (${khPayload.MaKH})</strong> vào bảng <code>KHACH_HANG</code> và tự động chọn làm chủ sở hữu ở Bước 2!`;
+    refreshCustomerPortalUI();
   }
 
   async function submitPetForm(e) {
     if (e && e.preventDefault) e.preventDefault();
 
+    if (EDIT_KH_ID) {
+      await submitCustomerOnly();
+      return;
+    }
+
+    const isUpdatePet = Boolean(EDIT_PET_ID);
     let newKhObj = null;
     let makh = document.getElementById('tc_makh').value.trim();
 
-    if (CUSTOMER_MODE === 'new') {
+    if (CUSTOMER_MODE === 'new' && !isUpdatePet) {
       newKhObj = {
-        MaKH: document.getElementById('kh_makh').value.trim(),
+        MaKH: document.getElementById('kh_makh').value.trim() || nextCustomerId(),
         HoTen: document.getElementById('kh_hoten').value.trim(),
         SDT: document.getElementById('kh_sdt').value.trim(),
         Email: document.getElementById('kh_email').value.trim(),
@@ -1683,7 +2597,7 @@ WHERE MaNV = :MaNV AND TrangThai NOT IN ('Đã hủy', 'Không đến')
     }
 
     const payload = {
-      MaThuCung: document.getElementById('tc_matc').value.trim(),
+      MaThuCung: (isUpdatePet ? EDIT_PET_ID : document.getElementById('tc_matc').value.trim()) || nextPetId(),
       MaKH: makh,
       TenThuCung: document.getElementById('tc_ten').value.trim(),
       Loai: document.getElementById('tc_loai').value.trim(),
@@ -1699,67 +2613,45 @@ WHERE MaNV = :MaNV AND TrangThai NOT IN ('Đã hủy', 'Không đến')
 
     const errors = [];
     if (newKhObj) {
-      if (!/^KH\d{3,}$/.test(newKhObj.MaKH)) {
-        errors.push("Mã khách hàng mới (MaKH) phải đúng định dạng 'KHxxx' (VD: KH007).");
-      }
-      if (STATE.khach_hang.some(k => k.MaKH === newKhObj.MaKH)) {
-        errors.push(`Vi phạm Khóa chính (PRIMARY KEY): Mã khách hàng '${newKhObj.MaKH}' đã tồn tại trong bảng KHACH_HANG.`);
-      }
       if (!newKhObj.HoTen) {
-        errors.push("Ràng buộc NOT NULL: Họ tên khách hàng mới (HoTen) không được để trống.");
+        errors.push('Vui lòng nhập họ và tên khách hàng.');
       }
       if (!/^0\d{9,10}$/.test(newKhObj.SDT)) {
-        errors.push(`Vi phạm Ràng buộc CHECK (CHK_KH_SDT): SĐT khách hàng '${newKhObj.SDT}' phải gồm 10-11 chữ số và bắt đầu bằng số 0.`);
+        errors.push('Số điện thoại không hợp lệ (vui lòng nhập 10–11 chữ số và bắt đầu bằng số 0).');
       }
       if (STATE.khach_hang.some(k => k.SDT === newKhObj.SDT)) {
-        errors.push(`Vi phạm Ràng buộc UNIQUE: Số điện thoại '${newKhObj.SDT}' đã tồn tại trong bảng KHACH_HANG.`);
+        errors.push('Số điện thoại này đã được đăng ký cho một khách hàng khác.');
       }
       if (newKhObj.Email && STATE.khach_hang.some(k => k.Email && k.Email.toLowerCase() === newKhObj.Email.toLowerCase())) {
-        errors.push(`Vi phạm Ràng buộc UNIQUE: Email '${newKhObj.Email}' đã tồn tại trong bảng KHACH_HANG.`);
+        errors.push('Địa chỉ email này đã được đăng ký cho một khách hàng khác.');
       }
-    } else {
-      if (!STATE.khach_hang.some(k => k.MaKH === payload.MaKH)) {
-        errors.push(`Vi phạm Ràng buộc Khóa ngoại (FOREIGN KEY FK_TC_KH): Mã khách hàng '${payload.MaKH}' không tồn tại trong bảng KHACH_HANG.`);
-      }
+    } else if (!STATE.khach_hang.some(k => k.MaKH === payload.MaKH)) {
+      errors.push('Vui lòng chọn hoặc nhập thông tin chủ nuôi.');
     }
 
-    if (!/^TC\d{3,}$/.test(payload.MaThuCung)) {
-      errors.push("Mã thú cưng (MaThuCung) không đúng định dạng chuẩn 'TCxxx' (VD: TC008).");
-    }
-    if (STATE.thu_cung.some(t => t.MaThuCung === payload.MaThuCung)) {
-      errors.push(`Vi phạm Ràng buộc Khóa chính (PRIMARY KEY): Mã thú cưng '${payload.MaThuCung}' đã tồn tại trong bảng THU_CUNG.`);
-    }
     if (!payload.TenThuCung) {
-      errors.push("Ràng buộc NOT NULL: Tên thú cưng (TenThuCung) không được để trống.");
+      errors.push('Vui lòng nhập tên thú cưng.');
     }
     const tuoi = Number(payload.Tuoi);
     if (!Number.isInteger(tuoi) || tuoi <= 0 || tuoi > 360) {
-      errors.push(`Vi phạm Ràng buộc miền giá trị (CHECK CHK_TC_Tuoi): Tuổi thú cưng (${payload.Tuoi}) phải nằm trong khoảng 1 đến 360 tháng.`);
+      errors.push('Độ tuổi thú cưng cần nằm trong khoảng từ 1 đến 360 tháng.');
     }
     const cannang = Number(payload.CanNang);
     if (isNaN(cannang) || cannang <= 0 || cannang > 150) {
-      errors.push(`Vi phạm Ràng buộc miền giá trị (CHECK CHK_TC_CanNang): Cân nặng (${payload.CanNang} kg) phải lớn hơn 0 và không vượt quá 150 kg.`);
+      errors.push('Cân nặng thú cưng cần nằm trong khoảng từ 0.1 đến 150 kg.');
     }
 
     const alertBox = document.getElementById('petAlert');
-    const sqlLog = document.getElementById('petSqlLog');
-
     if (errors.length > 0) {
       alertBox.className = 'alert alert-error show';
-      alertBox.innerHTML = `<strong>PHÁT HIỆN LỖI KHI KIỂM TRA TÍNH ĐÚNG ĐẮN DỮ LIỆU (ĐÃ CHẶN GHI VÀO CSDL):</strong><ul>` +
-        errors.map(err => `<li>${err}</li>`).join('') + `</ul>`;
-      let failedSql = '';
-      if (newKhObj) {
-        const emailVal = newKhObj.Email ? `'${newKhObj.Email}'` : 'NULL';
-        failedSql += `INSERT INTO KHACH_HANG (MaKH, HoTen, SDT, Email, DiaChi) VALUES ('${newKhObj.MaKH}', '${newKhObj.HoTen}', '${newKhObj.SDT}', ${emailVal}, '${newKhObj.DiaChi}');\n`;
-      }
-      failedSql += `INSERT INTO THU_CUNG (MaThuCung, MaKH, TenThuCung, Loai, Giong, GioiTinh, Tuoi, CanNang, GhiChu)\nVALUES ('${payload.MaThuCung}', '${payload.MaKH}', '${payload.TenThuCung}', '${payload.Loai}', '${payload.Giong}', '${payload.GioiTinh}', ${payload.Tuoi || 'NULL'}, ${payload.CanNang || 'NULL'}, '${payload.GhiChu}');`;
-      sqlLog.textContent = `-- [BỊ TỪ CHỐI BỞI BỘ KIỂM TRA RÀNG BUỘC TOÀN VẸN]\n${failedSql}\n-- Lỗi: ${errors[0]}`;
+      alertBox.innerHTML = `<strong>Vui lòng kiểm tra lại thông tin:</strong><ul>` +
+        errors.map(err => `<li>${escHtml(err)}</li>`).join('') + `</ul>`;
       return;
     }
 
     if (STATE.usingApi) {
-      const res = await fetch('/api/thu_cung', {
+      const url = isUpdatePet ? '/api/thu_cung/update' : '/api/thu_cung';
+      const res = await fetch(url, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload)
@@ -1767,171 +2659,207 @@ WHERE MaNV = :MaNV AND TrangThai NOT IN ('Đã hủy', 'Không đến')
       const data = await res.json();
       if (!res.ok || !data.ok) {
         alertBox.className = 'alert alert-error show';
-        alertBox.innerHTML = `<strong>LỖI TỪ HỆ QUẢN TRỊ CSDL:</strong><ul>` + (data.errors || []).map(x => `<li>${x}</li>`).join('') + `</ul>`;
+        alertBox.innerHTML = `<strong>Không thể lưu hồ sơ:</strong><ul>` + (data.errors || []).map(x => `<li>${escHtml(x)}</li>`).join('') + `</ul>`;
         return;
+      }
+      if (data.MaThuCung) payload.MaThuCung = data.MaThuCung;
+      if (data.MaKH) {
+        payload.MaKH = data.MaKH;
+        if (newKhObj) newKhObj.MaKH = data.MaKH;
       }
     }
 
-    let sqlExecuted = '';
-    if (newKhObj) {
-      STATE.khach_hang.push(newKhObj);
-      const emailVal = newKhObj.Email ? `'${newKhObj.Email}'` : 'NULL';
-      sqlExecuted += `-- Bước 1: Thêm Khách hàng mới vào bảng cha KHACH_HANG\nINSERT INTO KHACH_HANG (MaKH, HoTen, SDT, Email, DiaChi)\nVALUES ('${newKhObj.MaKH}', '${newKhObj.HoTen}', '${newKhObj.SDT}', ${emailVal}, '${newKhObj.DiaChi}');\n\n`;
+    if (isUpdatePet) {
+      const idx = STATE.thu_cung.findIndex(t => t.MaThuCung === payload.MaThuCung);
+      if (idx >= 0) {
+        STATE.thu_cung[idx] = {
+          MaThuCung: payload.MaThuCung,
+          MaKH: payload.MaKH,
+          TenThuCung: payload.TenThuCung,
+          Loai: payload.Loai,
+          Giong: payload.Giong,
+          GioiTinh: payload.GioiTinh,
+          Tuoi: tuoi,
+          CanNang: cannang,
+          GhiChu: payload.GhiChu
+        };
+      }
+      alertBox.className = 'alert alert-success show';
+      alertBox.innerHTML = `<strong>Đã cập nhật!</strong> Hồ sơ bé <strong>${escHtml(payload.TenThuCung)}</strong> (${cannang} kg, ${tuoi} tháng) đã được lưu.`;
+      EDIT_PET_ID = null;
+      document.getElementById('petEditModeBanner').style.display = 'none';
+    } else {
+      if (newKhObj) {
+        STATE.khach_hang.push(newKhObj);
+      }
+      STATE.thu_cung.push({
+        MaThuCung: payload.MaThuCung,
+        MaKH: payload.MaKH,
+        TenThuCung: payload.TenThuCung,
+        Loai: payload.Loai,
+        Giong: payload.Giong,
+        GioiTinh: payload.GioiTinh,
+        Tuoi: tuoi,
+        CanNang: cannang,
+        GhiChu: payload.GhiChu
+      });
+
+      if (APP_ROLE_VIEW === 'customer' && newKhObj) {
+        CUSTOMER_PHONE_FILTER = newKhObj.SDT;
+        const topPhone = document.getElementById('custPortalPhone');
+        if (topPhone) topPhone.value = newKhObj.SDT;
+      }
+
+      alertBox.className = 'alert alert-success show';
+      const actionBtn = `<div style="margin-top:8px;"><button type="button" class="btn btn-primary" style="padding:5px 12px;font-size:12px;" onclick="bookForPet('${payload.MaThuCung}')">Đặt lịch chăm sóc ngay cho ${escHtml(payload.TenThuCung)}</button></div>`;
+      alertBox.innerHTML = newKhObj
+        ? `<strong>Đăng ký thành công!</strong> Đã tạo hồ sơ cho <strong>${escHtml(newKhObj.HoTen)}</strong> và bé <strong>${escHtml(payload.TenThuCung)}</strong>.${actionBtn}`
+        : `<strong>Thành công!</strong> Đã lưu hồ sơ bé <strong>${escHtml(payload.TenThuCung)}</strong>.${actionBtn}`;
     }
-    STATE.thu_cung.push({
-      MaThuCung: payload.MaThuCung,
-      MaKH: payload.MaKH,
-      TenThuCung: payload.TenThuCung,
-      Loai: payload.Loai,
-      Giong: payload.Giong,
-      GioiTinh: payload.GioiTinh,
-      Tuoi: tuoi,
-      CanNang: cannang,
-      GhiChu: payload.GhiChu
-    });
+
+    renderAdminStats();
     populateSelects();
-    renderPetsTable();
-
-    sqlExecuted += `-- ${newKhObj ? 'Bước 2: ' : ''}Thêm Hồ sơ Thú cưng vào bảng con THU_CUNG (tham chiếu MaKH = '${payload.MaKH}')\nINSERT INTO THU_CUNG (MaThuCung, MaKH, TenThuCung, Loai, Giong, GioiTinh, Tuoi, CanNang, GhiChu)\nVALUES ('${payload.MaThuCung}', '${payload.MaKH}', '${payload.TenThuCung}', '${payload.Loai}', '${payload.Giong}', '${payload.GioiTinh}', ${tuoi}, ${cannang}, '${payload.GhiChu}');`;
-    sqlLog.textContent = `-- [THỰC THI THÀNH CÔNG]\n${sqlExecuted}`;
-    alertBox.className = 'alert alert-success show';
-    alertBox.innerHTML = newKhObj
-      ? `<strong>THÀNH CÔNG:</strong> Đã thêm Khách hàng mới <strong>${newKhObj.HoTen} (${newKhObj.MaKH})</strong> vào bảng <code>KHACH_HANG</code> trước, sau đó thêm Hồ sơ Thú cưng <strong>${payload.TenThuCung} (${payload.MaThuCung})</strong> vào bảng <code>THU_CUNG</code>!`
-      : `<strong>THÀNH CÔNG:</strong> Đã kiểm tra hợp lệ toàn bộ ràng buộc (PK, FK, NOT NULL, CHECK) và thêm thú cưng <strong>${payload.TenThuCung} (${payload.MaThuCung})</strong> vào CSDL!`;
-
     setCustomerMode('existing');
     document.getElementById('tc_makh').value = payload.MaKH;
     document.getElementById('tc_matc').value = nextPetId();
     document.getElementById('kh_makh').value = nextCustomerId();
+    document.getElementById('tc_ten').value = '';
+    document.getElementById('tc_giong').value = '';
+    document.getElementById('tc_tuoi').value = '';
+    if (document.getElementById('tc_birthmonth')) document.getElementById('tc_birthmonth').value = '';
+    document.getElementById('tc_cannang').value = '';
+    document.getElementById('tc_ghichu').value = '';
+    refreshCustomerPortalUI();
+    renderPetsTable();
+    renderBookingsTable();
+    runSearch();
   }
 
-  // ======================= MỤC 5.2: VALIDATION & DEMO CHO LICH_HEN =======================
-  function nextBookingId() {
+  // ======================= ĐẶT LỊCH HẸN =======================
+  function nextBookingId(offset = 1) {
     const nums = STATE.lich_hen.map(l => parseInt(l.MaLich.replace(/\D/g, ''), 10) || 0);
-    const next = Math.max(0, ...nums) + 1;
+    const next = Math.max(0, ...nums) + offset;
     return 'LH' + String(next).padStart(3, '0');
   }
 
   function resetBookingForm() {
+    COMBO_ENABLED = false;
+    const comboBox = document.getElementById('lh_combo_box');
+    const btnCombo = document.getElementById('btnToggleCombo');
+    if (comboBox) comboBox.style.display = 'none';
+    if (btnCombo) {
+      btnCombo.textContent = '+ Thêm dịch vụ đi kèm (Combo)';
+      btnCombo.className = 'btn btn-secondary';
+    }
+    if (document.getElementById('lh_search_pet')) document.getElementById('lh_search_pet').value = '';
+    if (document.getElementById('lh_filter_kh')) document.getElementById('lh_filter_kh').value = '';
+    filterBookingPetDropdown('');
     document.getElementById('lh_malich').value = nextBookingId();
-    document.getElementById('lh_matc').value = 'TC001';
-    document.getElementById('lh_madv').value = 'DV001';
+    if (STATE.dich_vu.length > 0) document.getElementById('lh_madv').value = STATE.dich_vu[0].MaDV;
     document.getElementById('lh_soluong').value = '1';
-    document.getElementById('lh_manv').value = 'NV004';
     document.getElementById('lh_ngaygio').value = '2026-11-12T09:30';
     document.getElementById('lh_trangthai').value = 'Đã xác nhận';
     document.getElementById('lh_ghichu').value = '';
     document.getElementById('bookingAlert').className = 'alert';
     updateOwnerPreview();
-    updatePricePreview();
-  }
-
-  function demoBookingError(type) {
-    resetBookingForm();
-    if (type === 'off_staff') {
-      document.getElementById('lh_manv').value = 'NV006'; // Hoàng Minh Đức - Nghỉ phép
-      document.getElementById('lh_ngaygio').value = '2026-11-12T18:00';
-      document.getElementById('lh_ghichu').value = 'Thử phân công nhân viên đang nghỉ phép';
-    } else if (type === 'wrong_shift') {
-      document.getElementById('lh_manv').value = 'NV002'; // Nguyễn Văn Khoa - Ca sáng (08:00-12:00)
-      document.getElementById('lh_ngaygio').value = '2026-11-12T15:30'; // Đặt giờ chiều
-      document.getElementById('lh_ghichu').value = 'Thử đặt lịch buổi chiều cho nhân viên ca sáng';
-    } else if (type === 'overlap') {
-      document.getElementById('lh_manv').value = 'NV003'; // Đã có lịch LH009 lúc 2026-11-09 14:30
-      document.getElementById('lh_ngaygio').value = '2026-11-09T14:45';
-      document.getElementById('lh_ghichu').value = 'Thử đặt trùng khung giờ với lịch hẹn LH009';
-    }
-    submitBookingForm(new Event('submit'));
-  }
-
-  function demoBookingValid() {
-    resetBookingForm();
-    document.getElementById('lh_malich').value = nextBookingId();
-    document.getElementById('lh_matc').value = 'TC004';
-    document.getElementById('lh_madv').value = 'DV003';
-    document.getElementById('lh_soluong').value = '1';
-    document.getElementById('lh_manv').value = 'NV004';
-    document.getElementById('lh_ngaygio').value = '2026-11-14T09:30';
-    document.getElementById('lh_trangthai').value = 'Đã xác nhận';
-    document.getElementById('lh_ghichu').value = 'Ủ dưỡng Collagen lông dài cho bé mèo Simba';
-    updateOwnerPreview();
-    updatePricePreview();
+    onBookingTimeOrServiceChange();
   }
 
   async function submitBookingForm(e) {
     if (e && e.preventDefault) e.preventDefault();
     const rawDt = document.getElementById('lh_ngaygio').value;
     const ngaygio = rawDt ? rawDt.replace('T', ' ') + (rawDt.length === 16 ? ':00' : '') : '';
+    const comboMadv = COMBO_ENABLED ? (document.getElementById('lh_combo_madv')?.value || '') : '';
+    const comboSl = COMBO_ENABLED ? parseInt(document.getElementById('lh_combo_soluong')?.value || '1', 10) : 0;
+    const comboMalich = COMBO_ENABLED ? nextBookingId(2) : '';
+
     const payload = {
-      MaLich: document.getElementById('lh_malich').value.trim(),
+      MaLich: document.getElementById('lh_malich').value.trim() || nextBookingId(),
       MaThuCung: document.getElementById('lh_matc').value.trim(),
       MaDV: document.getElementById('lh_madv').value.trim(),
       MaNV: document.getElementById('lh_manv').value.trim(),
       NgayGioHen: ngaygio,
       SoLuong: parseInt(document.getElementById('lh_soluong').value || '0', 10),
-      TrangThai: document.getElementById('lh_trangthai').value,
+      TrangThai: APP_ROLE_VIEW === 'customer' ? 'Mới tạo' : document.getElementById('lh_trangthai').value,
       GhiChu: document.getElementById('lh_ghichu').value.trim()
     };
+    if (COMBO_ENABLED && comboMadv) {
+      payload.ComboMaDV = comboMadv;
+      payload.ComboSoLuong = comboSl;
+      payload.ComboMaLich = comboMalich;
+    }
 
     const errors = [];
-    if (!/^LH\d{3,}$/.test(payload.MaLich)) {
-      errors.push("Mã lịch hẹn (MaLich) phải có định dạng 'LHxxx' (VD: LH012).");
+    if (!payload.MaThuCung || !STATE.thu_cung.some(t => t.MaThuCung === payload.MaThuCung)) {
+      errors.push('Vui lòng chọn thú cưng cần chăm sóc.');
     }
-    if (STATE.lich_hen.some(l => l.MaLich === payload.MaLich)) {
-      errors.push(`Vi phạm Khóa chính (PRIMARY KEY): Mã lịch hẹn '${payload.MaLich}' đã tồn tại trong bảng LICH_HEN.`);
+    if (!payload.MaDV) {
+      errors.push('Vui lòng chọn gói dịch vụ.');
     }
     if (!payload.SoLuong || payload.SoLuong <= 0) {
-      errors.push("Vi phạm Ràng buộc CHECK (CHK_LH_SoLuong): Số lượng dịch vụ phải lớn hơn 0.");
+      errors.push('Số lượng dịch vụ phải lớn hơn 0.');
     }
     if (!payload.NgayGioHen) {
-      errors.push("Ràng buộc NOT NULL: Ngày giờ hẹn (NgayGioHen) không được để trống.");
+      errors.push('Vui lòng chọn ngày và giờ hẹn.');
     }
+    if (COMBO_ENABLED && comboMadv === payload.MaDV) {
+      errors.push('Gói dịch vụ đi kèm không được trùng với dịch vụ chính (hãy tăng số lượng nếu dùng cùng một gói).');
+    }
+
+    const dur1 = calcStaffMinutes(payload.MaDV, payload.SoLuong);
+    const dur2 = (COMBO_ENABLED && comboMadv) ? calcStaffMinutes(comboMadv, comboSl) : 0;
+    const totalDur = dur1 + dur2;
 
     const nv = STATE.nhan_vien.find(n => n.MaNV === payload.MaNV);
     if (!nv) {
-      errors.push(`Vi phạm Khóa ngoại: Nhân viên '${payload.MaNV}' không tồn tại.`);
+      errors.push('Vui lòng chọn chuyên viên phụ trách.');
     } else {
       if (nv.TrangThai !== 'Đang làm việc') {
-        errors.push(`Vi phạm Quy tắc Nghiệp vụ Nhân sự: Nhân viên '${nv.HoTen}' (${nv.MaNV}) đang ở trạng thái '${nv.TrangThai}', không thể phân công thực hiện lịch hẹn!`);
+        errors.push(`Chuyên viên ${nv.HoTen} hiện đang ${nv.TrangThai.toLowerCase()}, vui lòng chọn chuyên viên khác.`);
       }
       if (payload.NgayGioHen) {
-        const dt = new Date(payload.NgayGioHen.replace(' ', 'T'));
-        const hr = dt.getHours() + dt.getMinutes() / 60.0;
+        const dtStart = new Date(payload.NgayGioHen.replace(' ', 'T'));
+        const dtEnd = new Date(dtStart.getTime() + totalDur * 60000);
+        const hrStart = dtStart.getHours() + dtStart.getMinutes() / 60.0;
+        const hrEnd = dtEnd.getHours() + dtEnd.getMinutes() / 60.0 + (dtEnd.getDate() !== dtStart.getDate() ? 24.0 : 0.0);
         const ca = nv.CaLamViec;
-        if (ca.includes('Ca sáng') && !(hr >= 8 && hr <= 12)) {
-          errors.push(`Vi phạm Quy tắc Ca làm việc: Nhân viên '${nv.HoTen}' phụ trách '${ca}' nhưng giờ hẹn đặt lúc ${payload.NgayGioHen.slice(11, 16)}.`);
-        } else if (ca.includes('Ca chiều') && !(hr >= 13 && hr <= 17)) {
-          errors.push(`Vi phạm Quy tắc Ca làm việc: Nhân viên '${nv.HoTen}' phụ trách '${ca}' nhưng giờ hẹn đặt lúc ${payload.NgayGioHen.slice(11, 16)}.`);
-        } else if (ca.includes('Ca tối') && !(hr >= 17 && hr <= 21)) {
-          errors.push(`Vi phạm Quy tắc Ca làm việc: Nhân viên '${nv.HoTen}' phụ trách '${ca}' nhưng giờ hẹn đặt lúc ${payload.NgayGioHen.slice(11, 16)}.`);
-        } else if (ca.includes('Hành chính') && !(hr >= 8 && hr <= 17)) {
-          errors.push(`Vi phạm Quy tắc Ca làm việc: Nhân viên '${nv.HoTen}' phụ trách '${ca}' nhưng giờ hẹn đặt lúc ${payload.NgayGioHen.slice(11, 16)}.`);
+        let sMin = 8, sMax = 21;
+        if (ca.includes('Ca sáng')) { sMin = 8; sMax = 12; }
+        else if (ca.includes('Ca chiều')) { sMin = 13; sMax = 17; }
+        else if (ca.includes('Ca tối')) { sMin = 17; sMax = 21; }
+        else if (ca.includes('Hành chính')) { sMin = 8; sMax = 17; }
+
+        if (!(hrStart >= sMin && hrStart < sMax)) {
+          errors.push(`Chuyên viên ${nv.HoTen} làm việc ${ca}, chưa phù hợp với giờ hẹn ${payload.NgayGioHen.slice(11, 16)}. Vui lòng chọn giờ khác hoặc chuyên viên khác.`);
+        } else if (hrEnd > sMax) {
+          errors.push(`Tổng thời gian chăm sóc dự kiến là ${totalDur} phút (${dtStart.toTimeString().slice(0, 5)} – ${dtEnd.toTimeString().slice(0, 5)}), vượt quá giờ kết thúc ca làm việc (${ca}).`);
         }
 
-        // Check overlap within 60 mins
         const overlap = STATE.lich_hen.find(l => {
           if (l.MaNV !== payload.MaNV || l.TrangThai === 'Đã hủy' || l.TrangThai === 'Không đến') return false;
-          const t1 = new Date(l.NgayGioHen.replace(' ', 'T')).getTime();
-          const t2 = dt.getTime();
-          return Math.abs(t1 - t2) / 60000 < 60;
+          const exStart = new Date(l.NgayGioHen.slice(0, 16).replace(' ', 'T'));
+          const exDur = calcStaffMinutes(l.MaDV, l.SoLuong);
+          const exEnd = new Date(exStart.getTime() + exDur * 60000);
+          return dtStart < exEnd && exStart < dtEnd;
         });
         if (overlap) {
-          errors.push(`Vi phạm Quy tắc Chống trùng lịch: Nhân viên '${nv.HoTen}' đã được phân công lịch hẹn '${overlap.MaLich}' vào lúc ${overlap.NgayGioHen.slice(0, 16)} (chồng lấn thời gian thực hiện).`);
+          const exStart = new Date(overlap.NgayGioHen.slice(0, 16).replace(' ', 'T'));
+          const exDur = calcStaffMinutes(overlap.MaDV, overlap.SoLuong);
+          const exEnd = new Date(exStart.getTime() + exDur * 60000);
+          errors.push(`Chuyên viên ${nv.HoTen} đã kín lịch trong khung giờ ${exStart.toTimeString().slice(0, 5)} – ${exEnd.toTimeString().slice(0, 5)} ngày ${overlap.NgayGioHen.slice(0, 10)}. Vui lòng chọn khung giờ khác hoặc chuyên viên khác.`);
         }
       }
     }
 
     const alertBox = document.getElementById('bookingAlert');
-    const sqlLog = document.getElementById('bookingSqlLog');
-
     if (errors.length > 0) {
       alertBox.className = 'alert alert-error show';
-      alertBox.innerHTML = `<strong>PHÁT HIỆN VI PHẠM RÀNG BUỘC KHI ĐẶT LỊCH HẸN (ĐÃ CHẶN LƯU):</strong><ul>` +
-        errors.map(e => `<li>${e}</li>`).join('') + `</ul>`;
-      sqlLog.textContent = `-- [BỊ CHẶN BỞI KIỂM TRA NGHIỆP VỤ & TOÀN VẸN DỮ LIỆU]\nINSERT INTO LICH_HEN (MaLich, MaThuCung, MaDV, MaNV, NgayGioHen, SoLuong, TrangThai, GhiChu)\nVALUES ('${payload.MaLich}', '${payload.MaThuCung}', '${payload.MaDV}', '${payload.MaNV}', '${payload.NgayGioHen}', ${payload.SoLuong}, '${payload.TrangThai}', '${payload.GhiChu}');\n-- Lý do từ chối: ${errors[0]}`;
+      alertBox.innerHTML = `<strong>Chưa thể đặt lịch hẹn:</strong><ul>` +
+        errors.map(err => `<li>${escHtml(err)}</li>`).join('') + `</ul>`;
       return;
     }
 
+    let createdIds = [payload.MaLich];
     if (STATE.usingApi) {
       const res = await fetch('/api/lich_hen', {
         method: 'POST',
@@ -1941,29 +2869,68 @@ WHERE MaNV = :MaNV AND TrangThai NOT IN ('Đã hủy', 'Không đến')
       const data = await res.json();
       if (!res.ok || !data.ok) {
         alertBox.className = 'alert alert-error show';
-        alertBox.innerHTML = `<strong>LỖI TỪ CSDL:</strong><ul>` + (data.errors || []).map(x => `<li>${x}</li>`).join('') + `</ul>`;
+        alertBox.innerHTML = `<strong>Chưa thể đặt lịch hẹn:</strong><ul>` + (data.errors || []).map(x => `<li>${escHtml(x)}</li>`).join('') + `</ul>`;
         return;
+      }
+      if (Array.isArray(data.created_bookings) && data.created_bookings.length > 0) {
+        createdIds = data.created_bookings;
       }
     }
 
-    STATE.lich_hen.push(payload);
+    const mainId = createdIds[0];
+    STATE.lich_hen.push({
+      MaLich: mainId,
+      MaThuCung: payload.MaThuCung,
+      MaDV: payload.MaDV,
+      MaNV: payload.MaNV,
+      NgayGioHen: payload.NgayGioHen,
+      SoLuong: payload.SoLuong,
+      TrangThai: payload.TrangThai,
+      GhiChu: payload.GhiChu
+    });
+
+    if (COMBO_ENABLED && comboMadv) {
+      const secondId = createdIds[1] || comboMalich;
+      const dtStart = new Date(payload.NgayGioHen.replace(' ', 'T'));
+      const dtCombo = new Date(dtStart.getTime() + dur1 * 60000);
+      const pad = n => String(n).padStart(2, '0');
+      const ngaygioCombo = `${dtCombo.getFullYear()}-${pad(dtCombo.getMonth() + 1)}-${pad(dtCombo.getDate())} ${pad(dtCombo.getHours())}:${pad(dtCombo.getMinutes())}:00`;
+      const ghichuCombo = `[Combo sau #${mainId}] ${payload.GhiChu}`.trim();
+      STATE.lich_hen.push({
+        MaLich: secondId,
+        MaThuCung: payload.MaThuCung,
+        MaDV: comboMadv,
+        MaNV: payload.MaNV,
+        NgayGioHen: ngaygioCombo,
+        SoLuong: comboSl,
+        TrangThai: payload.TrangThai,
+        GhiChu: ghichuCombo
+      });
+    }
+
+    renderAdminStats();
     renderBookingsTable();
     runSearch();
     renderReports();
+    onBookingTimeOrServiceChange();
 
-    const sqlText = `INSERT INTO LICH_HEN (MaLich, MaThuCung, MaDV, MaNV, NgayGioHen, SoLuong, TrangThai, GhiChu)\nVALUES ('${payload.MaLich}', '${payload.MaThuCung}', '${payload.MaDV}', '${payload.MaNV}', '${payload.NgayGioHen}', ${payload.SoLuong}, '${payload.TrangThai}', '${payload.GhiChu}');`;
-    sqlLog.textContent = `-- [THỰC THI THÀNH CÔNG]\n${sqlText}`;
     alertBox.className = 'alert alert-success show';
-    alertBox.innerHTML = `<strong>THÀNH CÔNG:</strong> Đã kiểm tra hợp lệ toàn bộ điều kiện (ca làm việc, trạng thái nhân viên, không trùng giờ hẹn) và lưu lịch hẹn <strong>${payload.MaLich}</strong> vào bảng <code>LICH_HEN</code>!`;
+    alertBox.innerHTML = COMBO_ENABLED && comboMadv
+      ? `<strong>Đặt lịch Combo thành công!</strong> Đã ghi nhận 2 lịch nối tiếp <strong>${createdIds.map(x => '#' + x).join(' và ')}</strong> (Tổng thời lượng: ${totalDur} phút).`
+      : `<strong>Đặt lịch hẹn thành công!</strong> Mã lịch hẹn của bạn là <strong>#${mainId}</strong> (Thời lượng dự kiến: ${totalDur} phút).`;
     document.getElementById('lh_malich').value = nextBookingId();
+    document.getElementById('lh_ghichu').value = '';
   }
 
-  // ======================= MỤC 6: TÌM KIẾM ĐA TIÊU CHÍ =======================
+  // ======================= TRA CỨU LỊCH HẸN =======================
+  let ACTIVE_FILTER_ONLY = false;
+
   function resetSearch() {
+    ACTIVE_FILTER_ONLY = false;
     document.getElementById('s_kw').value = '';
     document.getElementById('s_loai').value = '';
     document.getElementById('s_madv').value = '';
-    document.getElementById('s_manv').value = '';
+    if (document.getElementById('s_manv')) document.getElementById('s_manv').value = '';
     document.getElementById('s_trangthai').value = '';
     document.getElementById('s_tungay').value = '';
     document.getElementById('s_denngay').value = '';
@@ -1977,26 +2944,40 @@ WHERE MaNV = :MaNV AND TrangThai NOT IN ('Đã hủy', 'Không đến')
     runSearch();
   }
 
+  function quickFilterActive() {
+    resetSearch();
+    ACTIVE_FILTER_ONLY = true;
+    runSearch();
+  }
+
   function runSearch(e) {
     if (e && e.preventDefault) e.preventDefault();
     const kw = document.getElementById('s_kw').value.trim().toLowerCase();
     const loai = document.getElementById('s_loai').value;
     const madv = document.getElementById('s_madv').value;
-    const manv = document.getElementById('s_manv').value;
+    const manv = document.getElementById('s_manv') ? document.getElementById('s_manv').value : '';
     const trangthai = document.getElementById('s_trangthai').value;
     const tungay = document.getElementById('s_tungay').value;
     const denngay = document.getElementById('s_denngay').value;
 
+    const matchedKh = APP_ROLE_VIEW === 'customer' ? getMatchedCustomer() : null;
     const all = getEnrichedBookings();
     const filtered = all.filter(r => {
+      if (APP_ROLE_VIEW === 'customer') {
+        if (!matchedKh || r.MaKH !== matchedKh.MaKH) return false;
+      }
       if (kw) {
         const hay = `${r.MaLich} ${r.TenKhachHang} ${r.SDTKhachHang} ${r.TenThuCung}`.toLowerCase();
         if (!hay.includes(kw)) return false;
       }
       if (loai && r.Loai !== loai) return false;
       if (madv && r.MaDV !== madv) return false;
-      if (manv && r.MaNV !== manv) return false;
-      if (trangthai && r.TrangThai !== trangthai) return false;
+      if (APP_ROLE_VIEW === 'admin' && manv && r.MaNV !== manv) return false;
+      if (ACTIVE_FILTER_ONLY) {
+        if (!['Mới tạo', 'Đã xác nhận', 'Đang thực hiện'].includes(r.TrangThai)) return false;
+      } else if (trangthai && r.TrangThai !== trangthai) {
+        return false;
+      }
       const d = r.NgayGioHen.slice(0, 10);
       if (tungay && d < tungay) return false;
       if (denngay && d > denngay) return false;
@@ -2009,50 +2990,79 @@ WHERE MaNV = :MaNV AND TrangThai NOT IN ('Đã hủy', 'Không đến')
 
     const tbody = document.getElementById('searchTableBody');
     if (filtered.length === 0) {
-      tbody.innerHTML = `<tr><td colspan="11" style="text-align:center;padding:24px;color:#64748b;">Không tìm thấy bản ghi lịch hẹn nào khớp với điều kiện tra cứu.</td></tr>`;
+      const msg = APP_ROLE_VIEW === 'customer'
+        ? 'Nhập số điện thoại của bạn ở thanh tra cứu phía trên để xem lịch hẹn cá nhân.'
+        : 'Không tìm thấy lịch hẹn nào phù hợp với bộ lọc.';
+      tbody.innerHTML = `<tr><td colspan="11" style="text-align:center;padding:24px;color:#64748b;">${msg}</td></tr>`;
     } else {
       tbody.innerHTML = filtered.map(r => `<tr>
-        <td><strong>${r.MaLich}</strong></td>
-        <td>${r.NgayGioHen.slice(0, 16)}</td>
-        <td><strong>${r.TenKhachHang}</strong><br/><small>${r.SDTKhachHang} (${r.MaKH})</small></td>
-        <td><strong>${r.TenThuCung}</strong> (${r.MaThuCung})<br/><small>${r.Loai} - ${r.Giong}</small></td>
-        <td>${r.TenDV} (${r.MaDV})</td>
-        <td class="num">${fmtMoney(r.DonGia)} &times; ${r.SoLuong}</td>
+        <td><strong>#${r.MaLich}</strong></td>
+        <td style="white-space:nowrap;">${escHtml(r.KhungGio)}</td>
+        <td><strong>${escHtml(r.TenKhachHang)}</strong><br/><small style="color:#64748b">${escHtml(r.SDTKhachHang)}</small></td>
+        <td><strong>${escHtml(r.TenThuCung)}</strong><br/><small style="color:#64748b">${escHtml(r.Loai)}${r.Giong ? ' • ' + escHtml(r.Giong) : ''}</small></td>
+        <td>${escHtml(r.TenDV)}</td>
+        <td class="num" style="white-space:nowrap;">${fmtMoney(r.DonGia)} &times; ${r.SoLuong}</td>
         <td class="num"><strong>${fmtMoney(r.ThanhTienDuKien)}</strong></td>
-        <td>${r.TenNhanVien}<br/><small>${r.CaLamViec}</small></td>
+        <td>${escHtml(r.TenNhanVien)}<br/><small style="color:#64748b">${escHtml(r.CaLamViec)}</small></td>
         <td>${statusSelectHtml(r.MaLich, r.TrangThai)}</td>
-        <td>${paymentSelectHtml(r.MaLich, r.PhuongThucThanhToan)}</td>
-        <td>${r.GhiChu || ''}</td>
+        <td>${paymentSelectHtml(r.MaLich, r.PhuongThucThanhToan, r.TrangThai)}</td>
+        <td>${escHtml(r.GhiChu || '')}</td>
       </tr>`).join('');
     }
-
-    let whereClause = "WHERE 1=1";
-    if (kw) whereClause += `\n  AND (lh.MaLich LIKE '%${kw}%' OR kh.HoTen LIKE '%${kw}%' OR kh.SDT LIKE '%${kw}%' OR tc.TenThuCung LIKE '%${kw}%')`;
-    if (loai) whereClause += `\n  AND tc.Loai = '${loai}'`;
-    if (madv) whereClause += `\n  AND lh.MaDV = '${madv}'`;
-    if (manv) whereClause += `\n  AND lh.MaNV = '${manv}'`;
-    if (trangthai) whereClause += `\n  AND lh.TrangThai = '${trangthai}'`;
-    if (tungay) whereClause += `\n  AND DATE(lh.NgayGioHen) >= '${tungay}'`;
-    if (denngay) whereClause += `\n  AND DATE(lh.NgayGioHen) <= '${denngay}'`;
-
-    document.getElementById('searchSqlBox').textContent =
-`SELECT lh.MaLich, lh.NgayGioHen, kh.MaKH, kh.HoTen AS TenKhachHang, kh.SDT,
-       tc.MaThuCung, tc.TenThuCung, tc.Loai, tc.Giong,
-       dv.MaDV, dv.TenDV, dv.DonGia, lh.SoLuong, (dv.DonGia * lh.SoLuong) AS ThanhTien,
-       nv.MaNV, nv.HoTen AS TenNhanVien, lh.TrangThai, COALESCE(tt.TrangThaiTT, 'Chưa thanh toán') AS TrangThaiTT
-FROM LICH_HEN lh
-JOIN THU_CUNG tc ON lh.MaThuCung = tc.MaThuCung
-JOIN KHACH_HANG kh ON tc.MaKH = kh.MaKH
-JOIN DICH_VU dv ON lh.MaDV = dv.MaDV
-JOIN NHAN_VIEN nv ON lh.MaNV = nv.MaNV
-LEFT JOIN THANH_TOAN tt ON lh.MaLich = tt.MaLich
-${whereClause}
-ORDER BY lh.NgayGioHen DESC;`;
   }
 
-  // ======================= MỤC 7: 2 BÁO CÁO NGHIỆP VỤ & XUẤT FILE =======================
+  // Hàm đọc số tiền VNĐ bằng chữ tiếng Việt tự động chuẩn kế toán
+  function docSoTienBangChu(soTien) {
+    const num = Math.round(Number(soTien) || 0);
+    if (num <= 0) return 'Không đồng chẵn';
+    const chuSo = ['không', 'một', 'hai', 'ba', 'bốn', 'năm', 'sáu', 'bảy', 'tám', 'chín'];
+    const donVi = ['', 'nghìn', 'triệu', 'tỷ', 'nghìn tỷ'];
+
+    function docBlock3(n, full) {
+      const tram = Math.floor(n / 100);
+      const chuc = Math.floor((n % 100) / 10);
+      const dv = n % 10;
+      let s = '';
+      if (full || tram > 0) {
+        s += chuSo[tram] + ' trăm ';
+        if (chuc === 0 && dv > 0) s += 'lẻ ';
+      }
+      if (chuc > 1) {
+        s += chuSo[chuc] + ' mươi ';
+        if (dv === 1) s += 'mốt ';
+        else if (dv === 4) s += 'tư ';
+        else if (dv === 5) s += 'lăm ';
+        else if (dv > 0) s += chuSo[dv] + ' ';
+      } else if (chuc === 1) {
+        s += 'mười ';
+        if (dv === 5) s += 'lăm ';
+        else if (dv > 0) s += chuSo[dv] + ' ';
+      } else if (chuc === 0 && dv > 0) {
+        s += chuSo[dv] + ' ';
+      }
+      return s.trim();
+    }
+
+    let temp = num;
+    const blocks = [];
+    while (temp > 0) {
+      blocks.push(temp % 1000);
+      temp = Math.floor(temp / 1000);
+    }
+    const parts = [];
+    for (let i = blocks.length - 1; i >= 0; i--) {
+      if (blocks[i] > 0) {
+        const isFull = i < blocks.length - 1;
+        const txt = docBlock3(blocks[i], isFull);
+        parts.push(txt + (donVi[i] ? ' ' + donVi[i] : ''));
+      }
+    }
+    const result = parts.join(' ').replace(/\s+/g, ' ').trim();
+    return result.charAt(0).toUpperCase() + result.slice(1) + ' đồng chẵn';
+  }
+
+  // ======================= BÁO CÁO NGHIỆP VỤ & XUẤT FILE =======================
   function computeReportsData() {
-    // Report 1: Revenue by Service
     const rep1 = STATE.dich_vu.map(dv => {
       const doneBookings = STATE.lich_hen.filter(l => l.MaDV === dv.MaDV && l.TrangThai === 'Hoàn thành');
       let soGD = 0, tongSL = 0, tienMat = 0, chuyenKhoan = 0, quaThe = 0, tongThu = 0;
@@ -2081,7 +3091,6 @@ ORDER BY lh.NgayGioHen DESC;`;
       };
     }).sort((a, b) => b.TongThu - a.TongThu);
 
-    // Report 2: Staff Performance
     const rep2 = STATE.nhan_vien.filter(n => n.ChucVu === 'Nhân viên chăm sóc').map(nv => {
       const myBookings = STATE.lich_hen.filter(l => l.MaNV === nv.MaNV);
       let hoanThanh = 0, dangXuLy = 0, daHuy = 0, tongPhut = 0, doanhThu = 0;
@@ -2118,14 +3127,13 @@ ORDER BY lh.NgayGioHen DESC;`;
   function renderReports() {
     const { rep1, rep2 } = computeReportsData();
 
-    // Render Report 1
     let sumGD = 0, sumSL = 0, sumTM = 0, sumCK = 0, sumThe = 0, sumThu = 0;
     document.getElementById('rep1TableBody').innerHTML = rep1.map((r, i) => {
       sumGD += r.SoGD; sumSL += r.TongSL; sumTM += r.TienMat; sumCK += r.ChuyenKhoan; sumThe += r.QuaThe; sumThu += r.TongThu;
       return `<tr>
         <td style="text-align:center;">${i + 1}</td>
         <td style="text-align:center;"><strong>${r.MaDV}</strong></td>
-        <td>${r.TenDV}</td>
+        <td>${escHtml(r.TenDV)}</td>
         <td class="num">${fmtMoney(r.DonGia)}</td>
         <td style="text-align:center;">${r.SoGD}</td>
         <td style="text-align:center;">${r.TongSL}</td>
@@ -2145,32 +3153,17 @@ ORDER BY lh.NgayGioHen DESC;`;
       <td class="num">${fmtMoney(sumThe)}</td>
       <td class="num" style="color:#b91c1c;">${fmtMoney(sumThu)}</td>
     </tr>`;
-    document.getElementById('rep1TotalTextNum').textContent = `${fmtMoney(sumThu)} (Hai triệu năm trăm mười nghìn đồng chẵn).`;
+    document.getElementById('rep1TotalTextNum').textContent = `${fmtMoney(sumThu)} (${docSoTienBangChu(sumThu)}).`;
 
-    document.getElementById('rep1SqlBox').textContent =
-`SELECT dv.MaDV, dv.TenDV, dv.DonGia,
-       COUNT(tt.MaTT) AS SoGiaoDichThanhToan,
-       COALESCE(SUM(CASE WHEN tt.MaTT IS NOT NULL THEN lh.SoLuong ELSE 0 END), 0) AS TongSoLuongSuDung,
-       COALESCE(SUM(CASE WHEN tt.PhuongThuc = 'Tiền mặt' THEN tt.SoTien ELSE 0 END), 0) AS ThuTienMat,
-       COALESCE(SUM(CASE WHEN tt.PhuongThuc = 'Chuyển khoản' THEN tt.SoTien ELSE 0 END), 0) AS ThuChuyenKhoan,
-       COALESCE(SUM(CASE WHEN tt.PhuongThuc = 'Thẻ' THEN tt.SoTien ELSE 0 END), 0) AS ThuQuaThe,
-       COALESCE(SUM(tt.SoTien), 0) AS TongDoanhThuThucThu
-FROM DICH_VU dv
-LEFT JOIN LICH_HEN lh ON dv.MaDV = lh.MaDV AND lh.TrangThai = 'Hoàn thành'
-LEFT JOIN THANH_TOAN tt ON lh.MaLich = tt.MaLich AND tt.TrangThaiTT = 'Đã thanh toán'
-GROUP BY dv.MaDV, dv.TenDV, dv.DonGia
-ORDER BY TongDoanhThuThucThu DESC;`;
-
-    // Render Report 2
     let sLich = 0, sHT = 0, sXL = 0, sHuy = 0, sPhut = 0, sDT = 0;
     document.getElementById('rep2TableBody').innerHTML = rep2.map((r, i) => {
       sLich += r.TongLich; sHT += r.HoanThanh; sXL += r.DangXuLy; sHuy += r.DaHuy; sPhut += r.TongPhut; sDT += r.DoanhThu;
       return `<tr>
         <td style="text-align:center;">${i + 1}</td>
         <td style="text-align:center;"><strong>${r.MaNV}</strong></td>
-        <td><strong>${r.HoTen}</strong></td>
-        <td>${r.CaLamViec}</td>
-        <td style="text-align:center;">${r.TrangThai}</td>
+        <td><strong>${escHtml(r.HoTen)}</strong></td>
+        <td>${escHtml(r.CaLamViec)}</td>
+        <td style="text-align:center;">${escHtml(r.TrangThai)}</td>
         <td style="text-align:center;">${r.TongLich}</td>
         <td style="text-align:center;font-weight:bold;color:#15803d;">${r.HoanThanh}</td>
         <td style="text-align:center;">${r.DangXuLy}</td>
@@ -2189,22 +3182,6 @@ ORDER BY TongDoanhThuThucThu DESC;`;
       <td class="num">${sPhut.toLocaleString('vi-VN')} phút</td>
       <td class="num" style="color:#b91c1c;">${fmtMoney(sDT)}</td>
     </tr>`;
-
-    document.getElementById('rep2SqlBox').textContent =
-`SELECT nv.MaNV, nv.HoTen AS TenNhanVien, nv.CaLamViec, nv.TrangThai,
-       COUNT(lh.MaLich) AS TongSoLichPhanCong,
-       SUM(CASE WHEN lh.TrangThai = 'Hoàn thành' THEN 1 ELSE 0 END) AS SoLichHoanThanh,
-       SUM(CASE WHEN lh.TrangThai IN ('Đang thực hiện', 'Đã xác nhận', 'Mới tạo') THEN 1 ELSE 0 END) AS SoLichDangXuLy,
-       SUM(CASE WHEN lh.TrangThai IN ('Đã hủy', 'Không đến') THEN 1 ELSE 0 END) AS SoLichHuy,
-       COALESCE(SUM(CASE WHEN lh.TrangThai = 'Hoàn thành' THEN dv.ThoiLuongDuKien * lh.SoLuong ELSE 0 END), 0) AS TongSoPhutPhucVu,
-       COALESCE(SUM(CASE WHEN tt.TrangThaiTT = 'Đã thanh toán' THEN tt.SoTien ELSE 0 END), 0) AS DoanhThuDongGop
-FROM NHAN_VIEN nv
-LEFT JOIN LICH_HEN lh ON nv.MaNV = lh.MaNV
-LEFT JOIN DICH_VU dv ON lh.MaDV = dv.MaDV
-LEFT JOIN THANH_TOAN tt ON lh.MaLich = tt.MaLich
-WHERE nv.ChucVu = 'Nhân viên chăm sóc'
-GROUP BY nv.MaNV, nv.HoTen, nv.CaLamViec, nv.TrangThai
-ORDER BY DoanhThuDongGop DESC, SoLichHoanThanh DESC;`;
   }
 
   function exportReportXlsx(type) {
@@ -2212,7 +3189,6 @@ ORDER BY DoanhThuDongGop DESC, SoLichHoanThanh DESC;`;
       window.location.href = `/api/export_xlsx?type=${type}`;
       return;
     }
-    // Fallback Excel XML table download if opened directly via file://
     const paperId = type === 1 ? 'report1Paper' : 'report2Paper';
     const fname = type === 1 ? 'Bao_Cao_Doanh_Thu_Dich_Vu_PetCare.xls' : 'Bao_Cao_Hieu_Suat_Nhan_Vien_PetCare.xls';
     const html = `<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel" xmlns="http://www.w3.org/TR/REC-html40"><head><meta charset="UTF-8"></head><body>` +
