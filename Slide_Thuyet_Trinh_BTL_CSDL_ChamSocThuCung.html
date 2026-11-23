@@ -1,0 +1,1534 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Slide Thuyết Trình BTL CSDL — PetCare Spa &amp; Clinic</title>
+<style>
+  :root {
+    --navy-dark: #0f172a;
+    --navy: #1e3a8a;
+    --blue: #2563eb;
+    --blue-light: #dbeafe;
+    --teal: #0d9488;
+    --teal-light: #ccfbf1;
+    --amber: #d97706;
+    --amber-light: #fef3c7;
+    --red: #dc2626;
+    --red-light: #fee2e2;
+    --green: #15803d;
+    --green-light: #dcfce7;
+    --purple: #7c3aed;
+    --purple-light: #f3e8ff;
+    --bg: #f8fafc;
+    --slate-100: #f1f5f9;
+    --slate-200: #e2e8f0;
+    --slate-400: #94a3b8;
+    --slate-600: #475569;
+    --slate-700: #334155;
+    --slate-900: #0f172a;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: "Segoe UI", system-ui, -apple-system, Roboto, Arial, sans-serif;
+    background: #0b1120;
+    color: var(--slate-900);
+    height: 100vh;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* Stage */
+  .stage {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 14px 18px 66px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .deck-viewport {
+    position: relative;
+    width: 1280px;
+    height: 720px;
+    transform-origin: center center;
+    box-shadow: 0 24px 70px rgba(0, 0, 0, 0.55);
+    border-radius: 10px;
+    overflow: hidden;
+    background: var(--bg);
+    flex-shrink: 0;
+  }
+
+  .slide {
+    position: absolute;
+    inset: 0;
+    width: 1280px;
+    height: 720px;
+    background: var(--bg);
+    display: none;
+    flex-direction: column;
+    overflow: hidden;
+  }
+
+  .slide.active {
+    display: flex;
+    animation: fadeSlide 0.22s ease-out;
+  }
+
+  @keyframes fadeSlide {
+    from { opacity: 0.45; transform: translateY(6px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* Slide Chrome */
+  .top-stripe {
+    height: 6px;
+    background: linear-gradient(90deg, var(--navy) 0%, var(--navy) 68%, var(--teal) 68%, var(--teal) 100%);
+    flex-shrink: 0;
+  }
+
+  .slide-header {
+    padding: 12px 48px 10px;
+    border-bottom: 1.5px solid var(--slate-200);
+    background: #ffffff;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    flex-shrink: 0;
+  }
+
+  .header-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .pill-cat {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.4px;
+    color: var(--teal);
+    background: var(--teal-light);
+    padding: 3px 12px;
+    border-radius: 999px;
+  }
+
+  .pill-score {
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--navy);
+    background: var(--blue-light);
+    padding: 4px 14px;
+    border-radius: 999px;
+  }
+
+  .slide-title {
+    font-size: 24px;
+    font-weight: 800;
+    color: var(--slate-900);
+    line-height: 1.25;
+  }
+
+  .slide-body {
+    flex: 1;
+    padding: 16px 48px 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    overflow: hidden;
+  }
+
+  .slide-footer {
+    height: 36px;
+    margin: 0 48px;
+    border-top: 1px solid var(--slate-200);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 11.5px;
+    color: var(--slate-600);
+    flex-shrink: 0;
+  }
+
+  .slide-footer .page-num {
+    font-weight: 700;
+    color: var(--navy);
+  }
+
+  /* Slide 1 Cover */
+  .slide-cover {
+    background: linear-gradient(135deg, #0f172a 0%, #172554 58%, #134e4a 100%);
+    color: #ffffff;
+    flex-direction: row;
+  }
+
+  .cover-accent-bar {
+    width: 18px;
+    background: linear-gradient(180deg, var(--teal) 0%, var(--teal) 70%, #f59e0b 70%, #f59e0b 100%);
+    flex-shrink: 0;
+  }
+
+  .cover-left {
+    flex: 1.35;
+    padding: 46px 42px 38px 46px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+
+  .cover-right {
+    width: 455px;
+    background: rgba(15, 23, 42, 0.58);
+    border-left: 1px solid rgba(148, 163, 184, 0.22);
+    padding: 36px 28px;
+    display: flex;
+    flex-direction: column;
+    gap: 11px;
+  }
+
+  .cover-badge {
+    display: inline-block;
+    align-self: flex-start;
+    background: rgba(13, 148, 136, 0.25);
+    border: 1px solid rgba(94, 234, 212, 0.45);
+    color: #99f6e4;
+    padding: 6px 16px;
+    border-radius: 999px;
+    font-size: 12.5px;
+    font-weight: 700;
+    letter-spacing: 0.6px;
+  }
+
+  .cover-h1 {
+    font-size: 36px;
+    font-weight: 800;
+    line-height: 1.2;
+    margin-top: 16px;
+  }
+
+  .cover-h1 .sub-top {
+    display: block;
+    font-size: 28px;
+    color: var(--amber-light);
+    margin-bottom: 6px;
+  }
+
+  .cover-h1 .brand {
+    display: block;
+    font-size: 26px;
+    color: #5eead4;
+    margin-top: 6px;
+  }
+
+  .cover-desc {
+    font-size: 16px;
+    color: #cbd5e1;
+    line-height: 1.5;
+    margin-top: 14px;
+  }
+
+  .cover-metrics {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+    margin-top: 22px;
+  }
+
+  .cover-metric {
+    background: rgba(30, 41, 59, 0.88);
+    border: 1px solid rgba(13, 148, 136, 0.7);
+    border-radius: 10px;
+    padding: 12px 10px;
+    text-align: center;
+  }
+
+  .cover-metric strong {
+    display: block;
+    font-size: 15px;
+    color: #5eead4;
+    margin-bottom: 3px;
+  }
+
+  .cover-metric span {
+    font-size: 11.5px;
+    color: #cbd5e1;
+  }
+
+  .cover-source {
+    font-size: 12px;
+    color: #94a3b8;
+    border-top: 1px solid rgba(148, 163, 184, 0.22);
+    padding-top: 12px;
+  }
+
+  .team-heading {
+    font-size: 15px;
+    font-weight: 800;
+    letter-spacing: 0.5px;
+    color: #ffffff;
+    padding-bottom: 8px;
+    border-bottom: 3px solid var(--teal);
+    width: fit-content;
+    margin-bottom: 4px;
+  }
+
+  .member-card {
+    background: rgba(30, 41, 59, 0.85);
+    border: 1px solid #334155;
+    border-radius: 9px;
+    padding: 10px 13px;
+  }
+
+  .member-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 6px;
+    margin-bottom: 4px;
+  }
+
+  .member-top strong { font-size: 13.5px; color: #ffffff; }
+  .member-top span { font-size: 11px; font-weight: 700; color: #5eead4; white-space: nowrap; }
+  .member-card p { font-size: 11.5px; color: #cbd5e1; line-height: 1.38; }
+
+  /* Reusable Grid & Cards */
+  .grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; }
+  .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+  .grid-2 { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; }
+
+  .card {
+    background: #ffffff;
+    border: 1px solid var(--slate-200);
+    border-radius: 10px;
+    padding: 14px 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .toc-card {
+    border-top: 6px solid var(--navy);
+    padding: 14px;
+    gap: 8px;
+  }
+
+  .toc-tag {
+    display: inline-block;
+    align-self: flex-start;
+    font-size: 10.5px;
+    font-weight: 700;
+    color: #ffffff;
+    padding: 3px 10px;
+    border-radius: 999px;
+  }
+
+  .toc-card h3 { font-size: 15px; color: var(--slate-900); line-height: 1.3; }
+  .toc-card p { font-size: 12.5px; color: var(--slate-600); line-height: 1.42; }
+
+  .stats-banner {
+    background: var(--navy);
+    color: #ffffff;
+    border-radius: 10px;
+    padding: 14px 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 18px;
+  }
+
+  .stats-banner-info h4 { font-size: 13px; color: #5eead4; margin-bottom: 4px; letter-spacing: 0.4px; }
+  .stats-banner-info p { font-size: 12px; color: #cbd5e1; max-width: 310px; line-height: 1.4; }
+
+  .stats-boxes { display: grid; grid-template-columns: repeat(6, 1fr); gap: 10px; flex: 1; }
+  .stat-box {
+    background: #1e293b;
+    border: 1px solid #334155;
+    border-radius: 8px;
+    padding: 10px 6px;
+    text-align: center;
+  }
+  .stat-box strong { display: block; font-size: 22px; color: var(--amber-light); line-height: 1.1; }
+  .stat-box span { font-size: 11.5px; color: #f8fafc; }
+
+  /* Tables */
+  table.data-table {
+    width: 100%;
+    border-collapse: collapse;
+    background: #ffffff;
+    font-size: 12.5px;
+    border-radius: 8px;
+    overflow: hidden;
+    border: 1px solid var(--slate-200);
+  }
+  table.data-table th {
+    background: var(--navy);
+    color: #ffffff;
+    font-weight: 700;
+    padding: 8px 10px;
+    text-align: left;
+    border: 1px solid #1e40af;
+  }
+  table.data-table td {
+    padding: 7px 10px;
+    border: 1px solid var(--slate-200);
+    color: var(--slate-700);
+    vertical-align: middle;
+    line-height: 1.35;
+  }
+  table.data-table tr:nth-child(even) td { background: var(--slate-100); }
+  .ctr { text-align: center !important; }
+  .num { text-align: right !important; font-variant-numeric: tabular-nums; }
+
+  /* SVG Viewer Frame */
+  .svg-frame {
+    background: #ffffff;
+    border: 1.5px solid var(--slate-200);
+    border-radius: 10px;
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .svg-frame img {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+    cursor: zoom-in;
+  }
+  .zoom-hint {
+    position: absolute;
+    bottom: 8px;
+    right: 10px;
+    font-size: 10.5px;
+    font-weight: 700;
+    background: rgba(15, 23, 42, 0.8);
+    color: #ffffff;
+    padding: 3px 9px;
+    border-radius: 999px;
+    pointer-events: none;
+  }
+
+  /* Code Box */
+  .code-box {
+    background: var(--navy-dark);
+    color: #e2e8f0;
+    border-radius: 10px;
+    padding: 14px 18px;
+    font-family: Consolas, "Courier New", monospace;
+    font-size: 12.2px;
+    line-height: 1.48;
+    white-space: pre;
+    overflow: auto;
+    border: 1px solid #334155;
+  }
+  .kw { color: #60a5fa; font-weight: 700; }
+  .fn { color: #5eead4; font-weight: 700; }
+  .cm { color: #94a3b8; font-style: italic; }
+  .st { color: #fcd34d; }
+
+  /* Callout & Status Boxes */
+  .panel-header {
+    padding: 8px 14px;
+    color: #ffffff;
+    font-size: 13px;
+    font-weight: 700;
+    border-radius: 8px 8px 0 0;
+  }
+  .mini-card {
+    background: #ffffff;
+    border: 1px solid var(--slate-200);
+    border-radius: 8px;
+    padding: 9px 12px;
+  }
+
+  /* Bottom Control Bar */
+  .controls {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 54px;
+    background: rgba(15, 23, 42, 0.96);
+    border-top: 1px solid #1e293b;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 22px;
+    color: #e2e8f0;
+    z-index: 50;
+  }
+
+  .ctrl-group { display: flex; align-items: center; gap: 8px; }
+
+  .btn {
+    background: #1e293b;
+    color: #e2e8f0;
+    border: 1px solid #334155;
+    border-radius: 6px;
+    padding: 6px 12px;
+    font-size: 12.5px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .btn:hover { background: #334155; border-color: #475569; color: #ffffff; }
+  .btn.primary { background: var(--teal); border-color: var(--teal); color: #ffffff; }
+  .btn.primary:hover { background: #0f766e; }
+
+  .slide-select {
+    background: #1e293b;
+    color: #f8fafc;
+    border: 1px solid #334155;
+    border-radius: 6px;
+    padding: 5px 10px;
+    font-size: 12.5px;
+    max-width: 380px;
+  }
+
+  .progress-track {
+    position: fixed;
+    bottom: 54px;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: #1e293b;
+    z-index: 51;
+  }
+  .progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--teal), #38bdf8);
+    transition: width 0.25s ease;
+  }
+
+  /* Speaker Notes Drawer */
+  .notes-drawer {
+    position: fixed;
+    right: 18px;
+    bottom: 66px;
+    width: 440px;
+    max-height: 240px;
+    background: rgba(15, 23, 42, 0.96);
+    border: 1px solid var(--teal);
+    border-radius: 10px;
+    padding: 14px 16px;
+    color: #f1f5f9;
+    z-index: 60;
+    display: none;
+    box-shadow: 0 14px 40px rgba(0,0,0,0.45);
+    overflow-y: auto;
+  }
+  .notes-drawer.open { display: block; }
+  .notes-drawer h4 { font-size: 12px; color: #5eead4; text-transform: uppercase; margin-bottom: 6px; }
+  .notes-drawer p { font-size: 13px; line-height: 1.5; color: #e2e8f0; }
+
+  /* Grid Overview Modal */
+  .overview-modal {
+    position: fixed;
+    inset: 0 0 54px 0;
+    background: rgba(11, 17, 32, 0.95);
+    z-index: 70;
+    display: none;
+    padding: 24px 36px;
+    overflow-y: auto;
+  }
+  .overview-modal.open { display: block; }
+  .overview-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+    max-width: 1320px;
+    margin: 0 auto;
+  }
+  .ov-item {
+    background: #1e293b;
+    border: 2px solid #334155;
+    border-radius: 10px;
+    padding: 14px;
+    color: #f8fafc;
+    cursor: pointer;
+    transition: transform 0.15s, border-color 0.15s;
+  }
+  .ov-item:hover { transform: translateY(-2px); border-color: var(--teal); }
+  .ov-item.current { border-color: #f59e0b; background: #172554; }
+  .ov-num { font-size: 11px; font-weight: 700; color: #5eead4; margin-bottom: 5px; }
+  .ov-tit { font-size: 13.5px; font-weight: 700; line-height: 1.35; }
+
+  /* Zoom Lightbox */
+  .lightbox {
+    position: fixed;
+    inset: 0;
+    background: rgba(15, 23, 42, 0.92);
+    z-index: 90;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+    cursor: zoom-out;
+  }
+  .lightbox.open { display: flex; }
+  .lightbox img {
+    max-width: 96vw;
+    max-height: 92vh;
+    background: #ffffff;
+    border-radius: 8px;
+    padding: 10px;
+  }
+
+  /* Print / Export PDF */
+  @media print {
+    @page { size: 13.333in 7.5in; margin: 0; }
+    body { background: #ffffff; height: auto; overflow: visible; display: block; }
+    .controls, .progress-track, .notes-drawer, .overview-modal, .lightbox, .zoom-hint { display: none !important; }
+    .stage { display: block; padding: 0; overflow: visible; }
+    .deck-viewport {
+      width: auto;
+      height: auto;
+      transform: none !important;
+      box-shadow: none;
+      border-radius: 0;
+      overflow: visible;
+    }
+    .slide {
+      position: relative !important;
+      display: flex !important;
+      width: 1280px !important;
+      height: 720px !important;
+      page-break-after: always;
+      break-after: page;
+      -webkit-print-color-adjust: exact;
+      print-color-adjust: exact;
+    }
+  }
+</style>
+</head>
+<body>
+
+<div class="stage">
+  <div class="deck-viewport" id="deckViewport">
+
+    <!-- SLIDE 1: COVER -->
+    <section class="slide slide-cover active" data-title="1. Trang bìa & Thành viên nhóm" data-note="Kính chào thầy/cô và các bạn. Nhóm gồm 5 thành viên do Nguyễn Bá Đức Nhân làm nhóm trưởng xin trình bày Bài tập lớn môn Cơ sở dữ liệu: Hệ thống Quản lý Dịch vụ Chăm sóc Thú cưng PetCare Spa & Clinic.">
+      <div class="cover-accent-bar"></div>
+      <div class="cover-left">
+        <div>
+          <span class="cover-badge">BÁO CÁO BÀI TẬP LỚN • HỌC PHẦN CƠ SỞ DỮ LIỆU</span>
+          <h1 class="cover-h1">
+            <span class="sub-top">HỆ THỐNG CƠ SỞ DỮ LIỆU</span>
+            QUẢN LÝ DỊCH VỤ CHĂM SÓC THÚ CƯNG
+            <span class="brand">(PETCARE SPA &amp; CLINIC)</span>
+          </h1>
+          <p class="cover-desc">
+            Thiết kế ERD chuẩn ký hiệu Chen • Ánh xạ Lược đồ Quan hệ • Chuẩn hóa triệt để 1NF → 3NF •
+            Kiểm soát Ràng buộc Toàn vẹn &amp; Triển khai Ứng dụng Web Thực tế (2 Phân hệ)
+          </p>
+          <div class="cover-metrics">
+            <div class="cover-metric"><strong>6 Bảng 3NF</strong><span>Chuẩn hóa 1NF → 3NF</span></div>
+            <div class="cover-metric"><strong>5 Mối kết hợp</strong><span>Chuẩn Chen Draw.io</span></div>
+            <div class="cover-metric"><strong>SQLite + Python</strong><span>100% StdLib API</span></div>
+            <div class="cover-metric"><strong>2 Phân hệ UI</strong><span>Lễ tân &amp; Khách hàng</span></div>
+          </div>
+        </div>
+        <div class="cover-source">
+          Tài liệu đồng bộ: Bao_Cao_Bai_Tap_Lon_CSDL_ChamSocThuCung.docx • csdl_cham_soc_thu_cung.sql • petcare.db • app.py • index.html
+        </div>
+      </div>
+      <div class="cover-right">
+        <div class="team-heading">THÀNH VIÊN NHÓM THỰC HIỆN</div>
+        <div class="member-card">
+          <div class="member-top"><strong>1. Nguyễn Bá Đức Nhân</strong><span>B24DCCN427 • Nhóm trưởng</span></div>
+          <p>Điều phối chung; Khảo sát yêu cầu nghiệp vụ (Mục 1); Thiết kế ERD chuẩn Chen (Mục 2).</p>
+        </div>
+        <div class="member-card">
+          <div class="member-top"><strong>2. Trần Trọng Nghĩa</strong><span>B24DCCN423 • Thành viên</span></div>
+          <p>Ánh xạ Lược đồ Quan hệ (Mục 3); Chuẩn hóa dữ liệu 3NF (Mục 4); Script SQL DDL &amp; Ràng buộc.</p>
+        </div>
+        <div class="member-card">
+          <div class="member-top"><strong>3. Hoàng Quý Phước</strong><span>B24DCCN456 • Thành viên</span></div>
+          <p>Backend Python API (app.py); Xây dựng 2 Màn hình nhập liệu &amp; Kiểm thử chống trùng lịch (Mục 5).</p>
+        </div>
+        <div class="member-card">
+          <div class="member-top"><strong>4. Đỗ Quốc Khánh</strong><span>B24DCCN302 • Thành viên</span></div>
+          <p>Giao diện Web SPA (index.html); Màn hình Tìm kiếm &amp; Tra cứu đa tiêu chí 6 bảng (Mục 6).</p>
+        </div>
+        <div class="member-card">
+          <div class="member-top"><strong>5. Võ Anh Quân</strong><span>B24DCCN467 • Thành viên</span></div>
+          <p>Truy vấn 2 Báo cáo quản trị, Xuất Excel/Word/PDF (Mục 7) &amp; Biên soạn Báo cáo/Tài liệu (Mục 8).</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- SLIDE 2: TABLE OF CONTENTS -->
+    <section class="slide" data-title="2. Cấu trúc Báo cáo & Số liệu CSDL" data-note="Slide trình bày 8 hạng mục theo đúng thang điểm 10 của bài tập lớn cùng số liệu dữ liệu thực tế hiện đang lưu trong petcare.db.">
+      <div class="top-stripe"></div>
+      <div class="slide-header">
+        <div class="header-top">
+          <span class="pill-cat">TỔNG QUAN BÀI TẬP LỚN</span>
+          <span class="pill-score">8 HẠNG MỤC • 10.0 ĐIỂM</span>
+        </div>
+        <h2 class="slide-title">Cấu trúc Nội dung Báo cáo &amp; Phạm vi Triển khai (Thang điểm 10.0)</h2>
+      </div>
+      <div class="slide-body">
+        <div class="grid-4" style="flex:1;">
+          <div class="card toc-card" style="border-top-color:var(--navy);">
+            <span class="toc-tag" style="background:var(--navy);">MỤC 1 • 1.0 ĐIỂM</span>
+            <h3>Tổng quan Yêu cầu Dữ liệu</h3>
+            <p>Đặt vấn đề thực tế quản lý spa thú cưng và xác định 6 nhóm yêu cầu dữ liệu nghiệp vụ cốt lõi.</p>
+          </div>
+          <div class="card toc-card" style="border-top-color:var(--blue);">
+            <span class="toc-tag" style="background:var(--blue);">MỤC 2 • 2.5 ĐIỂM</span>
+            <h3>Mô hình Thực thể – Liên kết (ERD)</h3>
+            <p>Sơ đồ Chen chuẩn hóa trên ERD.drawio: 6 thực thể, 5 mối kết hợp, không vẽ FK, elip nét đứt cho thuộc tính dẫn xuất.</p>
+          </div>
+          <div class="card toc-card" style="border-top-color:var(--teal);">
+            <span class="toc-tag" style="background:var(--teal);">MỤC 3 • 2.0 ĐIỂM</span>
+            <h3>Lược đồ Quan hệ &amp; Đặc tả Bảng</h3>
+            <p>Ánh xạ sang 6 quan hệ chuẩn (relational_schema.svg), đầy đủ PK, FK, UNIQUE, NOT NULL, CHECK.</p>
+          </div>
+          <div class="card toc-card" style="border-top-color:var(--purple);">
+            <span class="toc-tag" style="background:var(--purple);">MỤC 4 • 1.0 ĐIỂM</span>
+            <h3>Kiểm tra &amp; Chuẩn hóa Dữ liệu 3NF</h3>
+            <p>Kiểm tra 1NF → 2NF → 3NF; phát hiện và khử 2 phụ thuộc bắc cầu tại LICH_HEN và THANH_TOAN.</p>
+          </div>
+          <div class="card toc-card" style="border-top-color:var(--amber);">
+            <span class="toc-tag" style="background:var(--amber);">MỤC 5 • 1.0 ĐIỂM</span>
+            <h3>2 Màn hình Nhập &amp; Kiểm thử</h3>
+            <p>Đăng ký Thú cưng – Khách hàng &amp; Đặt lịch hẹn; kiểm tra PK/FK/CHECK, ca làm việc, chống trùng lịch.</p>
+          </div>
+          <div class="card toc-card" style="border-top-color:var(--blue);">
+            <span class="toc-tag" style="background:var(--blue);">MỤC 6 • 0.5 ĐIỂM</span>
+            <h3>Màn hình Tìm kiếm Đa tiêu chí</h3>
+            <p>Lọc tức thời 6 nhóm điều kiện động, kết nối 6 bảng (INNER JOIN &amp; LEFT JOIN) kèm COALESCE.</p>
+          </div>
+          <div class="card toc-card" style="border-top-color:var(--green);">
+            <span class="toc-tag" style="background:var(--green);">MỤC 7 • 1.0 ĐIỂM</span>
+            <h3>2 Báo cáo &amp; Xuất File Thực tế</h3>
+            <p>BC-01 Doanh thu dịch vụ &amp; BC-02 Hiệu suất nhân viên; xuất trực tiếp Excel (.xlsx), Word (.doc), PDF.</p>
+          </div>
+          <div class="card toc-card" style="border-top-color:var(--navy);">
+            <span class="toc-tag" style="background:var(--navy);">MỤC 8 • 1.0 ĐIỂM</span>
+            <h3>SQL Hệ thống &amp; Ứng dụng Thực tế</h3>
+            <p>DDL + SQL trong csdl_cham_soc_thu_cung.sql, Backend app.py &amp; Giao diện End-User 2 phân hệ.</p>
+          </div>
+        </div>
+        <div class="stats-banner">
+          <div class="stats-banner-info">
+            <h4>DỮ LIỆU THỰC TẾ TRONG PETCARE.DB</h4>
+            <p>Toàn bộ truy vấn, kiểm thử và báo cáo đều chạy trực tiếp trên SQLite 3 (PRAGMA foreign_keys = ON).</p>
+          </div>
+          <div class="stats-boxes">
+            <div class="stat-box"><strong>9</strong><span>Khách hàng</span></div>
+            <div class="stat-box"><strong>10</strong><span>Thú cưng</span></div>
+            <div class="stat-box"><strong>6</strong><span>Nhân viên</span></div>
+            <div class="stat-box"><strong>6</strong><span>Gói dịch vụ</span></div>
+            <div class="stat-box"><strong>12</strong><span>Lịch hẹn</span></div>
+            <div class="stat-box"><strong>10</strong><span>Thanh toán</span></div>
+          </div>
+        </div>
+      </div>
+      <div class="slide-footer">
+        <span>Hệ thống CSDL Quản lý Dịch vụ Chăm sóc Thú cưng (PetCare Spa &amp; Clinic) • Báo cáo Bài tập lớn CSDL</span>
+        <span class="page-num">Slide 2 / 12</span>
+      </div>
+    </section>
+
+    <!-- SLIDE 3: MỤC 1 -->
+    <section class="slide" data-title="3. Mục 1: Đặt vấn đề & 6 Nghiệp vụ" data-note="Ở Mục 1, nhóm xác định 4 bất cập khi quản lý thủ công và chuẩn hóa thành 6 nhóm yêu cầu dữ liệu nghiệp vụ cốt lõi.">
+      <div class="top-stripe"></div>
+      <div class="slide-header">
+        <div class="header-top">
+          <span class="pill-cat">MỤC 1 • MÔ TẢ BÀI TOÁN &amp; YÊU CẦU DỮ LIỆU</span>
+          <span class="pill-score">MỤC 1 • 1.0 ĐIỂM</span>
+        </div>
+        <h2 class="slide-title">Đặt vấn đề Thực tế &amp; 6 Quy trình Nghiệp vụ Cốt lõi</h2>
+      </div>
+      <div class="slide-body" style="flex-direction:row;gap:18px;">
+        <div class="card" style="width:420px;padding:0;overflow:hidden;">
+          <div class="panel-header" style="background:var(--red-light);color:var(--red);">BỐI CẢNH &amp; 4 BẤT CẬP QUẢN LÝ THỦ CÔNG</div>
+          <div style="padding:12px 14px;display:flex;flex-direction:column;gap:9px;flex:1;">
+            <p style="font-size:12px;color:var(--slate-700);line-height:1.42;">
+              Nhu cầu dịch vụ tắm vệ sinh, cắt tỉa Grooming, spa ủ dưỡng, vệ sinh răng miệng và khách sạn thú cưng tăng cao; quản lý bằng sổ sách/Excel rời rạc dễ dẫn đến:
+            </p>
+            <div style="background:#fff5f5;border:1px solid #fecaca;border-radius:7px;padding:9px 11px;">
+              <strong style="font-size:12.5px;color:var(--red);display:block;margin-bottom:2px;">1. Trùng lịch &amp; Sai ca làm việc</strong>
+              <span style="font-size:11.5px;color:var(--slate-700);">Phân công trùng khung giờ kỹ thuật viên hoặc giao việc cho nhân viên đang nghỉ phép / trái ca.</span>
+            </div>
+            <div style="background:#fff5f5;border:1px solid #fecaca;border-radius:7px;padding:9px 11px;">
+              <strong style="font-size:12.5px;color:var(--red);display:block;margin-bottom:2px;">2. Thất lạc tiền sử sức khỏe thú cưng</strong>
+              <span style="font-size:11.5px;color:var(--slate-700);">Dễ quên ghi chú dị ứng sữa tắm, bệnh lý da hoặc tính cách (nhát người, hiếu động) gây rủi ro chăm sóc.</span>
+            </div>
+            <div style="background:#fff5f5;border:1px solid #fecaca;border-radius:7px;padding:9px 11px;">
+              <strong style="font-size:12.5px;color:var(--red);display:block;margin-bottom:2px;">3. Dư thừa &amp; Không nhất quán dữ liệu</strong>
+              <span style="font-size:11.5px;color:var(--slate-700);">Lặp thông tin chủ nuôi trên nhiều phiếu hẹn, dễ sai sót đơn giá khi báo giá và thanh toán.</span>
+            </div>
+            <div style="background:#fff5f5;border:1px solid #fecaca;border-radius:7px;padding:9px 11px;">
+              <strong style="font-size:12.5px;color:var(--red);display:block;margin-bottom:2px;">4. Khó đối soát doanh thu &amp; KPI cuối kỳ</strong>
+              <span style="font-size:11.5px;color:var(--slate-700);">Khó tổng hợp chính xác tiền theo gói dịch vụ, kênh thu (Tiền mặt / CK / Thẻ) và năng suất nhân viên.</span>
+            </div>
+          </div>
+        </div>
+        <div style="flex:1;display:flex;flex-direction:column;gap:10px;">
+          <div style="font-size:13.5px;font-weight:800;color:var(--navy);">6 NHÓM YÊU CẦU DỮ LIỆU GẮN VỚI CHỨC NĂNG NGHIỆP VỤ</div>
+          <div class="grid-2" style="flex:1;gap:12px;">
+            <div class="card" style="border-left:6px solid var(--navy);">
+              <strong style="color:var(--navy);font-size:13px;">1. Quản lý Khách hàng (KHACH_HANG)</strong>
+              <p style="font-size:12px;color:var(--slate-700);line-height:1.42;">Lưu MaKH, Họ tên, SĐT duy nhất (10–11 số), Email, Địa chỉ để tra cứu khách quen tại quầy lễ tân &amp; xác nhận lịch hẹn.</p>
+            </div>
+            <div class="card" style="border-left:6px solid var(--blue);">
+              <strong style="color:var(--blue);font-size:13px;">2. Hồ sơ Thú cưng (THU_CUNG)</strong>
+              <p style="font-size:12px;color:var(--slate-700);line-height:1.42;">Gắn chủ nuôi MaKH; lưu tên, loài, giống, giới tính, tuổi (tháng), cân nặng (kg) và đặc biệt là ghi chú sức khỏe/dị ứng.</p>
+            </div>
+            <div class="card" style="border-left:6px solid var(--teal);">
+              <strong style="color:var(--teal);font-size:13px;">3. Danh mục Dịch vụ (DICH_VU)</strong>
+              <p style="font-size:12px;color:var(--slate-700);line-height:1.42;">Chuẩn hóa MaDV, Tên gói dịch vụ, Đơn giá niêm yết, Thời lượng dự kiến (phút) và Mô tả quy trình chi tiết.</p>
+            </div>
+            <div class="card" style="border-left:6px solid var(--purple);">
+              <strong style="color:var(--purple);font-size:13px;">4. Nhân sự &amp; Phân ca (NHAN_VIEN)</strong>
+              <p style="font-size:12px;color:var(--slate-700);line-height:1.42;">Theo dõi MaNV, Họ tên, Ngày sinh, Giới tính, SĐT, Chức vụ (Quản lý/Lễ tân/Chăm sóc), Ca làm việc, Lương, Trạng thái.</p>
+            </div>
+            <div class="card" style="border-left:6px solid var(--amber);">
+              <strong style="color:var(--amber);font-size:13px;">5. Đặt lịch &amp; Điều phối (LICH_HEN)</strong>
+              <p style="font-size:12px;color:var(--slate-700);line-height:1.42;">Ghi nhận MaLich, MaThuCung, MaDV, Số lượng, Ngày giờ hẹn, MaNV phụ trách, 6 trạng thái xử lý &amp; ghi chú kết quả.</p>
+            </div>
+            <div class="card" style="border-left:6px solid var(--green);">
+              <strong style="color:var(--green);font-size:13px;">6. Thanh toán &amp; Báo cáo (THANH_TOAN)</strong>
+              <p style="font-size:12px;color:var(--slate-700);line-height:1.42;">Lập phiếu thu MaTT gắn 1-1 với lịch hẹn hoàn thành; lưu Thời gian, Số tiền thực thu, Phương thức (Tiền mặt/CK/Thẻ), Trạng thái TT.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="slide-footer">
+        <span>Hệ thống CSDL Quản lý Dịch vụ Chăm sóc Thú cưng (PetCare Spa &amp; Clinic) • Báo cáo Bài tập lớn CSDL</span>
+        <span class="page-num">Slide 3 / 12</span>
+      </div>
+    </section>
+
+    <!-- SLIDE 4: MỤC 2 - ERD RULES & 5 RELATIONSHIPS -->
+    <section class="slide" data-title="4. Mục 2: Nguyên tắc ERD Chen & 5 Mối kết hợp" data-note="Ở Mục 2 (2.5 điểm), sơ đồ ERD chuẩn Chen loại bỏ khóa ngoại khỏi mức quan niệm, bỏ mối kết hợp vòng ĐẶT và đặc tả rõ 5 mối kết hợp cùng bản số.">
+      <div class="top-stripe"></div>
+      <div class="slide-header">
+        <div class="header-top">
+          <span class="pill-cat">MỤC 2 • MÔ HÌNH THỰC THỂ – LIÊN KẾT (ERD)</span>
+          <span class="pill-score">MỤC 2 • 2.5 ĐIỂM</span>
+        </div>
+        <h2 class="slide-title">Nguyên tắc Thiết kế Ký hiệu Chen &amp; Đặc tả 5 Mối kết hợp</h2>
+      </div>
+      <div class="slide-body">
+        <div class="grid-3">
+          <div class="card" style="border:1.5px solid var(--navy);">
+            <strong style="color:var(--navy);font-size:13px;">1. Không vẽ Khóa ngoại (FK) trên ERD</strong>
+            <p style="font-size:12px;color:var(--slate-700);line-height:1.42;">Ở mức quan niệm (<code>ERD.drawio</code>), thực thể chỉ chứa thuộc tính nội tại; đã xóa bỏ hoàn toàn các elip FK và mối kết hợp vòng dư thừa <strong>ĐẶT</strong> giữa KHACH_HANG và LICH_HEN.</p>
+          </div>
+          <div class="card" style="border:1.5px solid var(--teal);">
+            <strong style="color:var(--teal);font-size:13px;">2. Chuẩn Chen &amp; Thuộc tính Dẫn xuất</strong>
+            <p style="font-size:12px;color:var(--slate-700);line-height:1.42;">Thuộc tính khóa chính được <u>gạch chân</u> (MaKH, MaThuCung, MaNV, MaDV, MaLich, MaTT). Thuộc tính dẫn xuất <em>ThanhTien</em> (= DonGia × SoLuong) vẽ bằng <strong>elip nét đứt</strong>.</p>
+          </div>
+          <div class="card" style="border:1.5px solid var(--amber);">
+            <strong style="color:var(--amber);font-size:13px;">3. Bản số &amp; Lực lượng Tham gia</strong>
+            <p style="font-size:12px;color:var(--slate-700);line-height:1.42;">Nhánh tham gia toàn phần <strong>(1,1)</strong> biểu diễn bằng <strong>đường nét đôi (═)</strong>; nhánh tham gia từng phần <strong>(0,N)</strong> / <strong>(0,1)</strong> biểu diễn bằng <strong>đường nét đơn (—)</strong>.</p>
+          </div>
+        </div>
+        <div style="font-size:13px;font-weight:800;color:var(--navy);">BẢNG ĐẶC TẢ 5 MỐI KẾT HỢP (RELATIONSHIPS) VÀ BẢN SỐ (CARDINALITY)</div>
+        <table class="data-table" style="flex:1;">
+          <thead>
+            <tr>
+              <th style="width:52px;" class="ctr">STT</th>
+              <th style="width:155px;" class="ctr">Mối kết hợp</th>
+              <th style="width:270px;">Thực thể tham gia &amp; Bản số</th>
+              <th style="width:95px;" class="ctr">Loại QH</th>
+              <th>Ý nghĩa Nghiệp vụ Thực tế</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="ctr"><strong>1</strong></td>
+              <td class="ctr"><strong style="color:var(--navy);">SỞ HỮU</strong></td>
+              <td>KHACH_HANG (1,N) — THU_CUNG (1,1)</td>
+              <td class="ctr"><strong>1 : N</strong></td>
+              <td>Một khách hàng sở hữu một hoặc nhiều thú cưng; mỗi thú cưng thuộc về duy nhất một khách hàng.</td>
+            </tr>
+            <tr>
+              <td class="ctr"><strong>2</strong></td>
+              <td class="ctr"><strong style="color:var(--navy);">CÓ LỊCH</strong></td>
+              <td>THU_CUNG (0,N) — LICH_HEN (1,1)</td>
+              <td class="ctr"><strong>1 : N</strong></td>
+              <td>Một thú cưng có thể được đặt nhiều lịch hẹn chăm sóc theo thời gian; mỗi lịch hẹn phục vụ một thú cưng cụ thể.</td>
+            </tr>
+            <tr>
+              <td class="ctr"><strong>3</strong></td>
+              <td class="ctr"><strong style="color:var(--navy);">SỬ DỤNG</strong></td>
+              <td>DICH_VU (0,N) — LICH_HEN (1,1)</td>
+              <td class="ctr"><strong>1 : N</strong></td>
+              <td>Một gói dịch vụ được đăng ký trong nhiều lịch hẹn; mỗi bản ghi lịch hẹn gắn với một dịch vụ xác định kèm số lượng.</td>
+            </tr>
+            <tr>
+              <td class="ctr"><strong>4</strong></td>
+              <td class="ctr"><strong style="color:var(--navy);">THỰC HIỆN</strong></td>
+              <td>NHAN_VIEN (0,N) — LICH_HEN (1,1)</td>
+              <td class="ctr"><strong>1 : N</strong></td>
+              <td>Một nhân viên chăm sóc thực hiện nhiều lịch hẹn; mỗi lịch hẹn do một nhân viên phụ trách chính.</td>
+            </tr>
+            <tr>
+              <td class="ctr"><strong>5</strong></td>
+              <td class="ctr"><strong style="color:var(--teal);">CÓ THANH TOÁN</strong></td>
+              <td>LICH_HEN (0,1) — THANH_TOAN (1,1)</td>
+              <td class="ctr"><strong style="color:var(--teal);">1 : 1</strong></td>
+              <td>Mỗi lịch hẹn sau khi hoàn thành có tối đa một giao dịch thanh toán; mỗi phiếu thanh toán tất toán cho duy nhất một lịch hẹn.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="slide-footer">
+        <span>Hệ thống CSDL Quản lý Dịch vụ Chăm sóc Thú cưng (PetCare Spa &amp; Clinic) • Báo cáo Bài tập lớn CSDL</span>
+        <span class="page-num">Slide 4 / 12</span>
+      </div>
+    </section>
+
+    <!-- SLIDE 5: MỤC 2 - VISUAL ERD SVG -->
+    <section class="slide" data-title="5. Mục 2: Biểu đồ ERD Chuẩn Chen (SVG)" data-note="Đây là sơ đồ vector ERD chuẩn ký hiệu Chen xuất trực tiếp từ thiết kế chuẩn hóa ERD.drawio, kèm danh sách thuộc tính gốc trên từng thực thể.">
+      <div class="top-stripe"></div>
+      <div class="slide-header">
+        <div class="header-top">
+          <span class="pill-cat">MỤC 2 • BIỂU ĐỒ THỰC THỂ – LIÊN KẾT (ERD)</span>
+          <span class="pill-score">MỤC 2 • SƠ ĐỒ CHEN</span>
+        </div>
+        <h2 class="slide-title">Biểu đồ Thực thể – Liên kết (ERD.drawio) &amp; Tập Thuộc tính Gốc</h2>
+      </div>
+      <div class="slide-body" style="flex-direction:row;gap:16px;">
+        <div class="svg-frame" style="flex:1.62;">
+          <img src="./erd_diagram.svg" alt="Biểu đồ Thực thể - Liên kết ERD" onclick="openZoom(this.src)" />
+          <span class="zoom-hint">Bấm vào sơ đồ để phóng to</span>
+        </div>
+        <div style="flex:1;display:flex;flex-direction:column;gap:8px;justify-content:space-between;">
+          <div style="font-size:12.5px;font-weight:800;color:var(--navy);">THUỘC TÍNH NỘI TẠI TRÊN 6 THỰC THỂ</div>
+          <div class="mini-card">
+            <strong style="color:var(--navy);font-size:12px;">1. KHACH_HANG (5 thuộc tính)</strong>
+            <div style="font-size:11.5px;color:var(--slate-700);margin-top:2px;"><u><strong>MaKH</strong></u>, HoTen, SDT, Email, DiaChi</div>
+          </div>
+          <div class="mini-card">
+            <strong style="color:var(--blue);font-size:12px;">2. THU_CUNG (8 thuộc tính gốc)</strong>
+            <div style="font-size:11.5px;color:var(--slate-700);margin-top:2px;"><u><strong>MaThuCung</strong></u>, TenThuCung, Loai, Giong, GioiTinh, Tuoi, CanNang, GhiChu</div>
+          </div>
+          <div class="mini-card">
+            <strong style="color:var(--navy);font-size:12px;">3. NHAN_VIEN (9 thuộc tính)</strong>
+            <div style="font-size:11.5px;color:var(--slate-700);margin-top:2px;"><u><strong>MaNV</strong></u>, HoTen, NgaySinh, GioiTinh, SDT, ChucVu, CaLamViec, Luong, TrangThai</div>
+          </div>
+          <div class="mini-card">
+            <strong style="color:var(--teal);font-size:12px;">4. DICH_VU (5 thuộc tính)</strong>
+            <div style="font-size:11.5px;color:var(--slate-700);margin-top:2px;"><u><strong>MaDV</strong></u>, TenDV, DonGia, ThoiLuongDuKien, MoTaDichVu</div>
+          </div>
+          <div class="mini-card">
+            <strong style="color:var(--blue);font-size:12px;">5. LICH_HEN (5 thuộc tính gốc)</strong>
+            <div style="font-size:11.5px;color:var(--slate-700);margin-top:2px;"><u><strong>MaLich</strong></u>, NgayGioHen, SoLuong, TrangThai, GhiChu</div>
+          </div>
+          <div class="mini-card">
+            <strong style="color:var(--teal);font-size:12px;">6. THANH_TOAN (5 + 1 dẫn xuất)</strong>
+            <div style="font-size:11.5px;color:var(--slate-700);margin-top:2px;"><u><strong>MaTT</strong></u>, ThoiGianThanhToan, <em style="color:var(--amber);">ThanhTien (elip nét đứt)</em>, SoTien, PhuongThuc, TrangThaiTT</div>
+          </div>
+        </div>
+      </div>
+      <div class="slide-footer">
+        <span>Hệ thống CSDL Quản lý Dịch vụ Chăm sóc Thú cưng (PetCare Spa &amp; Clinic) • Báo cáo Bài tập lớn CSDL</span>
+        <span class="page-num">Slide 5 / 12</span>
+      </div>
+    </section>
+
+    <!-- SLIDE 6: MỤC 3 - RELATIONAL SCHEMA MAPPING -->
+    <section class="slide" data-title="6. Mục 3: Quy tắc Ánh xạ & Lược đồ Quan hệ" data-note="Từ sơ đồ ERD, nhóm ánh xạ sang Lược đồ Quan hệ với 3 quy tắc: ánh xạ 4 quan hệ 1-N, ánh xạ quan hệ 1-1 CÓ THANH TOÁN và loại bỏ cột dẫn xuất ThanhTien.">
+      <div class="top-stripe"></div>
+      <div class="slide-header">
+        <div class="header-top">
+          <span class="pill-cat">MỤC 3 • THIẾT KẾ LƯỢC ĐỒ QUAN HỆ</span>
+          <span class="pill-score">MỤC 3 • 2.0 ĐIỂM</span>
+        </div>
+        <h2 class="slide-title">Quy tắc Ánh xạ từ ERD sang Lược đồ Quan hệ (Relational Schema)</h2>
+      </div>
+      <div class="slide-body" style="flex-direction:row;gap:16px;">
+        <div style="width:495px;display:flex;flex-direction:column;gap:12px;justify-content:space-between;">
+          <div class="card" style="border-left:7px solid var(--navy);">
+            <strong style="color:var(--navy);font-size:13px;">Quy tắc 1 • Ánh xạ 4 mối kết hợp 1 : N thành Khóa ngoại</strong>
+            <p style="font-size:12px;color:var(--slate-700);line-height:1.45;">
+              Đưa khóa chính của quan hệ phía '1' sang quan hệ phía 'N' làm <code>FOREIGN KEY NOT NULL</code>:<br/>
+              • <strong>SỞ HỮU:</strong> <code>THU_CUNG.MaKH</code> → <code>KHACH_HANG(MaKH)</code><br/>
+              • <strong>CÓ LỊCH:</strong> <code>LICH_HEN.MaThuCung</code> → <code>THU_CUNG(MaThuCung)</code> <em>(đã bỏ MaKH dư thừa)</em><br/>
+              • <strong>SỬ DỤNG:</strong> <code>LICH_HEN.MaDV</code> → <code>DICH_VU(MaDV)</code><br/>
+              • <strong>THỰC HIỆN:</strong> <code>LICH_HEN.MaNV</code> → <code>NHAN_VIEN(MaNV)</code>
+            </p>
+          </div>
+          <div class="card" style="border-left:7px solid var(--teal);">
+            <strong style="color:var(--teal);font-size:13px;">Quy tắc 2 • Ánh xạ mối kết hợp 1 : 1 (CÓ THANH TOÁN)</strong>
+            <p style="font-size:12px;color:var(--slate-700);line-height:1.45;">
+              Do nhánh <code>THANH_TOAN</code> tham gia toàn phần (1,1) với <code>LICH_HEN</code> (0,1), đưa <code>MaLich</code> vào bảng <code>THANH_TOAN</code> làm <strong>FOREIGN KEY</strong> kết hợp <strong>UNIQUE NOT NULL</strong>.
+            </p>
+          </div>
+          <div class="card" style="border-left:7px solid var(--amber);">
+            <strong style="color:var(--amber);font-size:13px;">Quy tắc 3 • Xử lý thuộc tính dẫn xuất ThanhTien</strong>
+            <p style="font-size:12px;color:var(--slate-700);line-height:1.45;">
+              Không tạo cột vật lý <code>ThanhTien</code> trong bảng <code>THANH_TOAN</code> để tránh dư thừa dữ liệu; hệ thống tính tự động qua biểu thức <code>DonGia * SoLuong</code> khi kết nối bảng.
+            </p>
+          </div>
+        </div>
+        <div class="svg-frame" style="flex:1;">
+          <img src="./relational_schema.svg" alt="Lược đồ Quan hệ PetCare 3NF" onclick="openZoom(this.src)" />
+          <span class="zoom-hint">Bấm vào lược đồ để phóng to</span>
+        </div>
+      </div>
+      <div class="slide-footer">
+        <span>Hệ thống CSDL Quản lý Dịch vụ Chăm sóc Thú cưng (PetCare Spa &amp; Clinic) • Báo cáo Bài tập lớn CSDL</span>
+        <span class="page-num">Slide 6 / 12</span>
+      </div>
+    </section>
+
+    <!-- SLIDE 7: MỤC 3 - 6 TABLE SPECS -->
+    <section class="slide" data-title="7. Mục 3: Đặc tả Cấu trúc 6 Bảng & Ràng buộc" data-note="Tổng hợp cấu trúc chi tiết kiểu dữ liệu và ràng buộc toàn vẹn (PK, FK, UNIQUE, CHECK) của 6 bảng vật lý trong CSDL.">
+      <div class="top-stripe"></div>
+      <div class="slide-header">
+        <div class="header-top">
+          <span class="pill-cat">MỤC 3 • ĐẶC TẢ CẤU TRÚC 6 BẢNG DỮ LIỆU</span>
+          <span class="pill-score">MỤC 3 • 6 BẢNG VẬT LÝ</span>
+        </div>
+        <h2 class="slide-title">Chi tiết Kiểu dữ liệu, Khóa &amp; Hệ thống Ràng buộc Toàn vẹn (DDL)</h2>
+      </div>
+      <div class="slide-body">
+        <div class="grid-2" style="gap:12px;flex:1;">
+          <div class="card" style="padding:0;overflow:hidden;">
+            <div class="panel-header" style="background:var(--navy);padding:6px 12px;">1. KHACH_HANG (5 cột)</div>
+            <table class="data-table" style="font-size:11px;border:none;">
+              <tr><td><strong>MaKH</strong></td><td>VARCHAR(10)</td><td>PRIMARY KEY (VD: KH001)</td></tr>
+              <tr><td><strong>HoTen</strong></td><td>NVARCHAR(100)</td><td>NOT NULL</td></tr>
+              <tr><td><strong>SDT</strong></td><td>VARCHAR(15)</td><td>NOT NULL, UNIQUE, CHECK (10–11 số, đầu 0)</td></tr>
+              <tr><td><strong>Email / DiaChi</strong></td><td>VARCHAR / NVAR</td><td>Email UNIQUE NULL; DiaChi NULL</td></tr>
+            </table>
+          </div>
+          <div class="card" style="padding:0;overflow:hidden;">
+            <div class="panel-header" style="background:var(--blue);padding:6px 12px;">2. THU_CUNG (9 cột)</div>
+            <table class="data-table" style="font-size:11px;border:none;">
+              <tr><td><strong>MaThuCung</strong></td><td>VARCHAR(10)</td><td>PRIMARY KEY (VD: TC001)</td></tr>
+              <tr><td><strong>MaKH</strong></td><td>VARCHAR(10)</td><td>FK NOT NULL → KHACH_HANG(MaKH)</td></tr>
+              <tr><td><strong>Ten, Loai, Giong</strong></td><td>NVARCHAR</td><td>Ten/Loai NOT NULL; Giong NULL; GhiChu(500)</td></tr>
+              <tr><td><strong>GioiTinh, Tuoi, CanNang</strong></td><td>NVAR / INT / DEC</td><td>CHECK Đực/Cái/CXĐ; Tuoi 1..360; Nặng 0.1..150</td></tr>
+            </table>
+          </div>
+          <div class="card" style="padding:0;overflow:hidden;">
+            <div class="panel-header" style="background:var(--purple);padding:6px 12px;">3. NHAN_VIEN (9 cột)</div>
+            <table class="data-table" style="font-size:11px;border:none;">
+              <tr><td><strong>MaNV</strong></td><td>VARCHAR(10)</td><td>PRIMARY KEY (VD: NV001)</td></tr>
+              <tr><td><strong>HoTen, NgaySinh, SDT</strong></td><td>NVAR / DATE</td><td>NOT NULL; SDT UNIQUE; GioiTinh Nam/Nữ</td></tr>
+              <tr><td><strong>ChucVu, CaLamViec</strong></td><td>NVARCHAR(50)</td><td>CHECK 3 chức vụ &amp; 4 ca (Sáng/Chiều/Tối/HC)</td></tr>
+              <tr><td><strong>Luong, TrangThai</strong></td><td>DECIMAL / NVAR</td><td>CHECK Luong &gt;= 0; Đang làm/Nghỉ phép/Nghỉ việc</td></tr>
+            </table>
+          </div>
+          <div class="card" style="padding:0;overflow:hidden;">
+            <div class="panel-header" style="background:var(--teal);padding:6px 12px;">4. DICH_VU (5 cột)</div>
+            <table class="data-table" style="font-size:11px;border:none;">
+              <tr><td><strong>MaDV</strong></td><td>VARCHAR(10)</td><td>PRIMARY KEY (VD: DV001)</td></tr>
+              <tr><td><strong>TenDV</strong></td><td>NVARCHAR(150)</td><td>NOT NULL, UNIQUE</td></tr>
+              <tr><td><strong>DonGia</strong></td><td>DECIMAL(12,2)</td><td>NOT NULL, CHECK (DonGia &gt;= 0)</td></tr>
+              <tr><td><strong>ThoiLuongDuKien, MoTa</strong></td><td>INT / NVARCHAR</td><td>CHECK (ThoiLuong &gt; 0) phút; MoTaDichVu NULL</td></tr>
+            </table>
+          </div>
+          <div class="card" style="padding:0;overflow:hidden;">
+            <div class="panel-header" style="background:var(--amber);padding:6px 12px;">5. LICH_HEN (8 cột • Đạt 3NF)</div>
+            <table class="data-table" style="font-size:11px;border:none;">
+              <tr><td><strong>MaLich</strong></td><td>VARCHAR(10)</td><td>PRIMARY KEY (VD: LH001)</td></tr>
+              <tr><td><strong>MaThuCung, MaDV, MaNV</strong></td><td>VARCHAR(10)</td><td>3 FK NOT NULL (ON UPDATE CASCADE / DELETE RESTRICT)</td></tr>
+              <tr><td><strong>NgayGioHen, SoLuong</strong></td><td>DATETIME / INT</td><td>NOT NULL; CHECK (SoLuong &gt; 0)</td></tr>
+              <tr><td><strong>TrangThai, GhiChu</strong></td><td>NVARCHAR</td><td>CHECK 6 trạng thái (Mới tạo → Hoàn thành / Hủy)</td></tr>
+            </table>
+          </div>
+          <div class="card" style="padding:0;overflow:hidden;">
+            <div class="panel-header" style="background:var(--green);padding:6px 12px;">6. THANH_TOAN (6 cột • Đạt 3NF)</div>
+            <table class="data-table" style="font-size:11px;border:none;">
+              <tr><td><strong>MaTT</strong></td><td>VARCHAR(10)</td><td>PRIMARY KEY (VD: TT001)</td></tr>
+              <tr><td><strong>MaLich</strong></td><td>VARCHAR(10)</td><td>FK, UNIQUE, NOT NULL → LICH_HEN (Quan hệ 1-1)</td></tr>
+              <tr><td><strong>ThoiGianTT, SoTien</strong></td><td>DATETIME / DEC</td><td>NOT NULL; CHECK (SoTien &gt;= 0)</td></tr>
+              <tr><td><strong>PhuongThuc, TrangThaiTT</strong></td><td>NVARCHAR(50)</td><td>CHECK Tiền mặt/CK/Thẻ; Đã thanh toán/Chưa TT</td></tr>
+            </table>
+          </div>
+        </div>
+      </div>
+      <div class="slide-footer">
+        <span>Hệ thống CSDL Quản lý Dịch vụ Chăm sóc Thú cưng (PetCare Spa &amp; Clinic) • Báo cáo Bài tập lớn CSDL</span>
+        <span class="page-num">Slide 7 / 12</span>
+      </div>
+    </section>
+
+    <!-- SLIDE 8: MỤC 4 - NORMALIZATION -->
+    <section class="slide" data-title="8. Mục 4: Chuẩn hóa dữ liệu 3NF" data-note="Kiểm tra 1NF, 2NF, 3NF cho toàn bộ 6 bảng; chỉ rõ 2 phụ thuộc bắc cầu đã phát hiện và loại bỏ tại LICH_HEN và THANH_TOAN.">
+      <div class="top-stripe"></div>
+      <div class="slide-header">
+        <div class="header-top">
+          <span class="pill-cat">MỤC 4 • KIỂM TRA &amp; CHUẨN HÓA DỮ LIỆU</span>
+          <span class="pill-score">MỤC 4 • 1.0 ĐIỂM</span>
+        </div>
+        <h2 class="slide-title">Kiểm tra Phụ thuộc Hàm &amp; Đưa Lược đồ về Chuẩn 3NF</h2>
+      </div>
+      <div class="slide-body">
+        <div class="grid-3">
+          <div class="card" style="border:1.5px solid var(--blue);">
+            <strong style="color:var(--blue);font-size:13px;">ĐẠT CHUẨN 1 (1NF)</strong>
+            <p style="font-size:12px;color:var(--slate-700);line-height:1.42;">Mọi thuộc tính đều nguyên tố (đơn trị), không có cột đa trị hay nhóm lặp. Nhiều thú cưng hoặc nhiều lần đặt lịch được tách thành các bản ghi độc lập.</p>
+          </div>
+          <div class="card" style="border:1.5px solid var(--teal);">
+            <strong style="color:var(--teal);font-size:13px;">ĐẠT CHUẨN 2 (2NF)</strong>
+            <p style="font-size:12px;color:var(--slate-700);line-height:1.42;">Cả 6 bảng đều dùng <strong>khóa chính đơn</strong> (<code>MaKH</code>, <code>MaThuCung</code>, <code>MaNV</code>, <code>MaDV</code>, <code>MaLich</code>, <code>MaTT</code>) ⇒ Không có phụ thuộc hàm bộ phận.</p>
+          </div>
+          <div class="card" style="border:1.5px solid var(--purple);">
+            <strong style="color:var(--purple);font-size:13px;">ĐẠT CHUẨN 3 (3NF)</strong>
+            <p style="font-size:12px;color:var(--slate-700);line-height:1.42;">Đạt chuẩn 2NF và không tồn tại thuộc tính không khóa nào phụ thuộc bắc cầu (<code>X → Y → Z</code>) vào khóa chính thông qua một thuộc tính không khóa khác.</p>
+          </div>
+        </div>
+        <div style="font-size:13px;font-weight:800;color:var(--red);">PHÁT HIỆN &amp; KHỬ 2 PHỤ THUỘC HÀM BẮC CẦU (X → Y → Z) ĐỂ ĐẠT CHUẨN 3NF</div>
+        <div class="grid-2" style="flex:1;">
+          <div class="card" style="padding:0;overflow:hidden;">
+            <div class="panel-header" style="background:var(--navy);">1. CHUẨN HÓA BẢNG LICH_HEN (KHỬ MaKH DƯ THỪA)</div>
+            <div style="padding:12px;display:flex;flex-direction:column;gap:10px;flex:1;">
+              <div style="background:var(--red-light);border:1px solid #fecaca;border-radius:7px;padding:10px 12px;">
+                <strong style="color:var(--red);font-size:12px;display:block;margin-bottom:4px;">Trước chuẩn hóa (Vi phạm 3NF):</strong>
+                <code style="font-size:11.5px;font-weight:700;color:var(--slate-900);">LICH_HEN(MaLich, MaKH, MaThuCung, MaDV, MaNV, ...)</code>
+                <p style="font-size:11.5px;color:var(--slate-700);margin-top:5px;line-height:1.4;">
+                  • Tồn tại phụ thuộc bắc cầu: <strong>MaLich → MaThuCung → MaKH</strong>.<br/>
+                  • Gây dị thường dữ liệu: có thể nhập thú cưng của khách A nhưng cột MaKH lại ghi khách B.
+                </p>
+              </div>
+              <div style="background:var(--green-light);border:1px solid #bbf7d0;border-radius:7px;padding:10px 12px;flex:1;">
+                <strong style="color:var(--green);font-size:12px;display:block;margin-bottom:4px;">Sau chuẩn hóa 3NF (Khắc phục):</strong>
+                <code style="font-size:11.5px;font-weight:700;color:var(--slate-900);">LICH_HEN(MaLich, MaThuCung, MaDV, MaNV, NgayGioHen, SoLuong, TrangThai, GhiChu)</code>
+                <p style="font-size:11.5px;color:var(--slate-700);margin-top:5px;line-height:1.4;">
+                  • Loại bỏ hoàn toàn cột <code>MaKH</code> khỏi <code>LICH_HEN</code>; truy xuất chủ nuôi thông qua phép <code>JOIN THU_CUNG → KHACH_HANG</code>.
+                </p>
+              </div>
+            </div>
+          </div>
+          <div class="card" style="padding:0;overflow:hidden;">
+            <div class="panel-header" style="background:var(--teal);">2. CHUẨN HÓA BẢNG THANH_TOAN (KHỬ ThanhTien DẪN XUẤT)</div>
+            <div style="padding:12px;display:flex;flex-direction:column;gap:10px;flex:1;">
+              <div style="background:var(--red-light);border:1px solid #fecaca;border-radius:7px;padding:10px 12px;">
+                <strong style="color:var(--red);font-size:12px;display:block;margin-bottom:4px;">Trước chuẩn hóa (Vi phạm 3NF):</strong>
+                <code style="font-size:11.5px;font-weight:700;color:var(--slate-900);">THANH_TOAN(MaTT, MaLich, ThoiGianTT, ThanhTien, SoTien, ...)</code>
+                <p style="font-size:11.5px;color:var(--slate-700);margin-top:5px;line-height:1.4;">
+                  • Phụ thuộc bắc cầu liên bảng: <strong>MaTT → MaLich → (MaDV, SoLuong) → DonGia × SoLuong = ThanhTien</strong>.<br/>
+                  • Gây dư thừa và nguy cơ sai lệch khi dịch vụ hoặc số lượng trong lịch hẹn thay đổi.
+                </p>
+              </div>
+              <div style="background:var(--green-light);border:1px solid #bbf7d0;border-radius:7px;padding:10px 12px;flex:1;">
+                <strong style="color:var(--green);font-size:12px;display:block;margin-bottom:4px;">Sau chuẩn hóa 3NF (Khắc phục):</strong>
+                <code style="font-size:11.5px;font-weight:700;color:var(--slate-900);">THANH_TOAN(MaTT, MaLich, ThoiGianThanhToan, SoTien, PhuongThuc, TrangThaiTT)</code>
+                <p style="font-size:11.5px;color:var(--slate-700);margin-top:5px;line-height:1.4;">
+                  • Loại bỏ cột vật lý <code>ThanhTien</code>, chỉ lưu <code>SoTien</code> thực thu; giá trị <code>ThanhTien</code> tính động khi truy vấn kết nối.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div style="background:var(--blue-light);border:1.5px solid var(--blue);border-radius:7px;padding:8px 14px;font-size:12px;font-weight:600;color:var(--navy);">
+          Kiểm tra 4 bảng còn lại (KHACH_HANG, THU_CUNG, DICH_VU, NHAN_VIEN): Mọi thuộc tính không khóa phụ thuộc trực tiếp vào PK. Riêng NHAN_VIEN có Lương &amp; Ca làm việc ký theo hợp đồng cá nhân (MaNV → Luong, CaLamViec, không phụ thuộc ChucVu) ⇒ Toàn bộ 6/6 bảng đều đạt chuẩn 3NF.
+        </div>
+      </div>
+      <div class="slide-footer">
+        <span>Hệ thống CSDL Quản lý Dịch vụ Chăm sóc Thú cưng (PetCare Spa &amp; Clinic) • Báo cáo Bài tập lớn CSDL</span>
+        <span class="page-num">Slide 8 / 12</span>
+      </div>
+    </section>
+
+    <!-- SLIDE 9: MỤC 5 - 2 INPUT SCREENS -->
+    <section class="slide" data-title="9. Mục 5: 2 Màn hình Nhập liệu & Kiểm thử" data-note="Slide trình bày 2 màn hình nhập liệu điển hình nghiệp vụ (Đăng ký Thú cưng & Đặt lịch hẹn) cùng các lớp kiểm tra tính đúng đắn PK, FK, CHECK và chống trùng lịch.">
+      <div class="top-stripe"></div>
+      <div class="slide-header">
+        <div class="header-top">
+          <span class="pill-cat">MỤC 5 • XÂY DỰNG 2 MÀN HÌNH NHẬP LIỆU &amp; KIỂM THỬ</span>
+          <span class="pill-score">MỤC 5 • 1.0 ĐIỂM</span>
+        </div>
+        <h2 class="slide-title">Kiểm soát Toàn vẹn Dữ liệu &amp; Quy tắc Nghiệp vụ Thời gian Thực</h2>
+      </div>
+      <div class="slide-body">
+        <div class="grid-2" style="flex:1;">
+          <div class="card" style="padding:0;overflow:hidden;">
+            <div class="panel-header" style="background:var(--navy);">MÀN HÌNH NHẬP 1: HỒ SƠ THÚ CƯNG &amp; KHÁCH HÀNG</div>
+            <div style="padding:14px;display:flex;flex-direction:column;gap:11px;flex:1;">
+              <div style="background:var(--slate-100);border-radius:7px;padding:11px 13px;">
+                <strong style="color:var(--navy);font-size:12.5px;display:block;margin-bottom:4px;">Chức năng nghiệp vụ (THU_CUNG &amp; KHACH_HANG):</strong>
+                <p style="font-size:12px;color:var(--slate-700);line-height:1.42;">
+                  • Chọn chủ sở hữu có sẵn hoặc thêm mới đồng thời Khách hàng + Thú cưng trong cùng một giao dịch (Transaction).<br/>
+                  • Tự động cấp mã định danh kế tiếp qua <code>next_code()</code> (VD: KH010, TC011), tối ưu thao tác người dùng cuối.
+                </p>
+              </div>
+              <div style="border:1.5px solid var(--blue);border-radius:7px;padding:11px 13px;">
+                <strong style="color:var(--blue);font-size:12.5px;display:block;margin-bottom:3px;">1. Kiểm tra Khóa chính &amp; Duy nhất (PK / UNIQUE)</strong>
+                <p style="font-size:12px;color:var(--slate-700);line-height:1.4;">Chặn nhập trùng mã (<code>TC001</code>, <code>KH001</code>) và chặn trùng số điện thoại khách hàng đã tồn tại trong hệ thống.</p>
+              </div>
+              <div style="border:1.5px solid var(--teal);border-radius:7px;padding:11px 13px;">
+                <strong style="color:var(--teal);font-size:12.5px;display:block;margin-bottom:3px;">2. Kiểm tra Khóa ngoại (FOREIGN KEY)</strong>
+                <p style="font-size:12px;color:var(--slate-700);line-height:1.4;">Chặn thêm thú cưng với mã chủ sở hữu không tồn tại trong bảng <code>KHACH_HANG</code> (ràng buộc <code>FK_TC_KH</code>).</p>
+              </div>
+              <div style="border:1.5px solid var(--red);border-radius:7px;padding:11px 13px;flex:1;">
+                <strong style="color:var(--red);font-size:12.5px;display:block;margin-bottom:3px;">3. Kiểm tra Miền giá trị (CHECK Constraints)</strong>
+                <p style="font-size:12px;color:var(--slate-700);line-height:1.42;">
+                  • <code>SDT</code>: bắt buộc 10–11 chữ số, bắt đầu bằng số <code>0</code> (<code>CHK_KH_SDT</code>).<br/>
+                  • <code>Tuoi</code>: 1 – 360 tháng; <code>CanNang</code>: 0.1 – 150 kg (chặn giá trị âm hoặc bằng 0).
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <div class="card" style="padding:0;overflow:hidden;">
+            <div class="panel-header" style="background:var(--teal);">MÀN HÌNH NHẬP 2: TIẾP NHẬN &amp; ĐẶT LỊCH HẸN (LICH_HEN)</div>
+            <div style="padding:14px;display:flex;flex-direction:column;gap:11px;flex:1;">
+              <div style="background:var(--teal-light);border-radius:7px;padding:11px 13px;">
+                <strong style="color:var(--teal);font-size:12.5px;display:block;margin-bottom:4px;">Chức năng nghiệp vụ &amp; Minh chứng 3NF:</strong>
+                <p style="font-size:12px;color:var(--slate-700);line-height:1.42;">
+                  • Chọn Thú cưng tự động suy dẫn Chủ sở hữu từ <code>KHACH_HANG</code> (minh chứng đã bỏ cột <code>MaKH</code> khỏi <code>LICH_HEN</code>).<br/>
+                  • Tự tính <code>ThanhTienDuKien = DonGia × SoLuong</code>; hỗ trợ đặt đơn lẻ hoặc <strong>Combo dịch vụ nối tiếp</strong>.
+                </p>
+              </div>
+              <div style="border:1.5px solid var(--amber);border-radius:7px;padding:11px 13px;">
+                <strong style="color:var(--amber);font-size:12.5px;display:block;margin-bottom:3px;">1. Kiểm tra Trạng thái Làm việc của Nhân viên</strong>
+                <p style="font-size:12px;color:var(--slate-700);line-height:1.4;">Chặn phân công nhân viên đang <em>Nghỉ phép</em> hoặc <em>Đã nghỉ việc</em> (VD: <code>NV006 – Hoàng Minh Đức</code>).</p>
+              </div>
+              <div style="border:1.5px solid var(--purple);border-radius:7px;padding:11px 13px;">
+                <strong style="color:var(--purple);font-size:12.5px;display:block;margin-bottom:3px;">2. Kiểm tra Khớp Ca làm việc (CaLamViec)</strong>
+                <p style="font-size:12px;color:var(--slate-700);line-height:1.4;">Chặn đặt giờ hẹn lệch ca phụ trách (VD: <code>NV002</code> làm Ca sáng 08:00–12:00 không thể nhận lịch lúc 15:30 chiều).</p>
+              </div>
+              <div style="border:1.5px solid var(--red);border-radius:7px;padding:11px 13px;flex:1;">
+                <strong style="color:var(--red);font-size:12.5px;display:block;margin-bottom:3px;">3. Chống Trùng lịch hẹn (JULIANDAY Time-Overlap)</strong>
+                <p style="font-size:11.8px;color:var(--slate-700);line-height:1.4;">
+                  Truy vấn kiểm tra xung đột lịch của cùng nhân viên trong vòng 60 phút / theo thời lượng dịch vụ:<br/>
+                  <code>ABS((JULIANDAY(NgayGioHen) - JULIANDAY(?)) * 1440) &lt; 60</code>
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="slide-footer">
+        <span>Hệ thống CSDL Quản lý Dịch vụ Chăm sóc Thú cưng (PetCare Spa &amp; Clinic) • Báo cáo Bài tập lớn CSDL</span>
+        <span class="page-num">Slide 9 / 12</span>
+      </div>
+    </section>
+
+    <!-- SLIDE 10: MỤC 6 - SEARCH -->
+    <section class="slide" data-title="10. Mục 6: Tìm kiếm & Tra cứu Đa tiêu chí" data-note="Màn hình tìm kiếm kết nối cả 6 bảng chuẩn 3NF bằng INNER JOIN và LEFT JOIN cùng hàm COALESCE để tra cứu tức thời theo 6 nhóm điều kiện.">
+      <div class="top-stripe"></div>
+      <div class="slide-header">
+        <div class="header-top">
+          <span class="pill-cat">MỤC 6 • MÀN HÌNH TÌM KIẾM &amp; TRA CỨU DỮ LIỆU</span>
+          <span class="pill-score">MỤC 6 • 0.5 ĐIỂM</span>
+        </div>
+        <h2 class="slide-title">Tra cứu Đa tiêu chí Kết nối 6 Bảng Dữ liệu (JOIN &amp; COALESCE)</h2>
+      </div>
+      <div class="slide-body" style="flex-direction:row;gap:18px;">
+        <div style="width:455px;display:flex;flex-direction:column;gap:12px;">
+          <div class="card" style="padding:0;overflow:hidden;">
+            <div class="panel-header" style="background:var(--blue);">6 NHÓM ĐIỀU KIỆN LỌC ĐỘNG KẾT HỢP</div>
+            <div style="padding:11px 12px;display:flex;flex-direction:column;gap:7px;">
+              <div style="background:var(--slate-100);border-radius:6px;padding:7px 10px;font-size:12px;"><strong style="color:var(--navy);">1. Từ khóa tổng hợp:</strong> Tìm kiếm <code>LIKE</code> trên Mã lịch, Tên khách, SĐT, Tên thú cưng.</div>
+              <div style="background:var(--slate-100);border-radius:6px;padding:7px 10px;font-size:12px;"><strong style="color:var(--navy);">2. Loài thú cưng:</strong> Lọc nhanh theo Chó, Mèo hoặc loài khác.</div>
+              <div style="background:var(--slate-100);border-radius:6px;padding:7px 10px;font-size:12px;"><strong style="color:var(--navy);">3. Dịch vụ đăng ký:</strong> Lọc theo từng gói dịch vụ (<code>MaDV</code>).</div>
+              <div style="background:var(--slate-100);border-radius:6px;padding:7px 10px;font-size:12px;"><strong style="color:var(--navy);">4. Nhân viên phụ trách:</strong> Lọc theo chuyên viên chăm sóc (<code>MaNV</code>).</div>
+              <div style="background:var(--slate-100);border-radius:6px;padding:7px 10px;font-size:12px;"><strong style="color:var(--navy);">5. Trạng thái lịch hẹn:</strong> 6 trạng thái + nút lọc nhanh <em>Đang chờ &amp; thực hiện</em>.</div>
+              <div style="background:var(--slate-100);border-radius:6px;padding:7px 10px;font-size:12px;"><strong style="color:var(--navy);">6. Khoảng thời gian:</strong> Lọc theo <code>DATE(NgayGioHen)</code> Từ ngày – Đến ngày.</div>
+            </div>
+          </div>
+          <div style="background:var(--teal-light);border:1.5px solid var(--teal);border-radius:10px;padding:12px 14px;flex:1;">
+            <strong style="color:var(--teal);font-size:12.5px;display:block;margin-bottom:5px;">KẾT QUẢ HIỂN THỊ &amp; TỔNG HỢP TỨC THỜI</strong>
+            <p style="font-size:12px;color:var(--slate-700);line-height:1.45;margin-bottom:6px;">
+              • Hiển thị đầy đủ: Mã lịch, Ngày giờ, Họ tên &amp; SĐT khách, Thú cưng (Loài – Giống), Dịch vụ, Đơn giá × SL, Thành tiền, Nhân viên &amp; Ca, Trạng thái lịch, Trạng thái thanh toán, Ghi chú.
+            </p>
+            <p style="font-size:12px;font-weight:700;color:var(--slate-900);">• Tự động thống kê Tổng số bản ghi &amp; Tổng giá trị dịch vụ tương ứng.</p>
+          </div>
+        </div>
+        <div style="flex:1;background:var(--navy-dark);border-radius:10px;padding:16px 18px;display:flex;flex-direction:column;justify-content:space-between;border:1px solid #334155;">
+          <div style="font-size:12.5px;font-weight:800;color:#5eead4;">CÂU LỆNH SQL KẾT NỐI 6 BẢNG TÁI TẠO BỨC TRANH NGHIỆP VỤ</div>
+          <div class="code-box" style="border:none;padding:6px 0;background:transparent;"><span class="kw">SELECT</span>
+    lh.MaLich, lh.NgayGioHen,
+    kh.MaKH, kh.HoTen <span class="kw">AS</span> TenKhachHang, kh.SDT <span class="kw">AS</span> SDTKhachHang,
+    tc.MaThuCung, tc.TenThuCung, tc.Loai, tc.Giong, tc.CanNang,
+    dv.MaDV, dv.TenDV, dv.DonGia, lh.SoLuong,
+    (dv.DonGia * lh.SoLuong) <span class="kw">AS</span> ThanhTienDuKien,
+    nv.MaNV, nv.HoTen <span class="kw">AS</span> TenNhanVien, nv.CaLamViec,
+    lh.TrangThai,
+    <span class="fn">COALESCE</span>(tt.TrangThaiTT, <span class="st">'Chưa thanh toán'</span>) <span class="kw">AS</span> TrangThaiThanhToan,
+    lh.GhiChu
+<span class="kw">FROM</span> LICH_HEN lh
+<span class="kw">JOIN</span> THU_CUNG tc   <span class="kw">ON</span> lh.MaThuCung = tc.MaThuCung
+<span class="kw">JOIN</span> KHACH_HANG kh <span class="kw">ON</span> tc.MaKH = kh.MaKH
+<span class="kw">JOIN</span> DICH_VU dv    <span class="kw">ON</span> lh.MaDV = dv.MaDV
+<span class="kw">JOIN</span> NHAN_VIEN nv  <span class="kw">ON</span> lh.MaNV = nv.MaNV
+<span class="kw">LEFT JOIN</span> THANH_TOAN tt <span class="kw">ON</span> lh.MaLich = tt.MaLich
+<span class="kw">WHERE</span> 1=1
+  <span class="cm">/* + Điều kiện lọc động: LIKE, Loai, MaDV, MaNV, TrangThai, DATE(NgayGioHen) */</span>
+<span class="kw">ORDER BY</span> lh.NgayGioHen <span class="kw">DESC</span>;</div>
+          <div style="background:#1e293b;border:1px solid #334155;border-radius:7px;padding:10px 12px;font-size:11.8px;color:#cbd5e1;line-height:1.42;">
+            <strong style="color:var(--amber-light);">Điểm nhấn kỹ thuật:</strong> Dùng <code>INNER JOIN</code> qua <code>THU_CUNG → KHACH_HANG</code> để lấy thông tin chủ nuôi (do đã chuẩn hóa 3NF), kết hợp <code>LEFT JOIN THANH_TOAN</code> + <code>COALESCE</code> để không bỏ sót các lịch hẹn chưa thanh toán.
+          </div>
+        </div>
+      </div>
+      <div class="slide-footer">
+        <span>Hệ thống CSDL Quản lý Dịch vụ Chăm sóc Thú cưng (PetCare Spa &amp; Clinic) • Báo cáo Bài tập lớn CSDL</span>
+        <span class="page-num">Slide 10 / 12</span>
+      </div>
+    </section>
+
+    <!-- SLIDE 11: MỤC 7 - 2 REPORTS -->
+    <section class="slide" data-title="11. Mục 7: 2 Báo cáo Nghiệp vụ & Xuất File" data-note="Báo cáo 1 tổng hợp doanh thu thực thu 2.890.000đ qua 9 giao dịch; Báo cáo 2 thống kê KPI của 4 nhân viên chăm sóc. Hỗ trợ xuất trực tiếp Excel .xlsx, Word .doc và In PDF.">
+      <div class="top-stripe"></div>
+      <div class="slide-header">
+        <div class="header-top">
+          <span class="pill-cat">MỤC 7 • XÂY DỰNG 2 BÁO CÁO NGHIỆP VỤ &amp; XUẤT FILE</span>
+          <span class="pill-score">MỤC 7 • 1.0 ĐIỂM</span>
+        </div>
+        <h2 class="slide-title">Thống kê Doanh thu Dịch vụ (BC-01) &amp; Hiệu suất Nhân sự (BC-02)</h2>
+      </div>
+      <div class="slide-body">
+        <div class="grid-2" style="flex:1;">
+          <div class="card" style="padding:0;overflow:hidden;">
+            <div class="panel-header" style="background:var(--navy);">BÁO CÁO 1: DOANH THU DỊCH VỤ (MẪU BC-01/TC-KT)</div>
+            <div style="padding:10px 12px;display:flex;flex-direction:column;gap:8px;flex:1;">
+              <div style="background:var(--slate-100);border-radius:6px;padding:8px 10px;font-size:11.5px;line-height:1.4;color:var(--slate-700);">
+                <strong style="color:var(--navy);">• Người lập:</strong> Lễ tân &amp; Thu ngân (NV005 – Phạm Ngọc Lan)<br/>
+                <strong style="color:var(--navy);">• Người nhận:</strong> Quản lý cơ sở (NV001 – Đỗ Thanh Hương) &amp; Kế toán<br/>
+                <strong style="color:var(--navy);">• Mục đích:</strong> Đối soát thực thu tại két &amp; ngân hàng theo 3 kênh; hoạch định dịch vụ chủ lực.
+              </div>
+              <table class="data-table" style="font-size:11px;flex:1;">
+                <thead>
+                  <tr><th>Dịch vụ (petcare.db)</th><th class="ctr">GD</th><th class="num">Thực thu</th><th class="num">CK</th><th class="num">Tiền mặt</th><th class="num">Thẻ</th></tr>
+                </thead>
+                <tbody>
+                  <tr><td>DV002 Grooming trọn gói</td><td class="ctr">3</td><td class="num"><strong>1.140.000</strong></td><td class="num">380k</td><td class="num">380k</td><td class="num">380k</td></tr>
+                  <tr><td>DV005 Khách sạn VIP</td><td class="ctr">1</td><td class="num"><strong>600.000</strong></td><td class="num">600k</td><td class="num">0</td><td class="num">0</td></tr>
+                  <tr><td>DV001 Tắm VS 7 bước</td><td class="ctr">2</td><td class="num"><strong>400.000</strong></td><td class="num">200k</td><td class="num">200k</td><td class="num">0</td></tr>
+                  <tr><td>DV003 Spa ủ Collagen</td><td class="ctr">1</td><td class="num"><strong>320.000</strong></td><td class="num">320k</td><td class="num">0</td><td class="num">0</td></tr>
+                  <tr><td>DV004 Vệ sinh răng</td><td class="ctr">1</td><td class="num"><strong>250.000</strong></td><td class="num">0</td><td class="num">250k</td><td class="num">0</td></tr>
+                  <tr><td>DV006 Gỡ rối &amp; Cạo VS</td><td class="ctr">1</td><td class="num"><strong>180.000</strong></td><td class="num">0</td><td class="num">0</td><td class="num">180k</td></tr>
+                  <tr style="background:var(--blue-light);font-weight:700;">
+                    <td>TỔNG CỘNG (9 GD)</td><td class="ctr">9</td><td class="num" style="color:var(--navy);">2.890.000 đ</td><td class="num">1.500k</td><td class="num">830k</td><td class="num">560k</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <div class="card" style="padding:0;overflow:hidden;">
+            <div class="panel-header" style="background:var(--teal);">BÁO CÁO 2: HIỆU SUẤT NHÂN VIÊN (MẪU BC-02/NS-ĐH)</div>
+            <div style="padding:10px 12px;display:flex;flex-direction:column;gap:8px;flex:1;">
+              <div style="background:var(--teal-light);border-radius:6px;padding:8px 10px;font-size:11.5px;line-height:1.4;color:var(--slate-700);">
+                <strong style="color:var(--teal);">• Người lập:</strong> Quản lý cơ sở (NV001 – Đỗ Thanh Hương) lập cuối tháng<br/>
+                <strong style="color:var(--teal);">• Người nhận:</strong> Phòng Hành chính Nhân sự – Tiền lương &amp; Ban Giám đốc<br/>
+                <strong style="color:var(--teal);">• Mục đích:</strong> Thống kê lịch phân công/hoàn thành/hủy, số phút phục vụ &amp; doanh thu để tính KPI.
+              </div>
+              <table class="data-table" style="font-size:11px;">
+                <thead>
+                  <tr><th style="background:var(--teal);border-color:#0f766e;">Nhân viên chăm sóc</th><th style="background:var(--teal);border-color:#0f766e;">Ca làm</th><th style="background:var(--teal);border-color:#0f766e;" class="ctr">Tổng</th><th style="background:var(--teal);border-color:#0f766e;" class="ctr">HT</th><th style="background:var(--teal);border-color:#0f766e;" class="num">Phút PV</th><th style="background:var(--teal);border-color:#0f766e;" class="num">Doanh thu</th></tr>
+                </thead>
+                <tbody>
+                  <tr><td>NV002 Nguyễn Văn Khoa</td><td>Ca sáng</td><td class="ctr">4</td><td class="ctr" style="color:var(--green);font-weight:700;">4</td><td class="num">420p</td><td class="num"><strong>1.340.000 đ</strong></td></tr>
+                  <tr><td>NV004 Trần Quốc Bảo</td><td>Hành chính</td><td class="ctr">4</td><td class="ctr" style="color:var(--green);font-weight:700;">3</td><td class="num">3.000p</td><td class="num"><strong>980.000 đ</strong></td></tr>
+                  <tr><td>NV003 Lê Thị Mai Anh</td><td>Ca chiều</td><td class="ctr">3</td><td class="ctr" style="color:var(--green);font-weight:700;">2</td><td class="num">135p</td><td class="num"><strong>570.000 đ</strong></td></tr>
+                  <tr><td>NV006 Hoàng Minh Đức (Nghỉ phép)</td><td>Ca tối</td><td class="ctr">0</td><td class="ctr" style="color:var(--red);">0</td><td class="num">0p</td><td class="num">0 đ</td></tr>
+                  <tr style="background:var(--teal-light);font-weight:700;">
+                    <td>TỔNG HỢP KPI</td><td>4 NV</td><td class="ctr">11</td><td class="ctr">9</td><td class="num">3.555p</td><td class="num" style="color:var(--teal);">2.890.000 đ</td>
+                  </tr>
+                </tbody>
+              </table>
+              <div style="background:var(--slate-100);border-radius:6px;padding:10px 12px;font-size:11.5px;font-weight:700;color:var(--navy);text-align:center;margin-top:auto;">
+                Kỹ thuật SQL: LEFT JOIN + GROUP BY + Pivot SUM(CASE WHEN ... THEN ... ELSE 0 END) + COALESCE
+              </div>
+            </div>
+          </div>
+        </div>
+        <div style="background:var(--navy-dark);color:#ffffff;border-radius:8px;padding:11px 16px;font-size:12px;font-weight:600;">
+          XUẤT FILE BÁO CÁO THỰC TẾ CHUẨN HÀNH CHÍNH VIỆT NAM: Xuất Excel OpenXML (.xlsx) trực tiếp từ <code>app.py</code> (Bao_Cao_1_Doanh_Thu_Dich_Vu_PetCare.xlsx, Bao_Cao_2_Hieu_Suat_Nhan_Vien_PetCare.xlsx) • Xuất Word (.doc) • In &amp; Xuất PDF có Quốc hiệu, Tiêu ngữ, Chữ ký 3 cấp.
+        </div>
+      </div>
+      <div class="slide-footer">
+        <span>Hệ thống CSDL Quản lý Dịch vụ Chăm sóc Thú cưng (PetCare Spa &amp; Clinic) • Báo cáo Bài tập lớn CSDL</span>
+        <span class="page-num">Slide 11 / 12</span>
+      </div>
+    </section>
+
+    <!-- SLIDE 12: MỤC 8 - ARCHITECTURE & CONCLUSION -->
+    <section class="slide" data-title="12. Mục 8: Kiến trúc 2 Phân hệ & Kết luận" data-note="Ở Mục 8, hệ thống chạy hoàn toàn bằng thư viện chuẩn Python và SQLite, với giao diện End-User UI chia thành 2 phân hệ: Quầy Lễ tân – Quản lý và Khách hàng Đặt lịch.">
+      <div class="top-stripe"></div>
+      <div class="slide-header">
+        <div class="header-top">
+          <span class="pill-cat">MỤC 8 • TỔNG HỢP SQL, KIẾN TRÚC &amp; KẾT LUẬN</span>
+          <span class="pill-score">MỤC 8 • 1.0 ĐIỂM</span>
+        </div>
+        <h2 class="slide-title">Kiến trúc Ứng dụng 2 Phân hệ Thuần Người Dùng &amp; Tổng kết Đồ án</h2>
+      </div>
+      <div class="slide-body">
+        <div class="grid-3" style="flex:1;">
+          <div class="card" style="padding:0;overflow:hidden;">
+            <div class="panel-header" style="background:var(--navy);">1. TẦNG DỮ LIỆU (SQLite 3)</div>
+            <div style="padding:14px;display:flex;flex-direction:column;gap:10px;font-size:12.5px;color:var(--slate-700);line-height:1.45;">
+              <p><strong style="color:var(--navy);">• Tệp cài đặt:</strong> <code>csdl_cham_soc_thu_cung.sql</code> &amp; <code>petcare.db</code>.</p>
+              <p><strong style="color:var(--navy);">• Cấu trúc:</strong> 6 bảng đạt chuẩn 3NF, bật nghiêm ngặt <code>PRAGMA foreign_keys = ON</code>.</p>
+              <p><strong style="color:var(--navy);">• Toàn vẹn:</strong> PK, FK (<code>ON UPDATE CASCADE / DELETE RESTRICT</code>), UNIQUE, CHECK, GLOB.</p>
+              <p><strong style="color:var(--navy);">• Tương thích:</strong> Dễ dàng chuyển đổi sang SQL Server, MySQL hoặc PostgreSQL.</p>
+            </div>
+          </div>
+          <div class="card" style="padding:0;overflow:hidden;">
+            <div class="panel-header" style="background:var(--teal);">2. TẦNG BACKEND (app.py)</div>
+            <div style="padding:14px;display:flex;flex-direction:column;gap:10px;font-size:12.5px;color:var(--slate-700);line-height:1.45;">
+              <p><strong style="color:var(--teal);">• Công nghệ:</strong> 100% Python Standard Library (<code>http.server</code>, <code>sqlite3</code>, <code>zipfile</code>, <code>json</code>) — không cần pip install.</p>
+              <p><strong style="color:var(--teal);">• API RESTful:</strong> <code>/api/init</code>, <code>/api/search</code>, <code>/api/reports</code>, <code>/api/export_xlsx</code> &amp; 9 endpoint POST.</p>
+              <p><strong style="color:var(--teal);">• Nghiệp vụ:</strong> Tự cấp mã <code>next_code()</code>, kiểm tra ca làm &amp; trùng lịch <code>JULIANDAY()</code>, khóa thu tiền đơn hủy.</p>
+              <p><strong style="color:var(--teal);">• Xuất Excel:</strong> Tự đóng gói tệp <code>.xlsx</code> chuẩn OpenXML trong bộ nhớ.</p>
+            </div>
+          </div>
+          <div class="card" style="padding:0;overflow:hidden;">
+            <div class="panel-header" style="background:var(--blue);">3. GIAO DIỆN 2 PHÂN HỆ (index.html)</div>
+            <div style="padding:14px;display:flex;flex-direction:column;gap:10px;font-size:12.5px;color:var(--slate-700);line-height:1.45;">
+              <p><strong style="color:var(--blue);">• Phân hệ 1 – Quầy Lễ Tân &amp; Quản Lý:</strong> 4 thẻ KPI, Tiếp nhận hồ sơ, Đặt lịch Combo &amp; Thu ngân, Dịch vụ &amp; Nhân sự, Tra cứu 6 bảng, Báo cáo quản trị.</p>
+              <p><strong style="color:var(--blue);">• Phân hệ 2 – Khách Hàng Đặt Lịch:</strong> Bảng màu Spa Teal riêng, định danh bảo mật theo SĐT, chọn nhanh dịch vụ, quản lý thú cưng cá nhân.</p>
+              <p><strong style="color:var(--blue);">• Thuần End-User UI:</strong> Ẩn hoàn toàn mã kỹ thuật/SQL trên UI, hỗ trợ chạy dự phòng In-Memory Simulator.</p>
+            </div>
+          </div>
+        </div>
+        <div style="background:var(--navy-dark);border-left:10px solid #f59e0b;border-radius:10px;padding:16px 22px;color:#ffffff;">
+          <strong style="color:var(--amber-light);font-size:14.5px;display:block;margin-bottom:6px;">TỔNG KẾT &amp; GIÁ TRỊ ĐẠT ĐƯỢC CỦA ĐỒ ÁN</strong>
+          <p style="font-size:12.5px;line-height:1.48;margin-bottom:4px;">
+            ✓ Hoàn thiện 100% cả 8/8 hạng mục bài tập lớn: từ khảo sát 6 quy trình nghiệp vụ, vẽ ERD chuẩn Chen (<code>ERD.drawio</code>), ánh xạ Lược đồ Quan hệ, chứng minh &amp; khử phụ thuộc bắc cầu đưa lược đồ về chuẩn 3NF, đến triển khai hệ thống Web App thực tế.
+          </p>
+          <p style="font-size:12.5px;color:#5eead4;line-height:1.48;">
+            ✓ Vận hành mượt mà không cần cài đặt thư viện ngoài (chạy <code>python app.py</code> tại <code>http://localhost:8080</code>); kết xuất trực tiếp báo cáo Excel/Word/PDF phục vụ quản trị thực tế tại PetCare Spa &amp; Clinic.
+          </p>
+        </div>
+      </div>
+      <div class="slide-footer">
+        <span>Hệ thống CSDL Quản lý Dịch vụ Chăm sóc Thú cưng (PetCare Spa &amp; Clinic) • Báo cáo Bài tập lớn CSDL</span>
+        <span class="page-num">Slide 12 / 12</span>
+      </div>
+    </section>
+
+  </div>
+</div>
+
+<div class="progress-track"><div class="progress-fill" id="progressFill" style="width:8.33%;"></div></div>
+
+<div class="controls">
+  <div class="ctrl-group">
+    <button class="btn" onclick="prevSlide()">◀ Trước</button>
+    <select class="slide-select" id="slideSelect" onchange="goToSlide(Number(this.value))"></select>
+    <button class="btn primary" onclick="nextSlide()">Tiếp ▶</button>
+  </div>
+  <div class="ctrl-group">
+    <button class="btn" onclick="toggleGrid()">Lưới Slide (G)</button>
+    <button class="btn" onclick="toggleNotes()">Ghi chú (N)</button>
+    <button class="btn" onclick="toggleFullscreen()">Toàn màn hình (F)</button>
+    <button class="btn" onclick="window.print()">In / Xuất PDF (P)</button>
+  </div>
+</div>
+
+<div class="notes-drawer" id="notesDrawer">
+  <h4>Ghi chú Thuyết trình</h4>
+  <p id="notesText"></p>
+</div>
+
+<div class="overview-modal" id="overviewModal">
+  <div class="overview-grid" id="overviewGrid"></div>
+</div>
+
+<div class="lightbox" id="lightbox" onclick="closeZoom()">
+  <img id="lightboxImg" src="" alt="Phóng to sơ đồ" />
+</div>
+
+<script>
+  const slides = Array.from(document.querySelectorAll('.slide'));
+  const total = slides.length;
+  let current = 0;
+
+  const selectEl = document.getElementById('slideSelect');
+  const gridEl = document.getElementById('overviewGrid');
+  const notesTextEl = document.getElementById('notesText');
+  const progressEl = document.getElementById('progressFill');
+
+  slides.forEach((s, idx) => {
+    const title = s.dataset.title || `Slide ${idx + 1}`;
+    const opt = document.createElement('option');
+    opt.value = idx;
+    opt.textContent = title;
+    selectEl.appendChild(opt);
+
+    const card = document.createElement('div');
+    card.className = 'ov-item';
+    card.innerHTML = `<div class="ov-num">SLIDE ${idx + 1} / ${total}</div><div class="ov-tit">${title}</div>`;
+    card.onclick = () => { goToSlide(idx); toggleGrid(false); };
+    gridEl.appendChild(card);
+  });
+
+  function updateView() {
+    slides.forEach((s, i) => s.classList.toggle('active', i === current));
+    selectEl.value = current;
+    notesTextEl.textContent = slides[current].dataset.note || '';
+    progressEl.style.width = `${((current + 1) / total) * 100}%`;
+    Array.from(gridEl.children).forEach((el, i) => el.classList.toggle('current', i === current));
+  }
+
+  function goToSlide(idx) {
+    current = Math.max(0, Math.min(total - 1, idx));
+    updateView();
+  }
+  function nextSlide() { if (current < total - 1) goToSlide(current + 1); }
+  function prevSlide() { if (current > 0) goToSlide(current - 1); }
+
+  function toggleNotes(force) {
+    const el = document.getElementById('notesDrawer');
+    el.classList.toggle('open', force !== undefined ? force : !el.classList.contains('open'));
+  }
+
+  function toggleGrid(force) {
+    const el = document.getElementById('overviewModal');
+    el.classList.toggle('open', force !== undefined ? force : !el.classList.contains('open'));
+  }
+
+  function toggleFullscreen() {
+    if (!document.fullscreenElement) {
+      document.documentElement.requestFullscreen().catch(() => {});
+    } else {
+      document.exitFullscreen().catch(() => {});
+    }
+  }
+
+  function openZoom(src) {
+    document.getElementById('lightboxImg').src = src;
+    document.getElementById('lightbox').classList.add('open');
+  }
+  function closeZoom() {
+    document.getElementById('lightbox').classList.remove('open');
+  }
+
+  function fitViewport() {
+    const vp = document.getElementById('deckViewport');
+    const stage = document.querySelector('.stage');
+    const availW = stage.clientWidth - 28;
+    const availH = stage.clientHeight - 24;
+    const scale = Math.min(availW / 1280, availH / 720, 1.45);
+    vp.style.transform = `scale(${scale})`;
+  }
+
+  window.addEventListener('resize', fitViewport);
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowRight' || e.key === ' ' || e.key === 'PageDown') { e.preventDefault(); nextSlide(); }
+    else if (e.key === 'ArrowLeft' || e.key === 'PageUp') { e.preventDefault(); prevSlide(); }
+    else if (e.key === 'Home') { goToSlide(0); }
+    else if (e.key === 'End') { goToSlide(total - 1); }
+    else if (e.key.toLowerCase() === 'g') { toggleGrid(); }
+    else if (e.key.toLowerCase() === 'n') { toggleNotes(); }
+    else if (e.key.toLowerCase() === 'f') { toggleFullscreen(); }
+    else if (e.key.toLowerCase() === 'p') { e.preventDefault(); window.print(); }
+    else if (e.key === 'Escape') { closeZoom(); toggleGrid(false); }
+  });
+
+  fitViewport();
+  updateView();
+</script>
+</body>
+</html>

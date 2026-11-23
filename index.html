@@ -4,195 +4,551 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>PetCare Spa &amp; Clinic — Quản Lý Dịch Vụ &amp; Đặt Lịch Chăm Sóc Thú Cưng</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet" />
   <style>
     :root {
-      --primary: #1e3a8a;
-      --primary-light: #2563eb;
-      --accent: #0ea5e9;
-      --success: #15803d;
-      --success-bg: #dcfce7;
-      --danger: #b91c1c;
-      --danger-bg: #fee2e2;
-      --warning: #b45309;
-      --warning-bg: #fef3c7;
-      --bg: #f1f5f9;
-      --card: #ffffff;
-      --border: #cbd5e1;
+      --bg: #f8fafc;
+      --surface: #ffffff;
+      --surface-subtle: #f8fafc;
+      --surface-muted: #f1f5f9;
+      --border: #e2e8f0;
+      --border-strong: #cbd5e1;
       --text: #0f172a;
-      --muted: #475569;
+      --text-secondary: #334155;
+      --muted: #64748b;
+
+      --primary: #0f172a;
+      --primary-hover: #1e293b;
+      --accent: #4f46e5;
+      --accent-soft: #eef2ff;
+
+      --success: #15803d;
+      --success-bg: #f0fdf4;
+      --success-border: #bbf7d0;
+      --info: #1d4ed8;
+      --info-bg: #eff6ff;
+      --info-border: #bfdbfe;
+      --warning: #b45309;
+      --warning-bg: #fffbeb;
+      --warning-border: #fde68a;
+      --danger: #b91c1c;
+      --danger-bg: #fef2f2;
+      --danger-border: #fecaca;
     }
+
     body.customer-view {
+      --bg: #f8fafc;
+      --surface: #ffffff;
+      --border: #e2e8f0;
       --primary: #0f766e;
-      --primary-light: #0d9488;
-      --accent: #14b8a6;
-      --bg: #f0fdfa;
-      --border: #cbd5e1;
+      --primary-hover: #115e59;
+      --accent: #0d9488;
+      --accent-soft: #f0fdfa;
     }
+
     * { box-sizing: border-box; margin: 0; padding: 0; }
+
     body {
-      font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
       background: var(--bg);
       color: var(--text);
       line-height: 1.5;
-      transition: background 0.25s ease;
+      -webkit-font-smoothing: antialiased;
     }
 
-    /* Header */
-    header {
-      background: linear-gradient(135deg, #0f172a 0%, #1e3a8a 58%, #1d4ed8 100%);
-      color: #fff;
-      padding: 16px 28px;
+    /* App Shell Layout */
+    .app-shell {
       display: flex;
-      justify-content: space-between;
+      min-height: 100vh;
+      width: 100%;
+    }
+
+    .sidebar-backdrop {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(15, 23, 42, 0.42);
+      z-index: 45;
+    }
+
+    /* Left Sidebar */
+    .sidebar {
+      width: 240px;
+      flex-shrink: 0;
+      background: var(--surface);
+      border-right: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      z-index: 50;
+      transition: width 0.2s ease, transform 0.2s ease;
+    }
+
+    .sidebar-header {
+      height: 56px;
+      padding: 0 14px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
       align-items: center;
-      flex-wrap: wrap;
-      gap: 14px;
-      box-shadow: 0 4px 14px rgba(15,23,42,0.16);
+      flex-shrink: 0;
     }
-    body.customer-view header {
-      background: linear-gradient(135deg, #134e4a 0%, #0f766e 55%, #0d9488 100%);
-    }
+
     .brand {
       display: flex;
       align-items: center;
-      gap: 13px;
+      gap: 10px;
+      min-width: 0;
     }
+
     .brand-logo {
-      width: 44px;
-      height: 44px;
-      border-radius: 12px;
-      background: rgba(255,255,255,0.16);
-      border: 1px solid rgba(255,255,255,0.28);
+      width: 32px;
+      height: 32px;
+      border-radius: 8px;
+      background: var(--primary);
+      color: #ffffff;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 22px;
       flex-shrink: 0;
+      transition: background-color 0.2s ease;
     }
-    .brand h1 { font-size: 20px; font-weight: 700; letter-spacing: 0.2px; }
-    .brand p { font-size: 13px; color: #dbeafe; margin-top: 2px; }
-    body.customer-view .brand p { color: #ccfbf1; }
 
-    .header-actions {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      flex-wrap: wrap;
+    .brand-text {
+      min-width: 0;
+      overflow: hidden;
     }
-    .mode-switch-bar {
-      display: flex;
-      gap: 5px;
-      background: rgba(15,23,42,0.38);
-      padding: 4px;
-      border-radius: 999px;
-      border: 1px solid rgba(255,255,255,0.24);
-    }
-    .mode-btn {
-      border: none;
-      background: transparent;
-      color: #e2e8f0;
-      font-size: 12.5px;
-      font-weight: 600;
-      padding: 6px 14px;
-      border-radius: 999px;
-      cursor: pointer;
-      transition: all 0.2s;
-    }
-    .mode-btn:hover { color: #fff; }
-    .mode-btn.active {
-      background: #fff;
-      color: var(--primary);
-      box-shadow: 0 2px 6px rgba(0,0,0,0.18);
-    }
-    .status-badge {
-      background: rgba(255,255,255,0.14);
-      border: 1px solid rgba(255,255,255,0.28);
-      padding: 6px 14px;
-      border-radius: 999px;
-      font-size: 12.5px;
-      display: flex;
-      align-items: center;
-      gap: 8px;
+
+    .brand h1 {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--text);
+      letter-spacing: -0.01em;
       white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      line-height: 1.25;
     }
-    .dot { width: 9px; height: 9px; border-radius: 50%; background: #4ade80; display: inline-block; }
 
-    /* Navigation Tabs */
-    .nav-tabs {
-      background: #fff;
-      border-bottom: 2px solid #e2e8f0;
-      display: flex;
-      gap: 4px;
-      padding: 0 24px;
-      overflow-x: auto;
-    }
-    .tab-btn {
-      padding: 13px 18px;
-      border: none;
-      background: transparent;
+    .sidebar-role-tag {
+      font-size: 11px;
+      font-weight: 500;
       color: var(--muted);
-      font-weight: 600;
-      font-size: 13.5px;
-      cursor: pointer;
-      border-bottom: 3px solid transparent;
-      transition: all 0.2s;
       white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      margin-top: 1px;
     }
-    .tab-btn:hover { color: var(--primary-light); background: #f8fafc; }
-    .tab-btn.active {
-      color: var(--primary);
-      border-bottom-color: var(--primary-light);
-      background: #eff6ff;
+
+    .sidebar-nav {
+      flex: 1;
+      overflow-y: auto;
+      padding: 12px 10px;
     }
-    body.customer-view .tab-btn.active {
-      background: #f0fdfa;
+
+    .nav-list {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
     }
+
+    .nav-section-title {
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--muted);
+      padding: 8px 10px 4px;
+      white-space: nowrap;
+      overflow: hidden;
+    }
+
+    .nav-section-title.ops-section { order: 0; }
+    .nav-divider {
+      height: 1px;
+      background: var(--border);
+      margin: 8px 6px;
+    }
+    .nav-divider.admin-only { order: 10; }
+    .nav-section-title.admin-only { order: 11; }
+    #navTabCatalog { order: 12; }
+    #navTabRep1 { order: 13; }
+    #navTabRep2 { order: 14; }
+
     body.customer-view #navTab2 { order: 1; }
     body.customer-view #navTab1 { order: 2; }
     body.customer-view #navTabSearch { order: 3; }
 
-    .container { max-width: 1380px; margin: 20px auto; padding: 0 20px; }
+    .tab-btn {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      width: 100%;
+      padding: 8px 10px;
+      border: 1px solid transparent;
+      border-radius: 7px;
+      background: transparent;
+      color: var(--text-secondary);
+      font-family: inherit;
+      font-size: 13.5px;
+      font-weight: 500;
+      cursor: pointer;
+      text-align: left;
+      transition: background-color 0.15s ease, color 0.15s ease;
+    }
+
+    .tab-btn svg {
+      flex-shrink: 0;
+      color: var(--muted);
+      transition: color 0.15s ease;
+    }
+
+    .tab-btn:hover {
+      background: var(--surface-muted);
+      color: var(--text);
+    }
+
+    .tab-btn:hover svg {
+      color: var(--text);
+    }
+
+    .tab-btn.active {
+      background: var(--accent-soft);
+      color: var(--accent);
+      font-weight: 600;
+    }
+
+    .tab-btn.active svg {
+      color: var(--accent);
+    }
+
+    .nav-label {
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .sidebar-footer {
+      border-top: 1px solid var(--border);
+      padding: 11px 14px;
+      flex-shrink: 0;
+    }
+
+    .sidebar-status {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 12px;
+      color: var(--muted);
+      line-height: 1.35;
+    }
+
+    .dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #22c55e;
+      display: inline-block;
+      flex-shrink: 0;
+      box-shadow: 0 0 0 2px #dcfce7;
+    }
+
+    @media (min-width: 961px) {
+      body.sidebar-collapsed .sidebar { width: 68px; }
+      body.sidebar-collapsed .sidebar-header { justify-content: center; padding: 0 10px; }
+      body.sidebar-collapsed .brand-text,
+      body.sidebar-collapsed .nav-label,
+      body.sidebar-collapsed .nav-section-title,
+      body.sidebar-collapsed .sidebar-status-text { display: none; }
+      body.sidebar-collapsed .tab-btn { justify-content: center; padding: 9px; }
+      body.sidebar-collapsed .sidebar-footer { padding: 12px 10px; }
+      body.sidebar-collapsed .sidebar-status { justify-content: center; }
+    }
+
+    @media (max-width: 960px) {
+      .sidebar {
+        position: fixed;
+        left: 0;
+        top: 0;
+        bottom: 0;
+        transform: translateX(-100%);
+        box-shadow: 0 12px 32px rgba(15, 23, 42, 0.16);
+      }
+      body.sidebar-mobile-open .sidebar { transform: translateX(0); }
+      body.sidebar-mobile-open .sidebar-backdrop { display: block; }
+    }
+
+    /* Main Shell & Flat Topbar */
+    .main-shell {
+      flex: 1;
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .topbar {
+      height: 56px;
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      padding: 0 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+      position: sticky;
+      top: 0;
+      z-index: 30;
+    }
+
+    .topbar-left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      min-width: 0;
+    }
+
+    .icon-btn {
+      width: 32px;
+      height: 32px;
+      padding: 0;
+      border-radius: 7px;
+      border: 1px solid var(--border);
+      background: var(--surface);
+      color: var(--text-secondary);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      flex-shrink: 0;
+      transition: background-color 0.15s ease, color 0.15s ease;
+    }
+
+    .icon-btn:hover {
+      background: var(--surface-muted);
+      color: var(--text);
+    }
+
+    .topbar-breadcrumb {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      min-width: 0;
+      font-size: 13.5px;
+    }
+
+    .breadcrumb-root {
+      color: var(--muted);
+      font-weight: 500;
+      white-space: nowrap;
+    }
+
+    .breadcrumb-sep {
+      color: var(--border-strong);
+      font-weight: 400;
+    }
+
+    .breadcrumb-current {
+      color: var(--text);
+      font-weight: 600;
+      white-space: nowrap;
+    }
+
+    .breadcrumb-sub {
+      color: var(--muted);
+      font-size: 12.5px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      border-left: 1px solid var(--border);
+      padding-left: 10px;
+      margin-left: 4px;
+    }
+
+    .topbar-right {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-shrink: 0;
+    }
+
+    .topbar-search {
+      position: relative;
+      width: 230px;
+    }
+
+    .topbar-search svg {
+      position: absolute;
+      left: 10px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--muted);
+      pointer-events: none;
+    }
+
+    .topbar-search input {
+      width: 100%;
+      height: 34px;
+      padding: 6px 10px 6px 32px;
+      font-size: 12.5px;
+      border: 1px solid var(--border);
+      border-radius: 7px;
+      background: var(--surface-subtle);
+      color: var(--text);
+    }
+
+    .topbar-search input:focus {
+      background: var(--surface);
+    }
+
+    .mode-switch-bar {
+      display: flex;
+      gap: 2px;
+      background: var(--surface-muted);
+      border: 1px solid var(--border);
+      padding: 3px;
+      border-radius: 8px;
+    }
+
+    .mode-btn {
+      border: none;
+      background: transparent;
+      color: var(--muted);
+      font-family: inherit;
+      font-size: 12.5px;
+      font-weight: 500;
+      padding: 5px 11px;
+      border-radius: 6px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.15s ease;
+      white-space: nowrap;
+    }
+
+    .mode-btn:hover { color: var(--text); }
+
+    .mode-btn.active {
+      background: var(--surface);
+      color: var(--text);
+      font-weight: 600;
+      box-shadow: 0 1px 2px rgba(15, 23, 42, 0.08);
+    }
+
+    body.customer-view .mode-btn.active {
+      color: var(--primary);
+    }
+
+    @media (max-width: 1220px) {
+      .breadcrumb-sub { display: none; }
+    }
+    @media (max-width: 860px) {
+      .topbar { padding: 0 14px; }
+      .topbar-search { display: none; }
+    }
+    @media (max-width: 600px) {
+      .breadcrumb-root, .breadcrumb-sep { display: none; }
+      .mode-btn { padding: 5px 8px; font-size: 11.5px; }
+    }
+
+    /* Workspace Container */
+    .container {
+      max-width: 1520px;
+      width: 100%;
+      margin: 0 auto;
+      padding: 20px 24px 32px;
+    }
+    @media (max-width: 768px) {
+      .container { padding: 14px; }
+    }
+
     .tab-pane { display: none; }
     .tab-pane.active { display: block; }
 
-    /* KPI Strip (Admin only) */
+    /* KPI Strip (Flat SaaS Style) */
     .kpi-grid {
       display: grid;
       grid-template-columns: repeat(4, 1fr);
       gap: 14px;
       margin-bottom: 18px;
     }
-    @media (max-width: 1024px) { .kpi-grid { grid-template-columns: repeat(2, 1fr); } }
+    @media (max-width: 1080px) { .kpi-grid { grid-template-columns: repeat(2, 1fr); } }
     @media (max-width: 560px) { .kpi-grid { grid-template-columns: 1fr; } }
+
     .kpi-card {
-      background: #fff;
-      border: 1px solid #e2e8f0;
+      background: var(--surface);
+      border: 1px solid var(--border);
       border-radius: 10px;
-      padding: 14px 16px;
-      box-shadow: 0 1px 3px rgba(15,23,42,0.04);
-      border-left: 4px solid var(--primary-light);
+      padding: 15px 18px;
+      box-shadow: 0 1px 2px rgba(15, 23, 42, 0.03);
     }
-    .kpi-card.kpi-green { border-left-color: #16a34a; }
-    .kpi-card.kpi-amber { border-left-color: #d97706; }
-    .kpi-card.kpi-sky { border-left-color: #0284c7; }
-    .kpi-label { font-size: 12px; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: 0.3px; }
-    .kpi-value { font-size: 22px; font-weight: 800; color: var(--text); margin: 4px 0 2px; }
-    .kpi-sub { font-size: 12px; color: #64748b; }
 
-    .grid-2 { display: grid; grid-template-columns: 440px 1fr; gap: 22px; align-items: start; }
-    @media (max-width: 1024px) { .grid-2 { grid-template-columns: 1fr; } }
+    .kpi-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+    }
 
+    .kpi-label {
+      font-size: 12.5px;
+      font-weight: 500;
+      color: var(--muted);
+    }
+
+    .kpi-icon {
+      width: 28px;
+      height: 28px;
+      border-radius: 6px;
+      background: var(--surface-subtle);
+      border: 1px solid var(--border);
+      color: var(--muted);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .kpi-value {
+      font-size: 22px;
+      font-weight: 700;
+      color: var(--text);
+      letter-spacing: -0.02em;
+      font-variant-numeric: tabular-nums;
+      margin: 8px 0 3px;
+      line-height: 1.25;
+    }
+
+    .kpi-sub {
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    /* Two-Column Operations Grid */
+    .grid-2 {
+      display: grid;
+      grid-template-columns: 390px minmax(0, 1fr);
+      gap: 18px;
+      align-items: start;
+    }
+    @media (max-width: 1180px) { .grid-2 { grid-template-columns: 1fr; } }
+
+    /* Cards */
     .card {
-      background: var(--card);
-      border: 1px solid #dbe2ea;
-      border-radius: 12px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
       padding: 20px;
-      box-shadow: 0 1px 4px rgba(15,23,42,0.05);
-      margin-bottom: 20px;
+      box-shadow: 0 1px 2px rgba(15, 23, 42, 0.03);
+      margin-bottom: 18px;
     }
+
     .card-header {
-      border-bottom: 1px solid #e2e8f0;
-      padding-bottom: 12px;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 14px;
       margin-bottom: 16px;
       display: flex;
       justify-content: space-between;
@@ -200,126 +556,323 @@
       flex-wrap: wrap;
       gap: 10px;
     }
-    .card-title { font-size: 16.5px; font-weight: 700; color: var(--primary); }
-    .badge {
-      display: inline-block;
-      padding: 3px 10px;
-      border-radius: 999px;
-      font-size: 11.5px;
-      font-weight: 600;
-    }
-    .badge-blue { background: #dbeafe; color: #1e40af; }
-    .badge-green { background: #dcfce7; color: #166534; }
-    .badge-amber { background: #fef3c7; color: #92400e; }
-    .badge-red { background: #fee2e2; color: #991b1b; }
-    .badge-purple { background: #f3e8ff; color: #6b21a8; }
-    .badge-teal { background: #ccfbf1; color: #115e59; }
 
-    /* Form styles */
-    .form-group { margin-bottom: 13px; }
+    .card-header-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .card-title {
+      font-size: 15.5px;
+      font-weight: 600;
+      color: var(--text);
+      letter-spacing: -0.01em;
+    }
+
+    .card-subtitle {
+      font-size: 12.5px;
+      color: var(--muted);
+      margin-top: 2px;
+      font-weight: 400;
+    }
+
+    .count-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 3px 9px;
+      border-radius: 6px;
+      font-size: 12px;
+      font-weight: 500;
+      background: var(--surface-muted);
+      color: var(--text-secondary);
+      border: 1px solid var(--border);
+      font-variant-numeric: tabular-nums;
+    }
+
+    /* Customer Portal Banner */
+    .portal-banner-wrap {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+
+    .portal-banner-info {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      flex: 1;
+      min-width: 260px;
+    }
+
+    .portal-icon-box {
+      width: 38px;
+      height: 38px;
+      border-radius: 8px;
+      background: var(--accent-soft);
+      border: 1px solid #ccfbf1;
+      color: var(--primary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+
+    .portal-search-row {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    /* Forms & Flat Sections */
+    .form-section {
+      padding-bottom: 16px;
+      margin-bottom: 16px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .form-section.no-border {
+      padding-bottom: 0;
+      margin-bottom: 14px;
+      border-bottom: none;
+    }
+
+    .section-heading {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text);
+      margin-bottom: 11px;
+    }
+
+    .step-num {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--text-secondary);
+      background: var(--surface-muted);
+      border: 1px solid var(--border);
+      border-radius: 5px;
+      padding: 1px 6px;
+      line-height: 1.5;
+    }
+
+    .seg-control {
+      display: inline-flex;
+      gap: 2px;
+      background: var(--surface-muted);
+      border: 1px solid var(--border);
+      padding: 2px;
+      border-radius: 7px;
+    }
+
+    .seg-btn {
+      border: none;
+      background: transparent;
+      color: var(--muted);
+      font-family: inherit;
+      font-size: 12px;
+      font-weight: 500;
+      padding: 4px 10px;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: all 0.15s ease;
+      white-space: nowrap;
+    }
+
+    .seg-btn:hover { color: var(--text); }
+
+    .seg-btn.active {
+      background: var(--surface);
+      color: var(--text);
+      font-weight: 600;
+      box-shadow: 0 1px 2px rgba(15, 23, 42, 0.08);
+    }
+
+    .subtle-box {
+      background: var(--surface-subtle);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 10px 12px;
+    }
+
+    .edit-banner {
+      display: none;
+      background: var(--warning-bg);
+      border: 1px solid var(--warning-border);
+      color: var(--warning);
+      padding: 9px 12px;
+      border-radius: 8px;
+      margin-bottom: 14px;
+      font-size: 12.5px;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .form-group { margin-bottom: 12px; }
     .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
     @media (max-width: 560px) { .form-row { grid-template-columns: 1fr; } }
+
     label {
       display: block;
       font-size: 12.5px;
-      font-weight: 600;
-      color: #334155;
-      margin-bottom: 4px;
+      font-weight: 500;
+      color: var(--text-secondary);
+      margin-bottom: 5px;
     }
     label span.req { color: var(--danger); }
+
     input, select, textarea {
       width: 100%;
       padding: 8px 11px;
-      border: 1px solid #cbd5e1;
+      border: 1px solid var(--border-strong);
       border-radius: 7px;
-      font-size: 13.5px;
+      font-size: 13px;
       font-family: inherit;
-      background: #fff;
+      background: var(--surface);
       color: var(--text);
+      transition: border-color 0.15s ease, box-shadow 0.15s ease;
     }
+
     input:focus, select:focus, textarea:focus {
       outline: none;
-      border-color: var(--primary-light);
-      box-shadow: 0 0 0 3px rgba(37,99,235,0.14);
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.12);
     }
+
     body.customer-view input:focus,
     body.customer-view select:focus,
     body.customer-view textarea:focus {
-      box-shadow: 0 0 0 3px rgba(13,148,136,0.16);
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(13, 148, 136, 0.14);
     }
+
     input.invalid, select.invalid {
       border-color: var(--danger);
-      background: #fff5f5;
+      background: var(--danger-bg);
     }
-    .hint { font-size: 11.5px; color: var(--muted); margin-top: 3px; }
 
-    .section-box {
-      background: #f8fafc;
-      border: 1px solid #e2e8f0;
-      padding: 13px 14px;
-      border-radius: 9px;
-      margin-bottom: 14px;
-    }
-    .section-box.soft-blue {
-      background: #eff6ff;
-      border-color: #bfdbfe;
-    }
-    body.customer-view .section-box.soft-blue {
-      background: #f0fdfa;
-      border-color: #99f6e4;
-    }
-    .section-box.soft-green {
-      background: #f0fdf4;
-      border-color: #bbf7d0;
-    }
-    .section-heading {
-      font-size: 13px;
-      font-weight: 700;
-      color: var(--primary);
-      margin-bottom: 8px;
+    .hint {
+      font-size: 11.5px;
+      color: var(--muted);
+      margin-top: 4px;
     }
 
     /* Buttons */
     .btn-bar { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 14px; }
+
     .btn {
-      padding: 8px 14px;
+      padding: 7px 13px;
       border-radius: 7px;
       font-size: 13px;
-      font-weight: 600;
+      font-weight: 500;
+      font-family: inherit;
       border: 1px solid transparent;
       cursor: pointer;
-      transition: all 0.15s;
+      transition: background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease;
       display: inline-flex;
       align-items: center;
       justify-content: center;
       gap: 6px;
+      white-space: nowrap;
     }
-    .btn-primary { background: var(--primary-light); color: #fff; }
-    .btn-primary:hover { background: var(--primary); }
-    .btn-success { background: var(--success); color: #fff; }
-    .btn-success:hover { background: #166534; }
-    .btn-danger-outline { background: #fff1f2; color: var(--danger); border-color: #fecdd3; }
-    .btn-danger-outline:hover { background: #ffe4e6; }
-    .btn-secondary { background: #f1f5f9; color: #334155; border-color: #cbd5e1; }
-    .btn-secondary:hover { background: #e2e8f0; }
+
+    .btn svg { flex-shrink: 0; }
+    .btn-sm { padding: 5px 10px; font-size: 12px; border-radius: 6px; }
+    .btn-xs { padding: 4px 9px; font-size: 12px; border-radius: 6px; }
+
+    .btn-primary {
+      background: var(--primary);
+      color: #ffffff;
+      border-color: var(--primary);
+    }
+    .btn-primary:hover {
+      background: var(--primary-hover);
+      border-color: var(--primary-hover);
+    }
+
+    .btn-success {
+      background: var(--success);
+      color: #ffffff;
+      border-color: var(--success);
+    }
+    .btn-success:hover {
+      background: #166534;
+    }
+
+    .btn-secondary {
+      background: var(--surface);
+      color: var(--text-secondary);
+      border-color: var(--border-strong);
+      box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04);
+    }
+    .btn-secondary:hover {
+      background: var(--surface-subtle);
+      color: var(--text);
+      border-color: #94a3b8;
+    }
+
+    .btn-danger-outline {
+      background: var(--danger-bg);
+      color: var(--danger);
+      border-color: var(--danger-border);
+    }
+    .btn-danger-outline:hover {
+      background: #fee2e2;
+    }
+
+    /* Search Filter Chips */
+    .filter-chip {
+      padding: 5px 10px;
+      border-radius: 6px;
+      font-size: 12px;
+      font-weight: 500;
+      font-family: inherit;
+      border: 1px solid var(--border-strong);
+      background: var(--surface);
+      color: var(--text-secondary);
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+    .filter-chip:hover {
+      background: var(--surface-muted);
+      color: var(--text);
+    }
+    .filter-chip.active {
+      background: var(--primary);
+      color: #ffffff;
+      border-color: var(--primary);
+    }
 
     /* Alert boxes */
     .alert {
-      padding: 12px 15px;
+      padding: 11px 14px;
       border-radius: 8px;
-      margin-bottom: 15px;
+      margin-bottom: 14px;
       font-size: 13px;
       display: none;
+      border: 1px solid transparent;
     }
     .alert.show { display: block; }
     .alert-error {
       background: var(--danger-bg);
-      border-left: 4px solid var(--danger);
+      border-color: var(--danger-border);
+      border-left: 3px solid var(--danger);
       color: #7f1d1d;
     }
     .alert-success {
       background: var(--success-bg);
-      border-left: 4px solid var(--success);
+      border-color: var(--success-border);
+      border-left: 3px solid var(--success);
       color: #14532d;
     }
     .alert ul { margin-left: 18px; margin-top: 5px; }
@@ -330,48 +883,178 @@
       grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
       gap: 12px;
     }
+
     .service-card-item {
-      border: 1px solid #cbd5e1;
-      border-radius: 10px;
-      padding: 13px 14px;
-      background: #f8fafc;
+      border: 1px solid var(--border);
+      border-radius: 9px;
+      padding: 14px;
+      background: var(--surface);
       display: flex;
       flex-direction: column;
       justify-content: space-between;
-      gap: 8px;
-      transition: border-color 0.2s, box-shadow 0.2s, transform 0.15s;
-    }
-    .service-card-item:hover {
-      border-color: var(--primary-light);
-      box-shadow: 0 4px 12px rgba(13,148,136,0.1);
-      transform: translateY(-1px);
-    }
-    .service-card-item.selected {
-      border: 2px solid var(--primary-light);
-      background: #f0fdfa;
+      gap: 10px;
+      transition: border-color 0.15s ease, box-shadow 0.15s ease;
     }
 
-    /* Tables */
-    .table-wrap { overflow-x: auto; }
-    table {
+    .service-card-item:hover {
+      border-color: var(--border-strong);
+      box-shadow: 0 3px 10px rgba(15, 23, 42, 0.05);
+    }
+
+    .service-card-item.selected {
+      border: 1.5px solid var(--accent);
+      background: var(--accent-soft);
+    }
+
+    .price-chip {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--primary);
+      font-variant-numeric: tabular-nums;
+      white-space: nowrap;
+    }
+
+    .service-card-foot {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-top: 9px;
+      border-top: 1px solid var(--border);
+    }
+
+    .duration-meta {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--muted);
+    }
+
+    /* Status Pills, Selects & Tags */
+    .status-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 3px 9px;
+      border-radius: 6px;
+      font-size: 12px;
+      font-weight: 500;
+      border: 1px solid transparent;
+      white-space: nowrap;
+    }
+
+    .status-pill .s-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+
+    .status-success {
+      background: var(--success-bg);
+      color: var(--success);
+      border-color: var(--success-border);
+    }
+    .status-success .s-dot { background: #16a34a; }
+
+    .status-info {
+      background: var(--info-bg);
+      color: var(--info);
+      border-color: var(--info-border);
+    }
+    .status-info .s-dot { background: #2563eb; }
+
+    .status-warning {
+      background: var(--warning-bg);
+      color: var(--warning);
+      border-color: var(--warning-border);
+    }
+    .status-warning .s-dot { background: #d97706; }
+
+    .status-danger {
+      background: var(--danger-bg);
+      color: var(--danger);
+      border-color: var(--danger-border);
+    }
+    .status-danger .s-dot { background: #dc2626; }
+
+    .status-select {
+      width: auto;
+      padding: 4px 8px;
+      font-size: 12px;
+      font-weight: 500;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+    .status-select.tone-success { background: var(--success-bg); color: var(--success); border-color: var(--success-border); }
+    .status-select.tone-info { background: var(--info-bg); color: var(--info); border-color: var(--info-border); }
+    .status-select.tone-warning { background: var(--warning-bg); color: var(--warning); border-color: var(--warning-border); }
+    .status-select.tone-danger { background: var(--danger-bg); color: var(--danger); border-color: var(--danger-border); }
+    .status-select.tone-muted { background: var(--surface-muted); color: var(--muted); border-color: var(--border); cursor: not-allowed; }
+
+    .meta-tag {
+      display: inline-block;
+      padding: 2px 7px;
+      border-radius: 5px;
+      font-size: 11.5px;
+      font-weight: 500;
+      background: var(--surface-muted);
+      color: var(--text-secondary);
+      border: 1px solid var(--border);
+      white-space: nowrap;
+    }
+
+    .mono-id {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text);
+    }
+
+    /* Data Tables (Scoped to .table-wrap so .report-paper stays intact) */
+    .table-wrap {
+      overflow-x: auto;
+      margin: 0 -20px -20px;
+    }
+
+    .table-wrap table {
       width: 100%;
       border-collapse: collapse;
       font-size: 13px;
     }
-    th, td {
-      padding: 9px 11px;
-      border-bottom: 1px solid #e2e8f0;
+
+    .table-wrap th,
+    .table-wrap td {
+      padding: 10px 12px;
+      border-bottom: 1px solid var(--border);
       text-align: left;
+      vertical-align: middle;
     }
-    th {
-      background: #f8fafc;
-      color: #1e293b;
-      font-weight: 700;
-      border-top: 1px solid #e2e8f0;
+
+    .table-wrap th:first-child,
+    .table-wrap td:first-child { padding-left: 20px; }
+    .table-wrap th:last-child,
+    .table-wrap td:last-child { padding-right: 20px; }
+
+    .table-wrap th {
+      background: var(--surface-subtle);
+      color: var(--muted);
+      font-size: 11.5px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      border-top: 1px solid var(--border);
       white-space: nowrap;
     }
-    tr:hover td { background: #f8fafc; }
-    .num { text-align: right; font-variant-numeric: tabular-nums; }
+
+    .table-wrap tbody tr:last-child td { border-bottom: none; }
+    .table-wrap tbody tr:hover td { background: var(--surface-subtle); }
+
+    .num {
+      text-align: right !important;
+      font-variant-numeric: tabular-nums;
+    }
 
     /* Official Report Paper Styling */
     .report-paper {
@@ -379,7 +1062,7 @@
       border: 1px solid #94a3b8;
       padding: 32px 40px;
       border-radius: 4px;
-      box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
       font-family: 'Times New Roman', Times, serif;
       color: #000;
       margin-top: 14px;
@@ -404,6 +1087,8 @@
       line-height: 1.6;
     }
     .report-paper table {
+      width: 100%;
+      border-collapse: collapse;
       border: 1px solid #000;
       font-family: 'Times New Roman', Times, serif;
       font-size: 13.5px;
@@ -411,11 +1096,13 @@
     .report-paper th, .report-paper td {
       border: 1px solid #000;
       padding: 7px 9px;
+      text-align: left;
     }
     .report-paper th {
       background: #e2e8f0;
       color: #000;
       text-align: center;
+      font-weight: 700;
     }
     .report-sign {
       display: flex;
@@ -428,11 +1115,12 @@
     .sign-space { height: 65px; }
 
     @media print {
-      header, .nav-tabs, .no-print, .kpi-grid { display: none !important; }
-      body { background: #fff; }
-      .container { max-width: 100%; margin: 0; padding: 0; }
-      .card { border: none; box-shadow: none; padding: 0; }
-      .report-paper { border: none; box-shadow: none; padding: 10px; }
+      .sidebar, .topbar, .sidebar-backdrop, #customerPortalBanner, .no-print, .kpi-grid { display: none !important; }
+      body { background: #fff !important; }
+      .app-shell, .main-shell { display: block !important; min-height: auto !important; }
+      .container, .workspace { max-width: 100% !important; margin: 0 !important; padding: 0 !important; }
+      .card { border: none !important; box-shadow: none !important; padding: 0 !important; margin: 0 !important; }
+      .report-paper { border: none !important; box-shadow: none !important; padding: 10px !important; margin-top: 0 !important; }
     }
 
     /* Role-based visibility */
@@ -445,101 +1133,276 @@
 </head>
 <body>
 
-<header>
-  <div class="brand">
-    <div class="brand-logo" aria-hidden="true">🐾</div>
-    <div>
-      <h1 id="appHeaderTitle">PetCare Spa &amp; Clinic</h1>
-      <p id="appHeaderSub">Hệ thống Quản lý Dịch vụ, Lịch hẹn &amp; Chăm sóc Thú cưng</p>
-    </div>
-  </div>
-  <div class="header-actions">
-    <div class="mode-switch-bar" title="Chuyển đổi giữa giao diện Quầy Lễ tân / Quản lý và Cổng Khách hàng Đặt lịch">
-      <button type="button" id="btnViewAdmin" class="mode-btn active" onclick="setAppRoleView('admin')">Quầy Lễ Tân &amp; Quản Lý</button>
-      <button type="button" id="btnViewCustomer" class="mode-btn" onclick="setAppRoleView('customer')">Khách Hàng Đặt Lịch</button>
-    </div>
-    <div class="status-badge">
-      <span class="dot"></span>
-      <span id="dbStatusText">Đang đồng bộ dữ liệu...</span>
-    </div>
-  </div>
-</header>
+<div class="app-shell">
+  <div class="sidebar-backdrop" onclick="closeMobileSidebar()"></div>
 
-<nav class="nav-tabs">
-  <button class="tab-btn active" id="navTab1" onclick="switchTab('tab-input1', this)">Tiếp nhận &amp; Hồ sơ</button>
-  <button class="tab-btn" id="navTab2" onclick="switchTab('tab-input2', this)">Đặt lịch &amp; Thu ngân</button>
-  <button class="tab-btn" id="navTabSearch" onclick="switchTab('tab-search', this)">Tra cứu lịch hẹn</button>
-  <button class="tab-btn admin-only" id="navTabCatalog" onclick="switchTab('tab-catalog', this)">Dịch vụ &amp; Nhân sự</button>
-  <button class="tab-btn admin-only" id="navTabRep1" onclick="switchTab('tab-report1', this)">Báo cáo doanh thu</button>
-  <button class="tab-btn admin-only" id="navTabRep2" onclick="switchTab('tab-report2', this)">Báo cáo nhân sự</button>
-</nav>
-
-<div class="container">
-
-  <!-- Thống kê nhanh cho Quầy Lễ Tân & Quản Lý -->
-  <div class="kpi-grid admin-only">
-    <div class="kpi-card">
-      <div class="kpi-label">Lịch hẹn chờ &amp; đang phục vụ</div>
-      <div class="kpi-value" id="kpiActiveBookings">0</div>
-      <div class="kpi-sub">Chờ xác nhận, đã hẹn &amp; đang chăm sóc</div>
-    </div>
-    <div class="kpi-card kpi-green">
-      <div class="kpi-label">Lịch hẹn hoàn thành</div>
-      <div class="kpi-value" id="kpiDoneBookings">0</div>
-      <div class="kpi-sub">Tổng lượt chăm sóc đã hoàn tất</div>
-    </div>
-    <div class="kpi-card kpi-sky">
-      <div class="kpi-label">Khách hàng &amp; Thú cưng</div>
-      <div class="kpi-value" id="kpiCustomersPets">0 khách • 0 bé</div>
-      <div class="kpi-sub">Hồ sơ thành viên đang quản lý</div>
-    </div>
-    <div class="kpi-card kpi-amber">
-      <div class="kpi-label">Doanh thu đã thu</div>
-      <div class="kpi-value" id="kpiRevenue">0 đ</div>
-      <div class="kpi-sub">Tổng thực thu tại quầy &amp; chuyển khoản</div>
-    </div>
-  </div>
-
-  <!-- Banner định danh dành cho Khách hàng Đặt lịch -->
-  <div id="customerPortalBanner" class="customer-only card" style="background:linear-gradient(135deg,#f0fdfa 0%,#ecfdf5 100%);border:1px solid #5eead4;margin-bottom:18px;">
-    <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:14px;">
-      <div style="flex:1;min-width:260px;">
-        <div style="font-size:16.5px;font-weight:700;color:#0f766e;">Chào mừng Quý khách đến với PetCare Spa &amp; Clinic!</div>
-        <div style="font-size:13px;color:#334155;margin-top:3px;">Nhập số điện thoại của bạn để xem hồ sơ thú cưng và lịch hẹn, hoặc đăng ký mới chỉ trong 30 giây.</div>
-        <div id="custPortalStatus" style="margin-top:8px;font-size:13px;font-weight:600;"></div>
-      </div>
-      <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
-        <input type="text" id="custPortalPhone" placeholder="Nhập SĐT của bạn (VD: 0901234567)" style="width:250px;" oninput="applyCustomerPhoneFilter(this.value)" />
-        <button type="button" class="btn btn-primary" onclick="applyCustomerPhoneFilter(document.getElementById('custPortalPhone').value, true)">Tra cứu hồ sơ</button>
-        <button type="button" id="btnCustClearPhone" class="btn btn-secondary" style="display:none;" onclick="clearCustomerPhoneFilter()">Đổi SĐT</button>
+  <aside class="sidebar" id="appSidebar">
+    <div class="sidebar-header">
+      <div class="brand">
+        <div class="brand-logo" aria-hidden="true">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="11" cy="4" r="2"/>
+            <circle cx="18" cy="8" r="2"/>
+            <circle cx="20" cy="16" r="2"/>
+            <path d="M9 10a5 5 0 0 1 5 5v3.5a3.5 3.5 0 0 1-6.84 1.045Q6.52 17.48 4.46 16.84A3.5 3.5 0 0 1 5.5 10Z"/>
+          </svg>
+        </div>
+        <div class="brand-text">
+          <h1 id="appHeaderTitle">PetCare Spa &amp; Clinic</h1>
+          <div class="sidebar-role-tag" id="sidebarRoleTag">Workspace Quản trị</div>
+        </div>
       </div>
     </div>
-  </div>
+
+    <nav class="sidebar-nav" aria-label="Điều hướng chính">
+      <div class="nav-list">
+        <div class="nav-section-title ops-section">Nghiệp vụ</div>
+
+        <button class="tab-btn active" id="navTab1" onclick="switchTab('tab-input1', this)">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/>
+            <circle cx="9" cy="7" r="4"/>
+            <line x1="19" y1="8" x2="19" y2="14"/>
+            <line x1="22" y1="11" x2="16" y2="11"/>
+          </svg>
+          <span class="nav-label" id="navTab1Label">Tiếp nhận &amp; Hồ sơ</span>
+        </button>
+
+        <button class="tab-btn" id="navTab2" onclick="switchTab('tab-input2', this)">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
+            <line x1="16" y1="2" x2="16" y2="6"/>
+            <line x1="8" y1="2" x2="8" y2="6"/>
+            <line x1="3" y1="10" x2="21" y2="10"/>
+            <path d="m9 16 2 2 4-4"/>
+          </svg>
+          <span class="nav-label" id="navTab2Label">Đặt lịch &amp; Thu ngân</span>
+        </button>
+
+        <button class="tab-btn" id="navTabSearch" onclick="switchTab('tab-search', this)">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <circle cx="11" cy="11" r="8"/>
+            <line x1="21" y1="21" x2="16.65" y2="16.65"/>
+          </svg>
+          <span class="nav-label" id="navTabSearchLabel">Tra cứu lịch hẹn</span>
+        </button>
+
+        <div class="nav-divider admin-only"></div>
+        <div class="nav-section-title admin-only">Quản trị &amp; Báo cáo</div>
+
+        <button class="tab-btn admin-only" id="navTabCatalog" onclick="switchTab('tab-catalog', this)">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <line x1="4" y1="21" x2="4" y2="14"/>
+            <line x1="4" y1="10" x2="4" y2="3"/>
+            <line x1="12" y1="21" x2="12" y2="12"/>
+            <line x1="12" y1="8" x2="12" y2="3"/>
+            <line x1="20" y1="21" x2="20" y2="16"/>
+            <line x1="20" y1="12" x2="20" y2="3"/>
+            <line x1="1" y1="14" x2="7" y2="14"/>
+            <line x1="9" y1="8" x2="15" y2="8"/>
+            <line x1="17" y1="16" x2="23" y2="16"/>
+          </svg>
+          <span class="nav-label">Dịch vụ &amp; Nhân sự</span>
+        </button>
+
+        <button class="tab-btn admin-only" id="navTabRep1" onclick="switchTab('tab-report1', this)">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <line x1="18" y1="20" x2="18" y2="10"/>
+            <line x1="12" y1="20" x2="12" y2="4"/>
+            <line x1="6" y1="20" x2="6" y2="14"/>
+          </svg>
+          <span class="nav-label">Báo cáo doanh thu</span>
+        </button>
+
+        <button class="tab-btn admin-only" id="navTabRep2" onclick="switchTab('tab-report2', this)">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <rect x="8" y="2" width="8" height="4" rx="1" ry="1"/>
+            <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/>
+            <path d="M12 11h4"/>
+            <path d="M12 16h4"/>
+            <path d="M8 11h.01"/>
+            <path d="M8 16h.01"/>
+          </svg>
+          <span class="nav-label">Báo cáo nhân sự</span>
+        </button>
+      </div>
+    </nav>
+
+    <div class="sidebar-footer">
+      <div class="sidebar-status">
+        <span class="dot"></span>
+        <span class="sidebar-status-text" id="dbStatusText">Đang đồng bộ dữ liệu...</span>
+      </div>
+    </div>
+  </aside>
+
+  <div class="main-shell">
+    <header class="topbar">
+      <div class="topbar-left">
+        <button type="button" class="icon-btn" onclick="toggleSidebar()" title="Thu gọn / Mở thanh điều hướng" aria-label="Thu gọn hoặc mở thanh điều hướng">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <rect x="3" y="3" width="18" height="18" rx="2"/>
+            <line x1="9" y1="3" x2="9" y2="21"/>
+          </svg>
+        </button>
+        <div class="topbar-breadcrumb">
+          <span class="breadcrumb-root">PetCare</span>
+          <span class="breadcrumb-sep">/</span>
+          <span class="breadcrumb-current" id="topbarCurrentTab">Tiếp nhận &amp; Hồ sơ</span>
+          <span class="breadcrumb-sub" id="appHeaderSub">Hệ thống Quản lý Dịch vụ, Lịch hẹn &amp; Chăm sóc Thú cưng</span>
+        </div>
+      </div>
+
+      <div class="topbar-right">
+        <div class="topbar-search">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <circle cx="11" cy="11" r="8"/>
+            <line x1="21" y1="21" x2="16.65" y2="16.65"/>
+          </svg>
+          <input type="text" id="topbarQuickSearch" placeholder="Tìm mã lịch, SĐT, thú cưng..." oninput="handleTopbarQuickSearch(this.value, false)" onkeydown="if(event.key==='Enter'){event.preventDefault();handleTopbarQuickSearch(this.value, true);}" />
+        </div>
+
+        <div class="mode-switch-bar" title="Chuyển đổi giữa giao diện Quầy Lễ tân / Quản lý và Cổng Khách hàng Đặt lịch">
+          <button type="button" id="btnViewAdmin" class="mode-btn active" onclick="setAppRoleView('admin')">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <rect x="2" y="3" width="20" height="14" rx="2" ry="2"/>
+              <line x1="8" y1="21" x2="16" y2="21"/>
+              <line x1="12" y1="17" x2="12" y2="21"/>
+            </svg>
+            <span>Quầy Lễ Tân &amp; Quản Lý</span>
+          </button>
+          <button type="button" id="btnViewCustomer" class="mode-btn" onclick="setAppRoleView('customer')">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/>
+              <circle cx="12" cy="7" r="4"/>
+            </svg>
+            <span>Khách Hàng Đặt Lịch</span>
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <main class="container workspace">
+
+      <!-- Thống kê nhanh cho Quầy Lễ Tân & Quản Lý -->
+      <div class="kpi-grid admin-only">
+        <div class="kpi-card">
+          <div class="kpi-top">
+            <span class="kpi-label">Lịch hẹn chờ &amp; đang phục vụ</span>
+            <span class="kpi-icon" aria-hidden="true">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="10"/>
+                <polyline points="12 6 12 12 16 14"/>
+              </svg>
+            </span>
+          </div>
+          <div class="kpi-value" id="kpiActiveBookings">0</div>
+          <div class="kpi-sub">Chờ xác nhận, đã hẹn &amp; đang chăm sóc</div>
+        </div>
+
+        <div class="kpi-card">
+          <div class="kpi-top">
+            <span class="kpi-label">Lịch hẹn hoàn thành</span>
+            <span class="kpi-icon" aria-hidden="true">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
+                <polyline points="22 4 12 14.01 9 11.01"/>
+              </svg>
+            </span>
+          </div>
+          <div class="kpi-value" id="kpiDoneBookings">0</div>
+          <div class="kpi-sub">Tổng lượt chăm sóc đã hoàn tất</div>
+        </div>
+
+        <div class="kpi-card">
+          <div class="kpi-top">
+            <span class="kpi-label">Khách hàng &amp; Thú cưng</span>
+            <span class="kpi-icon" aria-hidden="true">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+                <circle cx="9" cy="7" r="4"/>
+                <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
+                <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+              </svg>
+            </span>
+          </div>
+          <div class="kpi-value" id="kpiCustomersPets">0 khách • 0 bé</div>
+          <div class="kpi-sub">Hồ sơ thành viên đang quản lý</div>
+        </div>
+
+        <div class="kpi-card">
+          <div class="kpi-top">
+            <span class="kpi-label">Doanh thu đã thu</span>
+            <span class="kpi-icon" aria-hidden="true">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="2" y="5" width="20" height="14" rx="2"/>
+                <line x1="2" y1="10" x2="22" y2="10"/>
+              </svg>
+            </span>
+          </div>
+          <div class="kpi-value" id="kpiRevenue">0 đ</div>
+          <div class="kpi-sub">Tổng thực thu tại quầy &amp; chuyển khoản</div>
+        </div>
+      </div>
+
+      <!-- Banner định danh dành cho Khách hàng Đặt lịch -->
+      <div id="customerPortalBanner" class="customer-only card">
+        <div class="portal-banner-wrap">
+          <div class="portal-banner-info">
+            <div class="portal-icon-box" aria-hidden="true">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/>
+              </svg>
+            </div>
+            <div>
+              <div class="card-title">Tra cứu hồ sơ đặt lịch bằng số điện thoại</div>
+              <div class="card-subtitle">Nhập số điện thoại của bạn để xem hồ sơ thú cưng và lịch hẹn, hoặc đăng ký mới chỉ trong 30 giây.</div>
+              <div id="custPortalStatus" style="margin-top:8px;font-size:13px;font-weight:500;"></div>
+            </div>
+          </div>
+          <div class="portal-search-row">
+            <input type="text" id="custPortalPhone" placeholder="Nhập SĐT của bạn (VD: 0901234567)" style="width:240px;" oninput="applyCustomerPhoneFilter(this.value)" />
+            <button type="button" class="btn btn-primary" onclick="applyCustomerPhoneFilter(document.getElementById('custPortalPhone').value, true)">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <circle cx="11" cy="11" r="8"/>
+                <line x1="21" y1="21" x2="16.65" y2="16.65"/>
+              </svg>
+              <span>Tra cứu hồ sơ</span>
+            </button>
+            <button type="button" id="btnCustClearPhone" class="btn btn-secondary" style="display:none;" onclick="clearCustomerPhoneFilter()">Đổi SĐT</button>
+          </div>
+        </div>
+      </div>
 
   <!-- ======================= TAB 1: TIẾP NHẬN & HỒ SƠ ======================= -->
   <div id="tab-input1" class="tab-pane active">
     <div class="grid-2">
       <div class="card">
         <div class="card-header">
-          <div class="card-title" id="titleScreen1">Tiếp nhận Khách hàng &amp; Hồ sơ Thú cưng</div>
-          <span class="badge badge-blue" id="badgeScreen1">Quầy lễ tân</span>
+          <div>
+            <div class="card-title" id="titleScreen1">Tiếp nhận Khách hàng &amp; Hồ sơ Thú cưng</div>
+            <div class="card-subtitle" id="badgeScreen1">Quầy lễ tân</div>
+          </div>
         </div>
 
-        <div id="petEditModeBanner" style="display:none;background:#fef3c7;border:1px solid #f59e0b;color:#92400e;padding:9px 12px;border-radius:8px;margin-bottom:12px;font-size:12.5px;justify-content:space-between;align-items:center;gap:8px;">
+        <div id="petEditModeBanner" class="edit-banner">
           <span id="petEditModeText">Đang chỉnh sửa hồ sơ hiện có.</span>
-          <button type="button" class="btn btn-secondary" style="padding:4px 10px;font-size:11.5px;" onclick="resetPetForm()">Hủy chỉnh sửa</button>
+          <button type="button" class="btn btn-secondary btn-xs" onclick="resetPetForm()">Hủy chỉnh sửa</button>
         </div>
 
         <div id="petAlert" class="alert"></div>
 
         <form id="petForm" onsubmit="submitPetForm(event)" novalidate>
           <!-- Phần 1: Thông tin chủ nuôi -->
-          <div class="section-box soft-blue">
-            <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;margin-bottom:10px;">
-              <div class="section-heading" style="margin-bottom:0;">1. Thông tin chủ nuôi</div>
-              <div id="custModeSwitchBtns" class="admin-only" style="display:flex;gap:6px;">
-                <button type="button" id="btnModeExistingKH" class="btn btn-primary" style="padding:5px 10px;font-size:12px;" onclick="setCustomerMode('existing')">Khách đã có hồ sơ</button>
-                <button type="button" id="btnModeNewKH" class="btn btn-secondary" style="padding:5px 10px;font-size:12px;" onclick="setCustomerMode('new')">+ Khách hàng mới</button>
+          <div class="form-section">
+            <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;margin-bottom:11px;">
+              <div class="section-heading" style="margin-bottom:0;">
+                <span class="step-num">01</span>
+                <span>Thông tin chủ nuôi</span>
+              </div>
+              <div id="custModeSwitchBtns" class="seg-control admin-only">
+                <button type="button" id="btnModeExistingKH" class="seg-btn active" onclick="setCustomerMode('existing')">Khách đã có hồ sơ</button>
+                <button type="button" id="btnModeNewKH" class="seg-btn" onclick="setCustomerMode('new')">+ Khách hàng mới</button>
               </div>
             </div>
 
@@ -547,15 +1410,15 @@
             <div id="existingCustomerBox" class="form-group" style="margin-bottom:0;">
               <div class="admin-only">
                 <label>Tìm nhanh hoặc chọn khách hàng <span class="req">*</span></label>
-                <div style="display:grid;grid-template-columns:165px 1fr;gap:8px;">
+                <div style="display:grid;grid-template-columns:150px 1fr;gap:8px;">
                   <input type="text" id="filter_kh_input" placeholder="Tìm SĐT hoặc tên..." oninput="filterCustomerDropdown(this.value)" />
                   <select id="tc_makh" onchange="onSelectCustomerChange(this.value)" required></select>
                 </div>
-                <div class="hint">Nhập số điện thoại để lọc nhanh, hoặc chọn "+ Thêm khách hàng mới" nếu khách lần đầu ghé tiệm.</div>
+                <div class="hint">Nhập số điện thoại để lọc nhanh, hoặc chọn "+ Khách hàng mới" nếu khách lần đầu ghé tiệm.</div>
               </div>
-              <div id="custOwnerReadonlyBox" class="customer-only" style="background:#fff;border:1px solid #99f6e4;border-radius:7px;padding:9px 12px;">
-                <div style="font-size:12px;color:#0f766e;font-weight:700;">Hồ sơ chủ nuôi đang sử dụng:</div>
-                <div id="custOwnerReadonlyText" style="font-size:13.5px;font-weight:600;color:#0f172a;margin-top:2px;"></div>
+              <div id="custOwnerReadonlyBox" class="customer-only subtle-box">
+                <div style="font-size:11.5px;color:var(--muted);font-weight:500;">Hồ sơ chủ nuôi đang sử dụng</div>
+                <div id="custOwnerReadonlyText" style="font-size:13.5px;font-weight:600;color:var(--text);margin-top:2px;"></div>
               </div>
             </div>
 
@@ -584,14 +1447,17 @@
                 </div>
               </div>
               <div class="admin-only" style="display:flex;justify-content:flex-end;gap:8px;">
-                <button type="button" id="btnSaveCustomerOnly" class="btn btn-success" style="padding:6px 12px;font-size:12px;" onclick="submitCustomerOnly()">Chỉ lưu thông tin khách hàng</button>
+                <button type="button" id="btnSaveCustomerOnly" class="btn btn-secondary btn-sm" onclick="submitCustomerOnly()">Chỉ lưu thông tin khách hàng</button>
               </div>
             </div>
           </div>
 
           <!-- Phần 2: Thông tin thú cưng -->
-          <div id="petFormFieldsWrap">
-            <div class="section-heading">2. Thông tin bé thú cưng</div>
+          <div id="petFormFieldsWrap" class="form-section no-border">
+            <div class="section-heading">
+              <span class="step-num">02</span>
+              <span>Thông tin bé thú cưng</span>
+            </div>
             <input type="hidden" id="tc_matc" />
             <div class="form-row">
               <div class="form-group">
@@ -627,7 +1493,7 @@
             <div class="form-row">
               <div class="form-group">
                 <label>Độ tuổi (tháng) <span class="req">*</span></label>
-                <div style="display:grid;grid-template-columns:92px 1fr;gap:6px;">
+                <div style="display:grid;grid-template-columns:86px 1fr;gap:6px;">
                   <input type="number" id="tc_tuoi" placeholder="VD: 14" min="1" max="360" required />
                   <input type="month" id="tc_birthmonth" title="Chọn tháng/năm sinh để tự động tính số tháng tuổi" onchange="calcMonthsFromBirth(this.value)" />
                 </div>
@@ -653,15 +1519,18 @@
         </form>
       </div>
 
-      <div style="display:flex;flex-direction:column;gap:16px;">
+      <div style="display:flex;flex-direction:column;gap:18px;min-width:0;">
         <!-- Thẻ thông tin cá nhân dành cho Khách hàng -->
         <div id="custProfileCard" class="card customer-only" style="margin-bottom:0;"></div>
 
         <!-- Danh sách hồ sơ thú cưng -->
         <div class="card" style="margin-bottom:0;">
           <div class="card-header">
-            <div class="card-title"><span id="petListTitle">Danh sách Hồ sơ Thú cưng</span> (<span id="petCount">0</span>)</div>
-            <span class="badge badge-green">Sẵn sàng đặt lịch</span>
+            <div>
+              <div class="card-title"><span id="petListTitle">Danh sách Hồ sơ Thú cưng</span></div>
+              <div class="card-subtitle">Thông tin đặc điểm và lưu ý chăm sóc của từng thú cưng</div>
+            </div>
+            <span class="count-chip"><span id="petCount">0</span> hồ sơ</span>
           </div>
           <div class="table-wrap">
             <table>
@@ -685,8 +1554,11 @@
         <!-- Danh sách khách hàng (Chỉ Lễ tân / Quản lý) -->
         <div class="card admin-only" style="margin-bottom:0;">
           <div class="card-header">
-            <div class="card-title">Danh sách Khách hàng (<span id="customerCount">0</span>)</div>
-            <span class="badge badge-blue">Khách hàng thành viên</span>
+            <div>
+              <div class="card-title">Danh sách Khách hàng</div>
+              <div class="card-subtitle">Thông tin liên hệ và số lượng thú cưng đang theo dõi</div>
+            </div>
+            <span class="count-chip"><span id="customerCount">0</span> khách hàng</span>
           </div>
           <div class="table-wrap">
             <table>
@@ -711,10 +1583,12 @@
   <!-- ======================= TAB 2: ĐẶT LỊCH & THU NGÂN ======================= -->
   <div id="tab-input2" class="tab-pane">
     <!-- Bảng giá dịch vụ trực quan cho Khách hàng -->
-    <div class="customer-only card" style="margin-bottom:16px;">
+    <div class="customer-only card">
       <div class="card-header">
-        <div class="card-title">Bảng Giá &amp; Thời Lượng Dịch Vụ Spa Chăm Sóc Thú Cưng</div>
-        <span class="badge badge-teal">Niêm yết minh bạch</span>
+        <div>
+          <div class="card-title">Bảng Giá &amp; Thời Lượng Dịch Vụ Spa Chăm Sóc Thú Cưng</div>
+          <div class="card-subtitle">Giá niêm yết trọn gói theo từng hạng mục dịch vụ</div>
+        </div>
       </div>
       <div id="customerServiceCards" class="service-cards-grid"></div>
     </div>
@@ -722,8 +1596,10 @@
     <div class="grid-2">
       <div class="card">
         <div class="card-header">
-          <div class="card-title" id="titleScreen2">Tiếp nhận &amp; Đặt Lịch Hẹn</div>
-          <span class="badge badge-blue" id="badgeScreen2">Kiểm tra lịch trống tự động</span>
+          <div>
+            <div class="card-title" id="titleScreen2">Tiếp nhận &amp; Đặt Lịch Hẹn</div>
+            <div class="card-subtitle" id="badgeScreen2">Kiểm tra lịch trống tự động</div>
+          </div>
         </div>
 
         <div id="bookingAlert" class="alert"></div>
@@ -732,8 +1608,11 @@
           <input type="hidden" id="lh_malich" />
 
           <!-- Bước 1: Chọn thú cưng -->
-          <div class="section-box soft-blue">
-            <div class="section-heading">1. Chọn thú cưng cần chăm sóc</div>
+          <div class="form-section">
+            <div class="section-heading">
+              <span class="step-num">01</span>
+              <span>Chọn thú cưng cần chăm sóc</span>
+            </div>
 
             <!-- Bộ lọc dành cho Lễ tân -->
             <div id="adminBookingFilterRow" class="form-row admin-only">
@@ -749,19 +1628,19 @@
 
             <!-- Hướng dẫn định danh dành cho Khách hàng -->
             <div id="custBookingPrompt" class="customer-only" style="margin-bottom:10px;">
-              <div id="custBookingPromptMatched" style="display:none;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;background:#fff;border:1px solid #99f6e4;border-radius:7px;padding:8px 11px;">
-                <span id="custBookingMatchedText" style="font-size:12.5px;color:#0f766e;font-weight:600;"></span>
-                <button type="button" class="btn btn-secondary" style="padding:3px 9px;font-size:11.5px;" onclick="goToCustomerAddPet()">+ Thêm bé mới</button>
+              <div id="custBookingPromptMatched" class="subtle-box" style="display:none;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;">
+                <span id="custBookingMatchedText" style="font-size:12.5px;color:var(--primary);font-weight:600;"></span>
+                <button type="button" class="btn btn-secondary btn-xs" onclick="goToCustomerAddPet()">+ Thêm bé mới</button>
               </div>
-              <div id="custBookingPromptUnmatched" style="background:#fff;border:1px dashed #0d9488;border-radius:7px;padding:10px 12px;">
-                <div style="font-size:12.5px;font-weight:600;color:#0f766e;margin-bottom:6px;">Đã có hồ sơ? Nhập SĐT để chọn thú cưng của bạn:</div>
+              <div id="custBookingPromptUnmatched" class="subtle-box">
+                <div style="font-size:12.5px;font-weight:600;color:var(--text);margin-bottom:6px;">Đã có hồ sơ? Nhập SĐT để chọn thú cưng của bạn:</div>
                 <div style="display:flex;gap:6px;flex-wrap:wrap;align-items:center;">
                   <input type="text" id="custBookingQuickPhone" placeholder="Nhập SĐT (VD: 0901234567)" style="flex:1;min-width:170px;" oninput="syncQuickPhoneFromBooking(this.value)" />
-                  <button type="button" class="btn btn-primary" style="padding:7px 12px;font-size:12px;" onclick="applyCustomerPhoneFilter(document.getElementById('custBookingQuickPhone').value, true)">Tra cứu</button>
+                  <button type="button" class="btn btn-primary btn-sm" onclick="applyCustomerPhoneFilter(document.getElementById('custBookingQuickPhone').value, true)">Tra cứu</button>
                 </div>
-                <div style="margin-top:7px;font-size:12px;color:#475569;">
+                <div style="margin-top:8px;font-size:12px;color:var(--muted);">
                   Khách mới lần đầu đặt lịch?
-                  <button type="button" onclick="goToNewCustomerRegistration()" style="background:none;border:none;color:#0f766e;font-weight:700;text-decoration:underline;cursor:pointer;font-size:12px;">Đăng ký hồ sơ thú cưng tại đây</button>
+                  <button type="button" onclick="goToNewCustomerRegistration()" style="background:none;border:none;color:var(--primary);font-weight:600;text-decoration:underline;cursor:pointer;font-size:12px;margin-left:3px;">Đăng ký hồ sơ thú cưng tại đây</button>
                 </div>
               </div>
             </div>
@@ -771,30 +1650,33 @@
               <select id="lh_matc" onchange="updateOwnerPreview()" required></select>
             </div>
             <div>
-              <input type="text" id="lh_owner_preview" readonly style="background:#fff;color:var(--primary);font-weight:600;font-size:12.5px;padding:6px 10px;" />
+              <input type="text" id="lh_owner_preview" readonly style="background:var(--surface-subtle);color:var(--text-secondary);font-weight:500;font-size:12.5px;padding:7px 10px;" />
             </div>
           </div>
 
           <!-- Bước 2: Chọn dịch vụ & khung giờ hẹn -->
-          <div class="section-box soft-green">
-            <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:6px;margin-bottom:8px;">
-              <div class="section-heading" style="color:#14532d;margin-bottom:0;">2. Chọn gói dịch vụ &amp; Khung giờ hẹn</div>
-              <button type="button" id="btnToggleCombo" class="btn btn-secondary" style="padding:4px 10px;font-size:11.5px;" onclick="toggleComboService()">+ Thêm dịch vụ đi kèm (Combo)</button>
+          <div class="form-section">
+            <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:6px;margin-bottom:11px;">
+              <div class="section-heading" style="margin-bottom:0;">
+                <span class="step-num">02</span>
+                <span>Chọn gói dịch vụ &amp; Khung giờ hẹn</span>
+              </div>
+              <button type="button" id="btnToggleCombo" class="btn btn-secondary btn-sm" onclick="toggleComboService()">+ Thêm dịch vụ đi kèm (Combo)</button>
             </div>
             <div class="form-row">
-              <div class="form-group" style="margin-bottom:8px;">
+              <div class="form-group" style="margin-bottom:10px;">
                 <label>Dịch vụ chính <span class="req">*</span></label>
                 <select id="lh_madv" onchange="onBookingTimeOrServiceChange()" required></select>
               </div>
-              <div class="form-group" style="margin-bottom:8px;">
+              <div class="form-group" style="margin-bottom:10px;">
                 <label>Số lượng <span class="req">*</span></label>
                 <input type="number" id="lh_soluong" value="1" min="1" max="30" oninput="onBookingTimeOrServiceChange()" required />
               </div>
             </div>
 
             <!-- Gói dịch vụ đi kèm thứ 2 (Combo nối tiếp) -->
-            <div id="lh_combo_box" style="display:none;background:#fff;border:1px dashed #16a34a;padding:9px 11px;border-radius:7px;margin-bottom:9px;">
-              <div style="font-size:12px;font-weight:700;color:#15803d;margin-bottom:5px;">Dịch vụ đi kèm (tự động xếp nối tiếp ngay sau dịch vụ chính):</div>
+            <div id="lh_combo_box" class="subtle-box" style="display:none;margin-bottom:10px;">
+              <div style="font-size:12px;font-weight:600;color:var(--text-secondary);margin-bottom:8px;">Dịch vụ đi kèm (tự động xếp nối tiếp ngay sau dịch vụ chính):</div>
               <div class="form-row">
                 <div class="form-group" style="margin-bottom:0;">
                   <label>Dịch vụ đi kèm</label>
@@ -808,58 +1690,86 @@
             </div>
 
             <div class="form-row">
-              <div class="form-group" style="margin-bottom:2px;">
+              <div class="form-group" style="margin-bottom:0;">
                 <label>Ngày &amp; giờ bắt đầu <span class="req">*</span></label>
                 <input type="datetime-local" id="lh_ngaygio" onchange="onBookingTimeOrServiceChange()" required />
               </div>
-              <div class="form-group" style="margin-bottom:2px;">
+              <div class="form-group" style="margin-bottom:0;">
                 <label>Chi phí dự kiến &amp; Thời gian</label>
-                <div style="background:#fff;border:1px solid #cbd5e1;border-radius:7px;padding:7px 10px;font-size:12.5px;">
-                  <div>Tổng tạm tính: <strong id="lh_price_preview" style="color:#15803d;">0 đ</strong></div>
-                  <div id="lh_duration_preview" style="color:var(--primary);font-size:11.5px;margin-top:2px;">Thời lượng: 60 phút</div>
+                <div class="subtle-box" style="padding:7px 10px;font-size:12.5px;">
+                  <div>Tổng tạm tính: <strong id="lh_price_preview" style="color:var(--success);font-variant-numeric:tabular-nums;">0 đ</strong></div>
+                  <div id="lh_duration_preview" style="color:var(--muted);font-size:11.5px;margin-top:2px;">Thời lượng: 60 phút</div>
                 </div>
               </div>
             </div>
           </div>
 
           <!-- Bước 3: Chuyên viên & Ghi chú -->
-          <div class="form-row">
-            <div class="form-group">
-              <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;">
-                <label style="margin-bottom:0;">Chuyên viên chăm sóc <span class="req">*</span></label>
-                <button type="button" class="btn btn-secondary" style="padding:2px 8px;font-size:11px;color:var(--primary);border-color:#93c5fd;" onclick="autoPickAvailableStaff()">Tự chọn chuyên viên rảnh</button>
+          <div class="form-section no-border">
+            <div class="section-heading">
+              <span class="step-num">03</span>
+              <span>Chuyên viên chăm sóc &amp; Ghi chú</span>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:5px;">
+                  <label style="margin-bottom:0;">Chuyên viên chăm sóc <span class="req">*</span></label>
+                  <button type="button" class="btn btn-secondary btn-xs" onclick="autoPickAvailableStaff()">Tự chọn rảnh</button>
+                </div>
+                <select id="lh_manv" required></select>
+                <div class="hint" id="lh_staff_hint">Hệ thống tự động kiểm tra lịch trống theo khung giờ đã chọn</div>
               </div>
-              <select id="lh_manv" required></select>
-              <div class="hint" id="lh_staff_hint">Hệ thống tự động kiểm tra lịch trống theo khung giờ đã chọn</div>
+              <div id="lh_trangthai_group" class="form-group admin-only">
+                <label>Trạng thái tiếp nhận <span class="req">*</span></label>
+                <select id="lh_trangthai" onchange="onBookingFormStatusChange()">
+                  <option value="Mới tạo">Chờ xác nhận</option>
+                  <option value="Đã xác nhận" selected>Đã xác nhận</option>
+                  <option value="Đang thực hiện">Đang thực hiện</option>
+                  <option value="Hoàn thành">Hoàn thành</option>
+                </select>
+                <div class="hint">Có thể cập nhật trực tiếp trên bảng danh sách</div>
+              </div>
             </div>
-            <div id="lh_trangthai_group" class="form-group admin-only">
-              <label>Trạng thái tiếp nhận <span class="req">*</span></label>
-              <select id="lh_trangthai">
-                <option value="Mới tạo">Chờ xác nhận</option>
-                <option value="Đã xác nhận" selected>Đã xác nhận</option>
-                <option value="Đang thực hiện">Đang thực hiện</option>
-                <option value="Hoàn thành">Hoàn thành</option>
+
+            <div id="lh_phuongthuc_group" class="form-group admin-only">
+              <label>Thanh toán thu ngân</label>
+              <select id="lh_phuongthuc">
+                <option value="Chưa thanh toán" selected>Chưa thu tiền</option>
+                <option value="Chuyển khoản">Đã thu • Chuyển khoản</option>
+                <option value="Tiền mặt">Đã thu • Tiền mặt</option>
+                <option value="Thẻ">Đã thu • Quẹt thẻ</option>
               </select>
-              <div class="hint">Có thể cập nhật trực tiếp trên bảng danh sách</div>
+              <div class="hint">Chọn hình thức nếu khách thanh toán ngay (tự động áp dụng cho cả dịch vụ Combo đi kèm)</div>
             </div>
-          </div>
 
-          <div class="form-group">
-            <label>Ghi chú yêu cầu</label>
-            <input type="text" id="lh_ghichu" placeholder="Ghi chú kiểu cắt tỉa, lưu ý sức khỏe hoặc yêu cầu riêng..." />
-          </div>
+            <div class="form-group">
+              <label>Ghi chú yêu cầu</label>
+              <input type="text" id="lh_ghichu" placeholder="Ghi chú kiểu cắt tỉa, lưu ý sức khỏe hoặc yêu cầu riêng..." />
+            </div>
 
-          <div class="btn-bar">
-            <button type="submit" id="btnSubmitBooking" class="btn btn-primary">Xác nhận đặt lịch hẹn</button>
-            <button type="button" class="btn btn-secondary" onclick="resetBookingForm()">Làm mới</button>
+            <div class="btn-bar">
+              <button type="submit" id="btnSubmitBooking" class="btn btn-primary">Xác nhận đặt lịch hẹn</button>
+              <button type="button" class="btn btn-secondary" onclick="resetBookingForm()">Làm mới</button>
+            </div>
           </div>
         </form>
       </div>
 
-      <div class="card">
+      <div class="card" style="min-width:0;">
         <div class="card-header">
-          <div class="card-title"><span id="bookingListTitle">Danh sách Lịch hẹn &amp; Thu ngân</span> (<span id="bookingCount">0</span>)</div>
-          <span class="badge badge-purple" id="bookingListBadge">Cập nhật trạng thái &amp; thanh toán</span>
+          <div>
+            <div class="card-title"><span id="bookingListTitle">Danh sách Lịch hẹn &amp; Thu ngân</span></div>
+            <div class="card-subtitle" id="bookingListBadge">Cập nhật trạng thái &amp; thanh toán</div>
+          </div>
+          <div class="card-header-actions">
+            <span class="count-chip"><span id="bookingCount">0</span> lịch hẹn</span>
+            <button type="button" class="btn btn-secondary btn-sm admin-only" onclick="switchTab('tab-search', document.getElementById('navTabSearch'))">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/>
+              </svg>
+              <span>Bộ lọc nâng cao</span>
+            </button>
+          </div>
         </div>
         <div class="table-wrap">
           <table>
@@ -887,19 +1797,21 @@
   <div id="tab-search" class="tab-pane">
     <div class="card">
       <div class="card-header">
-        <div class="card-title" id="searchCardTitle">Tra cứu &amp; Lọc Lịch hẹn Chăm sóc</div>
-        <span class="badge badge-blue" id="searchCardBadge">Tìm kiếm nhanh đa tiêu chí</span>
+        <div>
+          <div class="card-title" id="searchCardTitle">Tra cứu &amp; Lọc Lịch hẹn Chăm sóc</div>
+          <div class="card-subtitle" id="searchCardBadge">Tìm kiếm nhanh đa tiêu chí</div>
+        </div>
       </div>
 
-      <form onsubmit="runSearch(event)" style="background:#f8fafc;padding:16px;border-radius:9px;border:1px solid #cbd5e1;margin-bottom:16px;">
+      <form onsubmit="runSearch(event)" class="subtle-box" style="padding:16px;margin-bottom:16px;">
         <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:12px;">
           <div>
             <label>Từ khóa</label>
-            <input type="text" id="s_kw" placeholder="Mã lịch, tên khách, SĐT, tên thú cưng..." oninput="runSearch()" />
+            <input type="text" id="s_kw" placeholder="Mã lịch, tên khách, SĐT, tên thú cưng..." oninput="syncTopbarSearchFromTab(this.value); runSearch()" />
           </div>
           <div>
             <label>Loài thú cưng</label>
-            <select id="s_loai" onchange="runSearch()">
+            <select id="s_loai" onchange="updateSearchFilterChipUI(''); runSearch()">
               <option value="">-- Tất cả loài --</option>
               <option value="Chó">Chó</option>
               <option value="Mèo">Mèo</option>
@@ -921,7 +1833,7 @@
           </div>
           <div>
             <label>Trạng thái lịch hẹn</label>
-            <select id="s_trangthai" onchange="ACTIVE_FILTER_ONLY = false; runSearch()">
+            <select id="s_trangthai" onchange="ACTIVE_FILTER_ONLY = false; updateSearchFilterChipUI(''); runSearch()">
               <option value="">-- Tất cả trạng thái --</option>
               <option value="Mới tạo">Chờ xác nhận</option>
               <option value="Đã xác nhận">Đã xác nhận</option>
@@ -939,17 +1851,23 @@
             </div>
           </div>
         </div>
-        <div class="btn-bar" style="margin-top:12px;justify-content:space-between;align-items:center;">
-          <div style="display:flex;gap:8px;flex-wrap:wrap;">
-            <button type="submit" class="btn btn-primary">Tìm kiếm</button>
-            <button type="button" class="btn btn-secondary" onclick="resetSearch()">Xem tất cả</button>
-            <button type="button" class="btn btn-secondary" onclick="quickFilterActive()">Đang chờ &amp; thực hiện</button>
-            <button type="button" class="btn btn-secondary" onclick="quickFilter('', 'Hoàn thành')">Đã hoàn thành</button>
-            <button type="button" class="btn btn-secondary" onclick="quickFilter('Chó', '')">Tất cả chó</button>
-            <button type="button" class="btn btn-secondary" onclick="quickFilter('Mèo', '')">Tất cả mèo</button>
+        <div class="btn-bar" style="margin-top:14px;padding-top:12px;border-top:1px solid var(--border);justify-content:space-between;align-items:center;">
+          <div style="display:flex;gap:6px;flex-wrap:wrap;align-items:center;">
+            <button type="submit" class="btn btn-primary btn-sm">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <circle cx="11" cy="11" r="8"/>
+                <line x1="21" y1="21" x2="16.65" y2="16.65"/>
+              </svg>
+              <span>Tìm kiếm</span>
+            </button>
+            <button type="button" id="chipFilterAll" class="filter-chip active" onclick="resetSearch()">Xem tất cả</button>
+            <button type="button" id="chipFilterActive" class="filter-chip" onclick="quickFilterActive()">Đang chờ &amp; thực hiện</button>
+            <button type="button" id="chipFilterDone" class="filter-chip" onclick="quickFilter('', 'Hoàn thành')">Đã hoàn thành</button>
+            <button type="button" id="chipFilterDog" class="filter-chip" onclick="quickFilter('Chó', '')">Tất cả chó</button>
+            <button type="button" id="chipFilterCat" class="filter-chip" onclick="quickFilter('Mèo', '')">Tất cả mèo</button>
           </div>
-          <div style="font-size:13.5px;font-weight:700;color:var(--primary);">
-            Tìm thấy: <span id="searchResultCount">0</span> lịch hẹn &nbsp;|&nbsp; Tổng giá trị: <span id="searchTotalMoney" style="color:#15803d;">0 đ</span>
+          <div style="font-size:13px;font-weight:600;color:var(--text-secondary);font-variant-numeric:tabular-nums;">
+            Tìm thấy: <strong id="searchResultCount" style="color:var(--text);">0</strong> lịch hẹn &nbsp;·&nbsp; Tổng giá trị: <strong id="searchTotalMoney" style="color:var(--success);">0 đ</strong>
           </div>
         </div>
       </form>
@@ -983,8 +1901,10 @@
     <div style="display:grid;grid-template-columns:1fr;gap:18px;">
       <div class="card" style="margin-bottom:0;">
         <div class="card-header">
-          <div class="card-title">Bảng giá &amp; Thời lượng Gói dịch vụ</div>
-          <span class="badge badge-blue">Cập nhật trực tiếp</span>
+          <div>
+            <div class="card-title">Bảng giá &amp; Thời lượng Gói dịch vụ</div>
+            <div class="card-subtitle">Chỉnh sửa trực tiếp đơn giá niêm yết và thời lượng phục vụ dự kiến</div>
+          </div>
         </div>
         <div class="table-wrap">
           <table>
@@ -1004,8 +1924,10 @@
 
       <div class="card" style="margin-bottom:0;">
         <div class="card-header">
-          <div class="card-title">Đội ngũ Nhân sự &amp; Ca làm việc</div>
-          <span class="badge badge-green">Điều phối ca trực</span>
+          <div>
+            <div class="card-title">Đội ngũ Nhân sự &amp; Ca làm việc</div>
+            <div class="card-subtitle">Điều phối ca trực và trạng thái sẵn sàng tiếp nhận lịch hẹn</div>
+          </div>
         </div>
         <div class="table-wrap">
           <table>
@@ -1031,16 +1953,38 @@
       <div class="card-header no-print">
         <div>
           <div class="card-title">Báo cáo Tổng hợp Doanh thu Dịch vụ</div>
-          <div style="font-size:13px;color:#475569;margin-top:3px;">
-            <strong>Người lập:</strong> Phạm Ngọc Lan (Lễ tân - Thu ngân) &nbsp;|&nbsp;
+          <div class="card-subtitle" style="margin-top:3px;">
+            <strong>Người lập:</strong> Phạm Ngọc Lan (Lễ tân - Thu ngân) &nbsp;·&nbsp;
             <strong>Người nhận:</strong> Đỗ Thanh Hương (Quản lý cơ sở) để đối soát quỹ &amp; phân tích hiệu quả dịch vụ.
           </div>
         </div>
         <div class="btn-bar" style="margin-top:0;">
-          <button class="btn btn-success" onclick="exportReportXlsx(1)">Xuất Excel (.xlsx)</button>
-          <button class="btn btn-primary" onclick="exportReportWord('report1Paper', 'Bao_Cao_Doanh_Thu_Dich_Vu_PetCare.doc')">Xuất Word (.doc)</button>
-          <button class="btn btn-secondary" onclick="exportReportCsv(1)">Xuất CSV (.csv)</button>
-          <button class="btn btn-secondary" onclick="window.print()">In / Xuất PDF</button>
+          <button class="btn btn-success btn-sm" onclick="exportReportXlsx(1)">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/>
+              <polyline points="14 2 14 8 20 8"/>
+              <path d="M8 13h2"/><path d="M8 17h2"/><path d="M14 13h2"/><path d="M14 17h2"/>
+            </svg>
+            <span>Xuất Excel (.xlsx)</span>
+          </button>
+          <button class="btn btn-primary btn-sm" onclick="exportReportWord('report1Paper', 'Bao_Cao_Doanh_Thu_Dich_Vu_PetCare.doc')">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/>
+              <polyline points="14 2 14 8 20 8"/>
+              <line x1="16" y1="13" x2="8" y2="13"/>
+              <line x1="16" y1="17" x2="8" y2="17"/>
+              <line x1="10" y1="9" x2="8" y2="9"/>
+            </svg>
+            <span>Xuất Word (.doc)</span>
+          </button>
+          <button class="btn btn-secondary btn-sm" onclick="window.print()">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <polyline points="6 9 6 2 18 2 18 9"/>
+              <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/>
+              <rect x="6" y="14" width="12" height="8"/>
+            </svg>
+            <span>In / Xuất PDF</span>
+          </button>
         </div>
       </div>
 
@@ -1127,16 +2071,38 @@
       <div class="card-header no-print">
         <div>
           <div class="card-title">Báo cáo Hiệu suất Nhân viên &amp; Tình hình Lịch hẹn</div>
-          <div style="font-size:13px;color:#475569;margin-top:3px;">
-            <strong>Người lập:</strong> Đỗ Thanh Hương (Quản lý cơ sở) &nbsp;|&nbsp;
+          <div class="card-subtitle" style="margin-top:3px;">
+            <strong>Người lập:</strong> Đỗ Thanh Hương (Quản lý cơ sở) &nbsp;·&nbsp;
             <strong>Người nhận:</strong> Bộ phận Nhân sự - Tiền lương &amp; Ban Giám đốc để tính thưởng KPI và điều phối ca trực.
           </div>
         </div>
         <div class="btn-bar" style="margin-top:0;">
-          <button class="btn btn-success" onclick="exportReportXlsx(2)">Xuất Excel (.xlsx)</button>
-          <button class="btn btn-primary" onclick="exportReportWord('report2Paper', 'Bao_Cao_Hieu_Suat_Nhan_Vien_PetCare.doc')">Xuất Word (.doc)</button>
-          <button class="btn btn-secondary" onclick="exportReportCsv(2)">Xuất CSV (.csv)</button>
-          <button class="btn btn-secondary" onclick="window.print()">In / Xuất PDF</button>
+          <button class="btn btn-success btn-sm" onclick="exportReportXlsx(2)">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/>
+              <polyline points="14 2 14 8 20 8"/>
+              <path d="M8 13h2"/><path d="M8 17h2"/><path d="M14 13h2"/><path d="M14 17h2"/>
+            </svg>
+            <span>Xuất Excel (.xlsx)</span>
+          </button>
+          <button class="btn btn-primary btn-sm" onclick="exportReportWord('report2Paper', 'Bao_Cao_Hieu_Suat_Nhan_Vien_PetCare.doc')">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/>
+              <polyline points="14 2 14 8 20 8"/>
+              <line x1="16" y1="13" x2="8" y2="13"/>
+              <line x1="16" y1="17" x2="8" y2="17"/>
+              <line x1="10" y1="9" x2="8" y2="9"/>
+            </svg>
+            <span>Xuất Word (.doc)</span>
+          </button>
+          <button class="btn btn-secondary btn-sm" onclick="window.print()">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <polyline points="6 9 6 2 18 2 18 9"/>
+              <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/>
+              <rect x="6" y="14" width="12" height="8"/>
+            </svg>
+            <span>In / Xuất PDF</span>
+          </button>
         </div>
       </div>
 
@@ -1217,6 +2183,8 @@
     </div>
   </div>
 
+    </main>
+  </div>
 </div>
 
 <script>
@@ -1281,12 +2249,122 @@
     ]
   };
 
+  const INITIAL_DATA = JSON.parse(JSON.stringify({
+    khach_hang: STATE.khach_hang,
+    thu_cung: STATE.thu_cung,
+    nhan_vien: STATE.nhan_vien,
+    dich_vu: STATE.dich_vu,
+    lich_hen: STATE.lich_hen,
+    thanh_toan: STATE.thanh_toan
+  }));
+  let API_BASE = '';
+  const LOCAL_STORAGE_KEY = 'petcare_local_state_v1';
+
+  function apiUrl(path) {
+    return `${API_BASE}${path}`;
+  }
+
+  function persistLocalState() {
+    if (STATE.usingApi) return;
+    try {
+      localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify({
+        khach_hang: STATE.khach_hang,
+        thu_cung: STATE.thu_cung,
+        nhan_vien: STATE.nhan_vien,
+        dich_vu: STATE.dich_vu,
+        lich_hen: STATE.lich_hen,
+        thanh_toan: STATE.thanh_toan
+      }));
+    } catch (e) {}
+  }
+
+  function loadLocalState() {
+    try {
+      const raw = localStorage.getItem(LOCAL_STORAGE_KEY);
+      if (!raw) return;
+      const saved = JSON.parse(raw);
+      if (saved && Array.isArray(saved.khach_hang) && Array.isArray(saved.lich_hen)) {
+        STATE.khach_hang = saved.khach_hang;
+        STATE.thu_cung = saved.thu_cung || STATE.thu_cung;
+        STATE.nhan_vien = saved.nhan_vien || STATE.nhan_vien;
+        STATE.dich_vu = saved.dich_vu || STATE.dich_vu;
+        STATE.lich_hen = saved.lich_hen;
+        STATE.thanh_toan = saved.thanh_toan || [];
+      }
+    } catch (e) {}
+  }
+
+  function resetLocalDemoData() {
+    if (STATE.usingApi) return;
+    try {
+      localStorage.removeItem(LOCAL_STORAGE_KEY);
+    } catch (e) {}
+    const fresh = JSON.parse(JSON.stringify(INITIAL_DATA));
+    STATE.khach_hang = fresh.khach_hang;
+    STATE.thu_cung = fresh.thu_cung;
+    STATE.nhan_vien = fresh.nhan_vien;
+    STATE.dich_vu = fresh.dich_vu;
+    STATE.lich_hen = fresh.lich_hen;
+    STATE.thanh_toan = fresh.thanh_toan;
+    updateHeaderStatusBadge();
+    renderAdminStats();
+    populateSelects();
+    renderPetsTable();
+    renderBookingsTable();
+    resetPetForm();
+    resetBookingForm();
+    runSearch();
+    renderReports();
+  }
+
+  function upsertStatePayment(ttObj) {
+    if (!ttObj || !ttObj.MaLich) return;
+    const normalized = {
+      MaTT: ttObj.MaTT,
+      MaLich: ttObj.MaLich,
+      ThoiGianThanhToan: ttObj.ThoiGianThanhToan || '',
+      SoTien: Number(ttObj.SoTien || 0),
+      PhuongThuc: ttObj.PhuongThuc || 'Chuyển khoản',
+      TrangThaiTT: ttObj.TrangThaiTT || 'Đã thanh toán'
+    };
+    const idx = STATE.thanh_toan.findIndex(t => t.MaLich === normalized.MaLich);
+    if (idx >= 0) {
+      STATE.thanh_toan[idx] = { ...STATE.thanh_toan[idx], ...normalized };
+    } else {
+      STATE.thanh_toan.push(normalized);
+    }
+  }
+
+  function findComboPartnerIds(malich) {
+    const partners = [];
+    const seen = new Set([malich]);
+    const prefix = `[Combo sau #${malich}]`;
+    STATE.lich_hen.forEach(l => {
+      if (!seen.has(l.MaLich) && String(l.GhiChu || '').startsWith(prefix)) {
+        seen.add(l.MaLich);
+        partners.push(l.MaLich);
+      }
+    });
+    const cur = STATE.lich_hen.find(l => l.MaLich === malich);
+    if (cur && cur.GhiChu) {
+      const m = String(cur.GhiChu).trim().match(/^\[Combo sau #(LH\d+)\]/);
+      if (m && !seen.has(m[1]) && STATE.lich_hen.some(l => l.MaLich === m[1])) {
+        seen.add(m[1]);
+        partners.push(m[1]);
+      }
+    }
+    return partners;
+  }
+
   let CUSTOMER_MODE = 'existing';
   let EDIT_PET_ID = null;
   let EDIT_KH_ID = null;
   let APP_ROLE_VIEW = 'admin';
   let CUSTOMER_PHONE_FILTER = '';
   let COMBO_ENABLED = false;
+
+  const SVG_CLOCK = '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>';
+  const SVG_CHECK = '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>';
 
   function escHtml(str) {
     return String(str ?? '')
@@ -1305,15 +2383,52 @@
     return st;
   }
 
+  function toggleSidebar() {
+    if (window.innerWidth <= 960) {
+      document.body.classList.toggle('sidebar-mobile-open');
+    } else {
+      document.body.classList.toggle('sidebar-collapsed');
+    }
+  }
+
+  function closeMobileSidebar() {
+    document.body.classList.remove('sidebar-mobile-open');
+  }
+
+  function handleTopbarQuickSearch(val, forceSwitch) {
+    const kwInput = document.getElementById('s_kw');
+    if (kwInput) kwInput.value = val;
+    const searchPane = document.getElementById('tab-search');
+    const isSearchActive = searchPane && searchPane.classList.contains('active');
+    if ((forceSwitch || (val && val.trim().length > 0)) && !isSearchActive) {
+      switchTab('tab-search', document.getElementById('navTabSearch'));
+    }
+    runSearch();
+  }
+
+  function syncTopbarSearchFromTab(val) {
+    const topInput = document.getElementById('topbarQuickSearch');
+    if (topInput && document.activeElement !== topInput) {
+      topInput.value = val;
+    }
+  }
+
+  function updateSearchFilterChipUI(activeChipId) {
+    ['chipFilterAll', 'chipFilterActive', 'chipFilterDone', 'chipFilterDog', 'chipFilterCat'].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) el.classList.toggle('active', id === activeChipId);
+    });
+  }
+
   function updateHeaderStatusBadge() {
     const el = document.getElementById('dbStatusText');
     if (!el) return;
     if (APP_ROLE_VIEW === 'customer') {
       el.textContent = 'Mở cửa: 08:00 – 21:00 • Hotline: 1900 6868';
+    } else if (STATE.usingApi) {
+      el.textContent = 'Trực tuyến • Đã đồng bộ dữ liệu';
     } else {
-      el.textContent = STATE.usingApi
-        ? 'Trực tuyến • Đã đồng bộ dữ liệu'
-        : 'Chế độ làm việc cục bộ';
+      el.innerHTML = 'Chế độ cục bộ · <button type="button" onclick="resetLocalDemoData()" style="background:none;border:none;color:var(--accent);font:inherit;font-weight:600;text-decoration:underline;cursor:pointer;padding:0;">Khôi phục mẫu</button>';
     }
   }
 
@@ -1333,8 +2448,13 @@
       ['Mới tạo', 'Đã xác nhận', 'Đang thực hiện'].includes(l.TrangThai)
     ).length;
     const doneCount = STATE.lich_hen.filter(l => l.TrangThai === 'Hoàn thành').length;
+    const validBookingIds = new Set(
+      STATE.lich_hen
+        .filter(l => l.TrangThai !== 'Đã hủy' && l.TrangThai !== 'Không đến')
+        .map(l => l.MaLich)
+    );
     const revenue = STATE.thanh_toan
-      .filter(t => t.TrangThaiTT === 'Đã thanh toán')
+      .filter(t => t.TrangThaiTT === 'Đã thanh toán' && validBookingIds.has(t.MaLich))
       .reduce((sum, t) => sum + Number(t.SoTien || 0), 0);
 
     document.getElementById('kpiActiveBookings').textContent = activeCount;
@@ -1348,12 +2468,24 @@
     document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
     const target = document.getElementById(id);
     if (target) target.classList.add('active');
-    if (btn) btn.classList.add('active');
+    const activeBtn = btn || document.querySelector(`.tab-btn[onclick*="'${id}'"]`);
+    if (activeBtn) {
+      activeBtn.classList.add('active');
+      const lbl = activeBtn.querySelector('.nav-label');
+      const bc = document.getElementById('topbarCurrentTab');
+      if (bc && lbl) bc.textContent = lbl.textContent.trim();
+    }
+    closeMobileSidebar();
+    if (id === 'tab-report1' || id === 'tab-report2') {
+      renderReports();
+      if (STATE.usingApi) refreshFromApiIfConnected();
+    }
   }
 
-  async function initApp() {
+  async function refreshFromApiIfConnected() {
+    if (!STATE.usingApi) return;
     try {
-      const res = await fetch('/api/init');
+      const res = await fetch(apiUrl('/api/init'), { cache: 'no-store' });
       if (res.ok) {
         const data = await res.json();
         STATE.khach_hang = data.khach_hang;
@@ -1362,10 +2494,55 @@
         STATE.dich_vu = data.dich_vu;
         STATE.lich_hen = data.lich_hen;
         STATE.thanh_toan = data.thanh_toan;
-        STATE.usingApi = true;
+        renderAdminStats();
+        populateSelects();
+        renderPetsTable();
+        renderBookingsTable();
+        runSearch();
+        renderReports();
       }
-    } catch (e) {
+    } catch (e) {}
+  }
+
+  async function initApp() {
+    let connected = false;
+    if (window.location.protocol !== 'file:') {
+      try {
+        const res = await fetch('/api/init', { cache: 'no-store' });
+        if (res.ok) {
+          const data = await res.json();
+          STATE.khach_hang = data.khach_hang;
+          STATE.thu_cung = data.thu_cung;
+          STATE.nhan_vien = data.nhan_vien;
+          STATE.dich_vu = data.dich_vu;
+          STATE.lich_hen = data.lich_hen;
+          STATE.thanh_toan = data.thanh_toan;
+          API_BASE = '';
+          STATE.usingApi = true;
+          connected = true;
+        }
+      } catch (e) {}
+    }
+    if (!connected) {
+      try {
+        const res2 = await fetch('http://localhost:8080/api/init', { cache: 'no-store' });
+        if (res2.ok) {
+          const data = await res2.json();
+          STATE.khach_hang = data.khach_hang;
+          STATE.thu_cung = data.thu_cung;
+          STATE.nhan_vien = data.nhan_vien;
+          STATE.dich_vu = data.dich_vu;
+          STATE.lich_hen = data.lich_hen;
+          STATE.thanh_toan = data.thanh_toan;
+          API_BASE = 'http://localhost:8080';
+          STATE.usingApi = true;
+          connected = true;
+        }
+      } catch (e) {}
+    }
+    if (!connected) {
       STATE.usingApi = false;
+      loadLocalState();
     }
     updateHeaderStatusBadge();
     renderAdminStats();
@@ -1401,11 +2578,11 @@
       if (!CUSTOMER_PHONE_FILTER) {
         statusEl.innerHTML = '';
       } else if (matchedKh) {
-        statusEl.innerHTML = `<span style="color:#0f766e;">✓ Xin chào <strong>${escHtml(matchedKh.HoTen)}</strong>! Hệ thống đã tải hồ sơ thú cưng và lịch hẹn của bạn.</span>`;
+        statusEl.innerHTML = `<span style="color:var(--success);display:inline-flex;align-items:center;gap:6px;">${SVG_CHECK}<span>Xin chào <strong>${escHtml(matchedKh.HoTen)}</strong>! Hệ thống đã tải hồ sơ thú cưng và lịch hẹn của bạn.</span></span>`;
       } else if (CUSTOMER_PHONE_FILTER.length >= 10) {
-        statusEl.innerHTML = `<span style="color:#b45309;">Số điện thoại này lần đầu đến PetCare.</span> <button type="button" class="btn btn-success" style="padding:3px 10px;font-size:12px;margin-left:6px;" onclick="goToNewCustomerRegistration()">Đăng ký hồ sơ mới</button>`;
+        statusEl.innerHTML = `<span style="color:var(--warning);">Số điện thoại này lần đầu đến PetCare.</span> <button type="button" class="btn btn-primary btn-xs" style="margin-left:6px;" onclick="goToNewCustomerRegistration()">Đăng ký hồ sơ mới</button>`;
       } else {
-        statusEl.innerHTML = `<span style="color:#475569;">Vui lòng nhập đầy đủ số điện thoại (10–11 chữ số) để tra cứu hồ sơ.</span>`;
+        statusEl.innerHTML = `<span style="color:var(--muted);">Vui lòng nhập đầy đủ số điện thoại (10–11 chữ số) để tra cứu hồ sơ.</span>`;
       }
     }
 
@@ -1413,21 +2590,21 @@
       if (matchedKh) {
         const myPetsCount = STATE.thu_cung.filter(t => t.MaKH === matchedKh.MaKH).length;
         profileCard.innerHTML = `
-          <div class="card-header" style="margin-bottom:10px;padding-bottom:10px;">
+          <div class="card-header" style="margin-bottom:12px;padding-bottom:12px;">
             <div class="card-title">Hồ sơ Chủ nuôi của bạn</div>
-            <button type="button" class="btn btn-secondary" style="padding:4px 10px;font-size:12px;" onclick="startEditCustomer('${matchedKh.MaKH}')">Cập nhật thông tin</button>
+            <button type="button" class="btn btn-secondary btn-sm" onclick="startEditCustomer('${matchedKh.MaKH}')">Cập nhật thông tin</button>
           </div>
-          <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:10px;font-size:13.5px;">
-            <div><span style="color:#64748b;font-size:12px;display:block;">Họ và tên</span><strong>${escHtml(matchedKh.HoTen)}</strong></div>
-            <div><span style="color:#64748b;font-size:12px;display:block;">Số điện thoại</span><strong>${escHtml(matchedKh.SDT)}</strong></div>
-            <div><span style="color:#64748b;font-size:12px;display:block;">Email</span><strong>${escHtml(matchedKh.Email || 'Chưa cập nhật')}</strong></div>
-            <div><span style="color:#64748b;font-size:12px;display:block;">Địa chỉ</span><strong>${escHtml(matchedKh.DiaChi || 'Chưa cập nhật')}</strong></div>
-            <div><span style="color:#64748b;font-size:12px;display:block;">Số thú cưng</span><span class="badge badge-teal">${myPetsCount} bé</span></div>
+          <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:12px;font-size:13.5px;">
+            <div><span style="color:var(--muted);font-size:12px;display:block;margin-bottom:2px;">Họ và tên</span><strong>${escHtml(matchedKh.HoTen)}</strong></div>
+            <div><span style="color:var(--muted);font-size:12px;display:block;margin-bottom:2px;">Số điện thoại</span><strong style="font-variant-numeric:tabular-nums;">${escHtml(matchedKh.SDT)}</strong></div>
+            <div><span style="color:var(--muted);font-size:12px;display:block;margin-bottom:2px;">Email</span><strong>${escHtml(matchedKh.Email || 'Chưa cập nhật')}</strong></div>
+            <div><span style="color:var(--muted);font-size:12px;display:block;margin-bottom:2px;">Địa chỉ</span><strong>${escHtml(matchedKh.DiaChi || 'Chưa cập nhật')}</strong></div>
+            <div><span style="color:var(--muted);font-size:12px;display:block;margin-bottom:2px;">Số thú cưng</span><span class="meta-tag">${myPetsCount} bé</span></div>
           </div>`;
       } else {
         profileCard.innerHTML = `
-          <div style="font-size:13.5px;color:#475569;">
-            <strong style="color:#0f766e;">Bạn đã từng ghé PetCare?</strong> Nhập số điện thoại ở thanh tra cứu phía trên để xem ngay thông tin cá nhân và danh sách thú cưng của bạn. Nếu là khách mới, hãy điền biểu mẫu bên cạnh để đăng ký nhé!
+          <div style="font-size:13px;color:var(--text-secondary);">
+            <strong style="color:var(--primary);">Bạn đã từng ghé PetCare?</strong> Nhập số điện thoại ở thanh tra cứu phía trên để xem ngay thông tin cá nhân và danh sách thú cưng của bạn. Nếu là khách mới, hãy điền biểu mẫu bên cạnh để đăng ký nhé!
           </div>`;
       }
     }
@@ -1510,14 +2687,18 @@
     document.getElementById('appHeaderSub').textContent = isCust
       ? 'Cổng Đặt Lịch Chăm Sóc & Spa Thú Cưng Trực Tuyến'
       : 'Hệ thống Quản lý Dịch vụ, Lịch hẹn & Chăm sóc Thú cưng';
+    const roleTag = document.getElementById('sidebarRoleTag');
+    if (roleTag) {
+      roleTag.textContent = isCust ? 'Cổng Khách hàng' : 'Workspace Quản trị';
+    }
 
-    document.getElementById('navTab1').textContent = isCust
+    document.getElementById('navTab1Label').textContent = isCust
       ? 'Thú cưng & Hồ sơ của tôi'
       : 'Tiếp nhận & Hồ sơ';
-    document.getElementById('navTab2').textContent = isCust
+    document.getElementById('navTab2Label').textContent = isCust
       ? 'Đặt lịch Spa & Chăm sóc'
       : 'Đặt lịch & Thu ngân';
-    document.getElementById('navTabSearch').textContent = isCust
+    document.getElementById('navTabSearchLabel').textContent = isCust
       ? 'Lịch hẹn của tôi'
       : 'Tra cứu lịch hẹn';
 
@@ -1547,6 +2728,10 @@
       const activePane = document.querySelector('.tab-pane.active');
       if (!activePane) {
         switchTab('tab-input1', document.getElementById('navTab1'));
+      } else {
+        const activeTabBtn = document.querySelector('.tab-btn.active .nav-label');
+        const bc = document.getElementById('topbarCurrentTab');
+        if (bc && activeTabBtn) bc.textContent = activeTabBtn.textContent.trim();
       }
       resetPetForm();
     }
@@ -1604,8 +2789,8 @@
     if (mode === 'new') {
       exBox.style.display = 'none';
       newBox.style.display = 'block';
-      if (btnEx) btnEx.className = 'btn btn-secondary';
-      if (btnNew) btnNew.className = 'btn btn-primary';
+      if (btnEx) btnEx.className = 'seg-btn';
+      if (btnNew) btnNew.className = 'seg-btn active';
       if (petFieldsWrap) petFieldsWrap.style.display = EDIT_KH_ID ? 'none' : 'block';
       btnMain.textContent = EDIT_PET_ID
         ? 'Cập nhật hồ sơ thú cưng'
@@ -1619,8 +2804,8 @@
       if (saveOnlyBtn) saveOnlyBtn.textContent = 'Chỉ lưu thông tin khách hàng';
       exBox.style.display = 'block';
       newBox.style.display = 'none';
-      if (btnEx) btnEx.className = 'btn btn-primary';
-      if (btnNew) btnNew.className = 'btn btn-secondary';
+      if (btnEx) btnEx.className = 'seg-btn active';
+      if (btnNew) btnNew.className = 'seg-btn';
       if (petFieldsWrap) petFieldsWrap.style.display = 'block';
       btnMain.textContent = EDIT_PET_ID ? 'Cập nhật hồ sơ thú cưng' : 'Lưu hồ sơ thú cưng';
     }
@@ -1672,13 +2857,13 @@
 
   function evaluateStaffAvailability(nv, ngaygioStr, totalMinutes) {
     if (nv.TrangThai !== 'Đang làm việc') {
-      return { ok: false, icon: '⛔', label: nv.TrangThai };
+      return { ok: false, icon: '×', label: nv.TrangThai };
     }
     if (!ngaygioStr || ngaygioStr.length < 16) {
-      return { ok: true, icon: '✅', label: 'Đang rảnh' };
+      return { ok: true, icon: '●', label: 'Đang rảnh' };
     }
     const dtStart = new Date(ngaygioStr.slice(0, 16).replace(' ', 'T'));
-    if (isNaN(dtStart.getTime())) return { ok: true, icon: '✅', label: 'Đang rảnh' };
+    if (isNaN(dtStart.getTime())) return { ok: true, icon: '●', label: 'Đang rảnh' };
     const dtEnd = new Date(dtStart.getTime() + totalMinutes * 60000);
     const hrStart = dtStart.getHours() + dtStart.getMinutes() / 60.0;
     const hrEnd = dtEnd.getHours() + dtEnd.getMinutes() / 60.0 + (dtEnd.getDate() !== dtStart.getDate() ? 24.0 : 0.0);
@@ -1691,10 +2876,10 @@
     else if (ca.includes('Hành chính')) { sMin = 8; sMax = 17; }
 
     if (!(hrStart >= sMin && hrStart < sMax)) {
-      return { ok: false, icon: '🕒', label: 'Ngoài ca làm việc' };
+      return { ok: false, icon: '○', label: 'Ngoài ca làm việc' };
     }
     if (hrEnd > sMax) {
-      return { ok: false, icon: '🕒', label: `Quá giờ tan ca (${dtEnd.toTimeString().slice(0, 5)})` };
+      return { ok: false, icon: '○', label: `Quá giờ tan ca (${dtEnd.toTimeString().slice(0, 5)})` };
     }
 
     for (const lh of STATE.lich_hen) {
@@ -1705,12 +2890,12 @@
       if (dtStart < exEnd && exStart < dtEnd) {
         return {
           ok: false,
-          icon: '⏳',
+          icon: '○',
           label: `Đã kín lịch ${exStart.toTimeString().slice(0, 5)}–${exEnd.toTimeString().slice(0, 5)}`
         };
       }
     }
-    return { ok: true, icon: '✅', label: 'Đang rảnh' };
+    return { ok: true, icon: '●', label: 'Đang rảnh' };
   }
 
   function selectServiceFromCard(madv) {
@@ -1784,15 +2969,15 @@
       custCards.innerHTML = STATE.dich_vu.map(dv => `
         <div class="service-card-item ${dv.MaDV === selectedMadv ? 'selected' : ''}" data-madv="${dv.MaDV}">
           <div>
-            <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:8px;">
-              <strong style="color:#0f766e;font-size:13.5px;">${escHtml(dv.TenDV)}</strong>
-              <span class="badge badge-green" style="white-space:nowrap;">${fmtMoney(dv.DonGia)}</span>
+            <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:10px;">
+              <strong style="color:var(--text);font-size:13.5px;font-weight:600;">${escHtml(dv.TenDV)}</strong>
+              <span class="price-chip">${fmtMoney(dv.DonGia)}</span>
             </div>
-            <div style="font-size:12px;color:#475569;margin-top:5px;">${escHtml(dv.MoTaDichVu || '')}</div>
+            <div style="font-size:12.5px;color:var(--muted);margin-top:6px;">${escHtml(dv.MoTaDichVu || '')}</div>
           </div>
-          <div style="display:flex;justify-content:space-between;align-items:center;margin-top:4px;padding-top:8px;border-top:1px solid #e2e8f0;">
-            <span style="font-size:12px;font-weight:600;color:#0f172a;">⏱ ${dv.ThoiLuongDuKien} phút</span>
-            <button type="button" class="btn btn-primary" style="padding:5px 11px;font-size:12px;" onclick="selectServiceFromCard('${dv.MaDV}')">Chọn gói này</button>
+          <div class="service-card-foot">
+            <span class="duration-meta">${SVG_CLOCK}<span>${dv.ThoiLuongDuKien} phút</span></span>
+            <button type="button" class="btn btn-primary btn-sm" onclick="selectServiceFromCard('${dv.MaDV}')">Chọn gói này</button>
           </div>
         </div>
       `).join('');
@@ -1864,8 +3049,8 @@
     const btn = document.getElementById('btnToggleCombo');
     if (box) box.style.display = COMBO_ENABLED ? 'block' : 'none';
     if (btn) {
-      btn.textContent = COMBO_ENABLED ? '✕ Bỏ dịch vụ đi kèm' : '+ Thêm dịch vụ đi kèm (Combo)';
-      btn.className = COMBO_ENABLED ? 'btn btn-danger-outline' : 'btn btn-secondary';
+      btn.textContent = COMBO_ENABLED ? 'Bỏ dịch vụ đi kèm' : '+ Thêm dịch vụ đi kèm (Combo)';
+      btn.className = COMBO_ENABLED ? 'btn btn-danger-outline btn-sm' : 'btn btn-secondary btn-sm';
     }
     onBookingTimeOrServiceChange();
   }
@@ -1992,10 +3177,10 @@
     if (dvBody) {
       dvBody.innerHTML = STATE.dich_vu.map(dv => `<tr>
         <td><strong>${escHtml(dv.TenDV)}</strong></td>
-        <td style="color:#475569;">${escHtml(dv.MoTaDichVu || '')}</td>
-        <td class="num"><input type="number" id="cat_dg_${dv.MaDV}" value="${dv.DonGia}" step="10000" min="0" style="width:115px;padding:5px 7px;text-align:right;" /></td>
-        <td class="num"><input type="number" id="cat_tl_${dv.MaDV}" value="${dv.ThoiLuongDuKien}" min="5" style="width:80px;padding:5px 7px;text-align:right;" /></td>
-        <td><button type="button" class="btn btn-primary" style="padding:5px 11px;font-size:12px;" onclick="saveServiceUpdate('${dv.MaDV}')">Lưu</button></td>
+        <td style="color:var(--muted);">${escHtml(dv.MoTaDichVu || '')}</td>
+        <td class="num"><input type="number" id="cat_dg_${dv.MaDV}" value="${dv.DonGia}" step="10000" min="0" style="width:120px;padding:6px 8px;text-align:right;font-variant-numeric:tabular-nums;" /></td>
+        <td class="num"><input type="number" id="cat_tl_${dv.MaDV}" value="${dv.ThoiLuongDuKien}" min="5" style="width:84px;padding:6px 8px;text-align:right;font-variant-numeric:tabular-nums;" /></td>
+        <td><button type="button" class="btn btn-primary btn-sm" onclick="saveServiceUpdate('${dv.MaDV}')">Lưu</button></td>
       </tr>`).join('');
     }
 
@@ -2006,14 +3191,14 @@
       nvBody.innerHTML = STATE.nhan_vien.map(nv => `<tr>
         <td><strong>${escHtml(nv.HoTen)}</strong></td>
         <td>${escHtml(nv.ChucVu)}</td>
-        <td>${escHtml(nv.SDT || '')}</td>
+        <td style="font-variant-numeric:tabular-nums;">${escHtml(nv.SDT || '')}</td>
         <td>
-          <select onchange="saveStaffUpdate('${nv.MaNV}', this.value, '${nv.TrangThai}')" style="padding:5px 7px;font-size:12.5px;">
+          <select onchange="saveStaffUpdate('${nv.MaNV}', this.value, '${nv.TrangThai}')" style="width:auto;padding:5px 8px;font-size:12.5px;">
             ${shifts.map(c => `<option value="${c}" ${c === nv.CaLamViec ? 'selected' : ''}>${c}</option>`).join('')}
           </select>
         </td>
         <td>
-          <select onchange="saveStaffUpdate('${nv.MaNV}', '${nv.CaLamViec}', this.value)" style="padding:5px 7px;font-size:12.5px;font-weight:600;color:${nv.TrangThai === 'Đang làm việc' ? '#15803d' : '#b91c1c'};">
+          <select onchange="saveStaffUpdate('${nv.MaNV}', '${nv.CaLamViec}', this.value)" class="status-select ${nv.TrangThai === 'Đang làm việc' ? 'tone-success' : 'tone-danger'}">
             ${statuses.map(s => `<option value="${s}" ${s === nv.TrangThai ? 'selected' : ''}>${s}</option>`).join('')}
           </select>
         </td>
@@ -2036,7 +3221,7 @@
       return;
     }
     if (STATE.usingApi) {
-      const res = await fetch('/api/dich_vu/update', {
+      const res = await fetch(apiUrl('/api/dich_vu/update'), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ MaDV: madv, DonGia: dg, ThoiLuongDuKien: tl })
@@ -2049,6 +3234,7 @@
     }
     const dv = STATE.dich_vu.find(d => d.MaDV === madv);
     if (dv) { dv.DonGia = dg; dv.ThoiLuongDuKien = tl; }
+    persistLocalState();
     populateSelects();
     renderBookingsTable();
     runSearch();
@@ -2059,7 +3245,7 @@
 
   async function saveStaffUpdate(manv, calamviec, trangthai) {
     if (STATE.usingApi) {
-      const res = await fetch('/api/nhan_vien/update', {
+      const res = await fetch(apiUrl('/api/nhan_vien/update'), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ MaNV: manv, CaLamViec: calamviec, TrangThai: trangthai })
@@ -2073,6 +3259,7 @@
     }
     const nv = STATE.nhan_vien.find(n => n.MaNV === manv);
     if (nv) { nv.CaLamViec = calamviec; nv.TrangThai = trangthai; }
+    persistLocalState();
     populateSelects();
     renderBookingsTable();
     renderReports();
@@ -2158,15 +3345,17 @@
         const kh = STATE.khach_hang.find(k => k.MaKH === tc.MaKH);
         return `<tr>
           <td><strong>${escHtml(tc.TenThuCung)}</strong></td>
-          <td><span class="badge ${tc.Loai === 'Chó' ? 'badge-blue' : 'badge-purple'}">${escHtml(tc.Loai)}</span> ${escHtml(tc.Giong || '')}</td>
+          <td><span class="meta-tag">${escHtml(tc.Loai)}</span> <span style="color:var(--text-secondary);">${escHtml(tc.Giong || '')}</span></td>
           <td>${escHtml(tc.GioiTinh)}</td>
           <td class="num">${tc.Tuoi} tháng</td>
           <td class="num"><strong>${Number(tc.CanNang).toFixed(1)} kg</strong></td>
-          <td class="admin-only">${kh ? escHtml(kh.HoTen) : ''}<br/><small style="color:#64748b">${kh ? escHtml(kh.SDT) : ''}</small></td>
-          <td>${escHtml(tc.GhiChu || '')}</td>
+          <td class="admin-only">${kh ? escHtml(kh.HoTen) : ''}<br/><small style="color:var(--muted)">${kh ? escHtml(kh.SDT) : ''}</small></td>
+          <td style="color:var(--text-secondary);">${escHtml(tc.GhiChu || '')}</td>
           <td style="white-space:nowrap;">
-            <button type="button" class="btn btn-primary" style="padding:3px 9px;font-size:11.5px;" onclick="bookForPet('${tc.MaThuCung}')">Đặt lịch</button>
-            <button type="button" class="btn btn-secondary" style="padding:3px 9px;font-size:11.5px;" onclick="startEditPet('${tc.MaThuCung}')">Sửa</button>
+            <div style="display:flex;gap:6px;">
+              <button type="button" class="btn btn-primary btn-xs" onclick="bookForPet('${tc.MaThuCung}')">Đặt lịch</button>
+              <button type="button" class="btn btn-secondary btn-xs" onclick="startEditPet('${tc.MaThuCung}')">Sửa</button>
+            </div>
           </td>
         </tr>`;
       }).join('');
@@ -2179,11 +3368,11 @@
         const petCount = STATE.thu_cung.filter(t => t.MaKH === kh.MaKH).length;
         return `<tr>
           <td><strong>${escHtml(kh.HoTen)}</strong></td>
-          <td>${escHtml(kh.SDT)}</td>
-          <td>${escHtml(kh.Email || '')}</td>
-          <td>${escHtml(kh.DiaChi || '')}</td>
-          <td class="num"><span class="badge badge-blue">${petCount} bé</span></td>
-          <td><button type="button" class="btn btn-secondary" style="padding:3px 9px;font-size:11.5px;" onclick="startEditCustomer('${kh.MaKH}')">Sửa</button></td>
+          <td style="font-variant-numeric:tabular-nums;">${escHtml(kh.SDT)}</td>
+          <td style="color:var(--text-secondary);">${escHtml(kh.Email || '')}</td>
+          <td style="color:var(--text-secondary);">${escHtml(kh.DiaChi || '')}</td>
+          <td class="num"><span class="meta-tag">${petCount} bé</span></td>
+          <td><button type="button" class="btn btn-secondary btn-xs" onclick="startEditCustomer('${kh.MaKH}')">Sửa</button></td>
         </tr>`;
       }).join('');
     }
@@ -2191,10 +3380,16 @@
 
   function statusBadge(st) {
     const label = displayStatusLabel(st);
-    if (st === 'Hoàn thành' || st === 'Đã thanh toán') return `<span class="badge badge-green">${escHtml(label)}</span>`;
-    if (st === 'Đang thực hiện' || st === 'Đã xác nhận') return `<span class="badge badge-blue">${escHtml(label)}</span>`;
-    if (st === 'Mới tạo' || st === 'Chưa thanh toán') return `<span class="badge badge-amber">${escHtml(label)}</span>`;
-    return `<span class="badge badge-red">${escHtml(label)}</span>`;
+    const str = String(st || '');
+    let cls = 'status-danger';
+    if (str === 'Hoàn thành' || str === 'Đã thanh toán' || str.startsWith('Đã thanh toán')) {
+      cls = 'status-success';
+    } else if (str === 'Đang thực hiện' || str === 'Đã xác nhận') {
+      cls = 'status-info';
+    } else if (str === 'Mới tạo' || str === 'Chưa thanh toán') {
+      cls = 'status-warning';
+    }
+    return `<span class="status-pill ${cls}"><span class="s-dot"></span>${escHtml(label)}</span>`;
   }
 
   function getEnrichedBookings() {
@@ -2245,13 +3440,13 @@
       { val: 'Đã hủy', label: 'Đã hủy' },
       { val: 'Không đến', label: 'Không đến' }
     ];
-    let bg = '#fef3c7', color = '#92400e', border = '#fde68a';
-    if (currentStatus === 'Hoàn thành') { bg = '#dcfce7'; color = '#166534'; border = '#86efac'; }
-    else if (currentStatus === 'Đang thực hiện' || currentStatus === 'Đã xác nhận') { bg = '#dbeafe'; color = '#1e40af'; border = '#93c5fd'; }
-    else if (currentStatus === 'Đã hủy' || currentStatus === 'Không đến') { bg = '#fee2e2'; color = '#991b1b'; border = '#fca5a5'; }
+    let tone = 'tone-warning';
+    if (currentStatus === 'Hoàn thành') tone = 'tone-success';
+    else if (currentStatus === 'Đang thực hiện' || currentStatus === 'Đã xác nhận') tone = 'tone-info';
+    else if (currentStatus === 'Đã hủy' || currentStatus === 'Không đến') tone = 'tone-danger';
 
     const opts = statuses.map(s => `<option value="${s.val}" ${s.val === currentStatus ? 'selected' : ''}>${s.label}</option>`).join('');
-    return `<select onchange="changeBookingStatus('${malich}', this.value)" title="Đổi trạng thái lịch #${malich}" style="width:auto;min-width:130px;padding:4px 8px;font-size:12px;font-weight:700;border-radius:999px;background:${bg};color:${color};border:1px solid ${border};cursor:pointer;">${opts}</select>`;
+    return `<select onchange="changeBookingStatus('${malich}', this.value)" title="Đổi trạng thái lịch #${malich}" class="status-select ${tone}" style="min-width:130px;">${opts}</select>`;
   }
 
   function paymentSelectHtml(malich, currentMethod, bookingStatus) {
@@ -2259,7 +3454,7 @@
       return statusBadge(currentMethod === 'Chưa thanh toán' ? 'Chưa thanh toán' : `Đã thanh toán (${currentMethod})`);
     }
     if (bookingStatus === 'Đã hủy' || bookingStatus === 'Không đến') {
-      return `<select disabled title="Lịch hẹn đã hủy hoặc khách không đến" style="width:auto;min-width:142px;padding:4px 8px;font-size:11.5px;font-weight:700;border-radius:999px;background:#f1f5f9;color:#64748b;border:1px solid #cbd5e1;cursor:not-allowed;"><option>Không thu (${escHtml(bookingStatus)})</option></select>`;
+      return `<select disabled title="Lịch hẹn đã hủy hoặc khách không đến" class="status-select tone-muted" style="min-width:146px;"><option>Không thu (${escHtml(bookingStatus)})</option></select>`;
     }
     const methods = [
       { val: 'Chưa thanh toán', label: 'Chưa thu tiền' },
@@ -2267,12 +3462,9 @@
       { val: 'Tiền mặt', label: 'Đã thu • Tiền mặt' },
       { val: 'Thẻ', label: 'Đã thu • Quẹt thẻ' }
     ];
-    let bg = '#fef3c7', color = '#92400e', border = '#fde68a';
-    if (currentMethod !== 'Chưa thanh toán') {
-      bg = '#dcfce7'; color = '#166534'; border = '#86efac';
-    }
+    const tone = currentMethod !== 'Chưa thanh toán' ? 'tone-success' : 'tone-warning';
     const opts = methods.map(m => `<option value="${m.val}" ${m.val === currentMethod ? 'selected' : ''}>${m.label}</option>`).join('');
-    return `<select onchange="changePaymentMethod('${malich}', this.value)" title="Cập nhật thanh toán cho lịch #${malich}" style="width:auto;min-width:154px;padding:4px 8px;font-size:12px;font-weight:700;border-radius:999px;background:${bg};color:${color};border:1px solid ${border};cursor:pointer;">${opts}</select>`;
+    return `<select onchange="changePaymentMethod('${malich}', this.value)" title="Cập nhật thanh toán cho lịch #${malich}" class="status-select ${tone}" style="min-width:154px;">${opts}</select>`;
   }
 
   async function changePaymentMethod(malich, newMethod) {
@@ -2285,11 +3477,12 @@
       return;
     }
 
+    let syncedIds = [];
     if (STATE.usingApi) {
-      const res = await fetch('/api/thanh_toan/method', {
+      const res = await fetch(apiUrl('/api/thanh_toan/method'), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ MaLich: malich, PhuongThuc: newMethod })
+        body: JSON.stringify({ MaLich: malich, PhuongThuc: newMethod, SyncCombo: true })
       });
       const data = await res.json();
       if (!res.ok || !data.ok) {
@@ -2298,11 +3491,24 @@
         runSearch();
         return;
       }
-      if (data.updated_lh_status) {
+      if (Array.isArray(data.updated_bookings)) {
+        data.updated_bookings.forEach(ub => {
+          const target = STATE.lich_hen.find(l => l.MaLich === ub.MaLich);
+          if (target && ub.TrangThai) target.TrangThai = ub.TrangThai;
+          if (ub.MaLich !== malich) syncedIds.push(ub.MaLich);
+        });
+      } else if (data.updated_lh_status) {
         lh.TrangThai = data.updated_lh_status;
       }
-      if (data.thanh_toan) {
-        STATE.thanh_toan.push(data.thanh_toan);
+      if (Array.isArray(data.thanh_toan_list) && data.thanh_toan_list.length > 0) {
+        data.thanh_toan_list.forEach(tt => {
+          upsertStatePayment(tt);
+          if (tt.MaLich && tt.MaLich !== malich && !syncedIds.includes(tt.MaLich)) {
+            syncedIds.push(tt.MaLich);
+          }
+        });
+      } else if (data.thanh_toan) {
+        upsertStatePayment(data.thanh_toan);
       } else {
         const exTt = STATE.thanh_toan.find(t => t.MaLich === malich);
         if (exTt) {
@@ -2315,43 +3521,52 @@
         }
       }
     } else {
-      const dv = STATE.dich_vu.find(d => d.MaDV === lh.MaDV) || { DonGia: 0 };
-      const sotien = Number(dv.DonGia) * Number(lh.SoLuong);
-      const nowStr = new Date().toISOString().slice(0, 19).replace('T', ' ');
-      const exTt = STATE.thanh_toan.find(t => t.MaLich === malich);
-      if (newMethod === 'Chưa thanh toán') {
-        if (exTt) exTt.TrangThaiTT = 'Chưa thanh toán';
-      } else {
-        if (lh.TrangThai !== 'Hoàn thành') lh.TrangThai = 'Hoàn thành';
+      const applyOfflinePayment = (targetLh, method) => {
+        const dv = STATE.dich_vu.find(d => d.MaDV === targetLh.MaDV) || { DonGia: 0 };
+        const sotien = Number(dv.DonGia) * Number(targetLh.SoLuong);
+        const nowStr = new Date().toISOString().slice(0, 19).replace('T', ' ');
+        const exTt = STATE.thanh_toan.find(t => t.MaLich === targetLh.MaLich);
+        if (method === 'Chưa thanh toán') {
+          if (exTt) exTt.TrangThaiTT = 'Chưa thanh toán';
+          return;
+        }
+        if (targetLh.TrangThai !== 'Hoàn thành') targetLh.TrangThai = 'Hoàn thành';
         if (exTt) {
-          exTt.PhuongThuc = newMethod;
+          exTt.PhuongThuc = method;
           exTt.TrangThaiTT = 'Đã thanh toán';
           exTt.SoTien = sotien;
+          exTt.ThoiGianThanhToan = nowStr;
         } else {
           const nums = STATE.thanh_toan.map(t => parseInt(t.MaTT.replace(/\D/g, ''), 10) || 0);
           const nextTt = 'TT' + String(Math.max(0, ...nums) + 1).padStart(3, '0');
-          STATE.thanh_toan.push({
+          upsertStatePayment({
             MaTT: nextTt,
-            MaLich: malich,
+            MaLich: targetLh.MaLich,
             ThoiGianThanhToan: nowStr,
             SoTien: sotien,
-            PhuongThuc: newMethod,
+            PhuongThuc: method,
             TrangThaiTT: 'Đã thanh toán'
           });
         }
+      };
+      applyOfflinePayment(lh, newMethod);
+      if (newMethod !== 'Chưa thanh toán') {
+        findComboPartnerIds(malich).forEach(pid => {
+          const pLh = STATE.lich_hen.find(l => l.MaLich === pid);
+          const pTt = STATE.thanh_toan.find(t => t.MaLich === pid);
+          if (pLh && pLh.TrangThai !== 'Đã hủy' && pLh.TrangThai !== 'Không đến' && !(pTt && pTt.TrangThaiTT === 'Đã thanh toán')) {
+            applyOfflinePayment(pLh, newMethod);
+            syncedIds.push(pid);
+          }
+        });
       }
     }
 
+    persistLocalState();
     renderAdminStats();
     renderBookingsTable();
     runSearch();
     renderReports();
-
-    const alertBox = document.getElementById('bookingAlert');
-    if (alertBox) {
-      alertBox.className = 'alert alert-success show';
-      alertBox.innerHTML = `<strong>Đã cập nhật thanh toán:</strong> Lịch hẹn <strong>#${malich}</strong> đã chuyển sang <strong>"${escHtml(newMethod)}"</strong>.`;
-    }
   }
 
   async function changeBookingStatus(malich, newStatus) {
@@ -2361,13 +3576,16 @@
     if (oldStatus === newStatus) return;
 
     const existingTt = STATE.thanh_toan.find(t => t.MaLich === malich);
-    const phuongThuc = existingTt && existingTt.PhuongThuc ? existingTt.PhuongThuc : 'Chuyển khoản';
+    const phuongThuc = existingTt && ['Tiền mặt', 'Chuyển khoản', 'Thẻ'].includes(existingTt.PhuongThuc)
+      ? existingTt.PhuongThuc
+      : 'Chuyển khoản';
 
+    let syncedIds = [];
     if (STATE.usingApi) {
-      const res = await fetch('/api/lich_hen/status', {
+      const res = await fetch(apiUrl('/api/lich_hen/status'), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ MaLich: malich, TrangThai: newStatus, PhuongThuc: phuongThuc })
+        body: JSON.stringify({ MaLich: malich, TrangThai: newStatus, PhuongThuc: phuongThuc, SyncCombo: true })
       });
       const data = await res.json();
       if (!res.ok || !data.ok) {
@@ -2376,8 +3594,22 @@
         runSearch();
         return;
       }
-      if (data.thanh_toan) {
-        STATE.thanh_toan.push(data.thanh_toan);
+      if (Array.isArray(data.updated_bookings)) {
+        data.updated_bookings.forEach(ub => {
+          const target = STATE.lich_hen.find(l => l.MaLich === ub.MaLich);
+          if (target && ub.TrangThai) target.TrangThai = ub.TrangThai;
+          if (ub.MaLich !== malich) syncedIds.push(ub.MaLich);
+        });
+      }
+      if (Array.isArray(data.thanh_toan_list) && data.thanh_toan_list.length > 0) {
+        data.thanh_toan_list.forEach(tt => {
+          upsertStatePayment(tt);
+          if (tt.MaLich && tt.MaLich !== malich && !syncedIds.includes(tt.MaLich)) {
+            syncedIds.push(tt.MaLich);
+          }
+        });
+      } else if (data.thanh_toan) {
+        upsertStatePayment(data.thanh_toan);
       } else if (newStatus === 'Hoàn thành') {
         const exTt = STATE.thanh_toan.find(t => t.MaLich === malich);
         if (exTt) {
@@ -2389,27 +3621,44 @@
         if (exTt) exTt.TrangThaiTT = 'Chưa thanh toán';
       }
     } else {
-      if (newStatus === 'Hoàn thành') {
-        const dv = STATE.dich_vu.find(d => d.MaDV === lh.MaDV) || { DonGia: 0 };
-        const sotien = Number(dv.DonGia) * Number(lh.SoLuong);
+      const applyOfflineComplete = (targetLh, method) => {
+        const dv = STATE.dich_vu.find(d => d.MaDV === targetLh.MaDV) || { DonGia: 0 };
+        const sotien = Number(dv.DonGia) * Number(targetLh.SoLuong);
         const nowStr = new Date().toISOString().slice(0, 19).replace('T', ' ');
-        const exTt = STATE.thanh_toan.find(t => t.MaLich === malich);
+        targetLh.TrangThai = 'Hoàn thành';
+        const exTt = STATE.thanh_toan.find(t => t.MaLich === targetLh.MaLich);
         if (exTt) {
           exTt.TrangThaiTT = 'Đã thanh toán';
-          exTt.PhuongThuc = phuongThuc;
+          exTt.PhuongThuc = method;
           exTt.SoTien = sotien;
+          exTt.ThoiGianThanhToan = nowStr;
         } else {
           const nums = STATE.thanh_toan.map(t => parseInt(t.MaTT.replace(/\D/g, ''), 10) || 0);
           const nextTt = 'TT' + String(Math.max(0, ...nums) + 1).padStart(3, '0');
-          STATE.thanh_toan.push({
+          upsertStatePayment({
             MaTT: nextTt,
-            MaLich: malich,
+            MaLich: targetLh.MaLich,
             ThoiGianThanhToan: nowStr,
             SoTien: sotien,
-            PhuongThuc: phuongThuc,
+            PhuongThuc: method,
             TrangThaiTT: 'Đã thanh toán'
           });
         }
+      };
+
+      if (newStatus === 'Hoàn thành') {
+        applyOfflineComplete(lh, phuongThuc);
+        findComboPartnerIds(malich).forEach(pid => {
+          const pLh = STATE.lich_hen.find(l => l.MaLich === pid);
+          const pTt = STATE.thanh_toan.find(t => t.MaLich === pid);
+          if (pLh && pLh.TrangThai !== 'Đã hủy' && pLh.TrangThai !== 'Không đến' && !(pTt && pTt.TrangThaiTT === 'Đã thanh toán')) {
+            const pMethod = (pTt && ['Tiền mặt', 'Chuyển khoản', 'Thẻ'].includes(pTt.PhuongThuc))
+              ? pTt.PhuongThuc
+              : phuongThuc;
+            applyOfflineComplete(pLh, pMethod);
+            syncedIds.push(pid);
+          }
+        });
       } else if (newStatus === 'Đã hủy' || newStatus === 'Không đến') {
         const exTt = STATE.thanh_toan.find(t => t.MaLich === malich);
         if (exTt) exTt.TrangThaiTT = 'Chưa thanh toán';
@@ -2417,17 +3666,12 @@
     }
 
     lh.TrangThai = newStatus;
+    persistLocalState();
     renderAdminStats();
     renderBookingsTable();
     runSearch();
     renderReports();
     refreshStaffDropdownAvailability();
-
-    const alertBox = document.getElementById('bookingAlert');
-    if (alertBox) {
-      alertBox.className = 'alert alert-success show';
-      alertBox.innerHTML = `<strong>Đã cập nhật trạng thái:</strong> Lịch hẹn <strong>#${malich}</strong> đã chuyển từ <em>"${escHtml(displayStatusLabel(oldStatus))}"</em> sang <strong>"${escHtml(displayStatusLabel(newStatus))}"</strong>.`;
-    }
   }
 
   function renderBookingsTable() {
@@ -2447,17 +3691,22 @@
       document.getElementById('bookingTableBody').innerHTML = `<tr><td colspan="9" style="text-align:center;padding:20px;color:#64748b;">${msg}</td></tr>`;
       return;
     }
-    document.getElementById('bookingTableBody').innerHTML = rows.map(r => `<tr>
-      <td><strong>#${r.MaLich}</strong></td>
-      <td style="white-space:nowrap;">${escHtml(r.KhungGio)}</td>
-      <td><strong>${escHtml(r.TenThuCung)}</strong> (${escHtml(r.Loai)})<br/><small style="color:#475569">${escHtml(r.TenKhachHang)} • ${escHtml(r.SDTKhachHang)}</small></td>
-      <td>${escHtml(r.TenDV)}<br/><small style="color:var(--primary);font-weight:600;">⏱ ${r.ThoiLuongPhut} phút</small></td>
+    document.getElementById('bookingTableBody').innerHTML = rows.map(r => {
+      const comboBadge = String(r.GhiChu || '').startsWith('[Combo sau #')
+        ? '<span class="meta-tag" style="margin-left:4px;">Combo</span>'
+        : '';
+      return `<tr>
+      <td><span class="mono-id">#${r.MaLich}</span></td>
+      <td style="white-space:nowrap;font-variant-numeric:tabular-nums;">${escHtml(r.KhungGio)}</td>
+      <td><strong>${escHtml(r.TenThuCung)}</strong> <span style="color:var(--muted);">(${escHtml(r.Loai)})</span><br/><small style="color:var(--muted)">${escHtml(r.TenKhachHang)} • ${escHtml(r.SDTKhachHang)}</small></td>
+      <td>${escHtml(r.TenDV)}${comboBadge}<br/><small style="color:var(--muted);font-weight:500;display:inline-flex;align-items:center;gap:4px;margin-top:2px;">${SVG_CLOCK}<span>${r.ThoiLuongPhut} phút</span></small></td>
       <td class="num">${r.SoLuong}</td>
       <td class="num"><strong>${fmtMoney(r.ThanhTienDuKien)}</strong></td>
-      <td>${escHtml(r.TenNhanVien)}<br/><small style="color:#64748b">${escHtml(r.CaLamViec)}</small></td>
+      <td>${escHtml(r.TenNhanVien)}<br/><small style="color:var(--muted)">${escHtml(r.CaLamViec)}</small></td>
       <td>${statusSelectHtml(r.MaLich, r.TrangThai)}</td>
       <td>${paymentSelectHtml(r.MaLich, r.PhuongThucThanhToan, r.TrangThai)}</td>
-    </tr>`).join('');
+    </tr>`;
+    }).join('');
   }
 
   // ======================= HỒ SƠ KHÁCH HÀNG & THÚ CƯNG =======================
@@ -2531,7 +3780,7 @@
 
     if (STATE.usingApi) {
       const url = isUpdate ? '/api/khach_hang/update' : '/api/khach_hang';
-      const res = await fetch(url, {
+      const res = await fetch(apiUrl(url), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(khPayload)
@@ -2563,6 +3812,7 @@
       alertBox.innerHTML = `<strong>Thành công!</strong> Đã lưu thông tin khách hàng <strong>${escHtml(khPayload.HoTen)}</strong>.`;
     }
 
+    persistLocalState();
     renderAdminStats();
     populateSelects();
     renderPetsTable();
@@ -2651,7 +3901,7 @@
 
     if (STATE.usingApi) {
       const url = isUpdatePet ? '/api/thu_cung/update' : '/api/thu_cung';
-      const res = await fetch(url, {
+      const res = await fetch(apiUrl(url), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload)
@@ -2717,6 +3967,7 @@
         : `<strong>Thành công!</strong> Đã lưu hồ sơ bé <strong>${escHtml(payload.TenThuCung)}</strong>.${actionBtn}`;
     }
 
+    persistLocalState();
     renderAdminStats();
     populateSelects();
     setCustomerMode('existing');
@@ -2742,6 +3993,14 @@
     return 'LH' + String(next).padStart(3, '0');
   }
 
+  function onBookingFormStatusChange() {
+    const st = document.getElementById('lh_trangthai')?.value;
+    const pmEl = document.getElementById('lh_phuongthuc');
+    if (st === 'Hoàn thành' && pmEl && pmEl.value === 'Chưa thanh toán') {
+      pmEl.value = 'Chuyển khoản';
+    }
+  }
+
   function resetBookingForm() {
     COMBO_ENABLED = false;
     const comboBox = document.getElementById('lh_combo_box');
@@ -2749,7 +4008,7 @@
     if (comboBox) comboBox.style.display = 'none';
     if (btnCombo) {
       btnCombo.textContent = '+ Thêm dịch vụ đi kèm (Combo)';
-      btnCombo.className = 'btn btn-secondary';
+      btnCombo.className = 'btn btn-secondary btn-sm';
     }
     if (document.getElementById('lh_search_pet')) document.getElementById('lh_search_pet').value = '';
     if (document.getElementById('lh_filter_kh')) document.getElementById('lh_filter_kh').value = '';
@@ -2759,6 +4018,7 @@
     document.getElementById('lh_soluong').value = '1';
     document.getElementById('lh_ngaygio').value = '2026-11-12T09:30';
     document.getElementById('lh_trangthai').value = 'Đã xác nhận';
+    if (document.getElementById('lh_phuongthuc')) document.getElementById('lh_phuongthuc').value = 'Chưa thanh toán';
     document.getElementById('lh_ghichu').value = '';
     document.getElementById('bookingAlert').className = 'alert';
     updateOwnerPreview();
@@ -2772,6 +4032,13 @@
     const comboMadv = COMBO_ENABLED ? (document.getElementById('lh_combo_madv')?.value || '') : '';
     const comboSl = COMBO_ENABLED ? parseInt(document.getElementById('lh_combo_soluong')?.value || '1', 10) : 0;
     const comboMalich = COMBO_ENABLED ? nextBookingId(2) : '';
+    const trangThaiVal = APP_ROLE_VIEW === 'customer' ? 'Mới tạo' : document.getElementById('lh_trangthai').value;
+    let phuongThucVal = APP_ROLE_VIEW === 'customer'
+      ? 'Chưa thanh toán'
+      : (document.getElementById('lh_phuongthuc')?.value || 'Chưa thanh toán');
+    if (trangThaiVal === 'Hoàn thành' && phuongThucVal === 'Chưa thanh toán') {
+      phuongThucVal = 'Chuyển khoản';
+    }
 
     const payload = {
       MaLich: document.getElementById('lh_malich').value.trim() || nextBookingId(),
@@ -2780,7 +4047,8 @@
       MaNV: document.getElementById('lh_manv').value.trim(),
       NgayGioHen: ngaygio,
       SoLuong: parseInt(document.getElementById('lh_soluong').value || '0', 10),
-      TrangThai: APP_ROLE_VIEW === 'customer' ? 'Mới tạo' : document.getElementById('lh_trangthai').value,
+      TrangThai: trangThaiVal,
+      PhuongThuc: phuongThucVal,
       GhiChu: document.getElementById('lh_ghichu').value.trim()
     };
     if (COMBO_ENABLED && comboMadv) {
@@ -2860,8 +4128,9 @@
     }
 
     let createdIds = [payload.MaLich];
+    let createdPayments = [];
     if (STATE.usingApi) {
-      const res = await fetch('/api/lich_hen', {
+      const res = await fetch(apiUrl('/api/lich_hen'), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload)
@@ -2875,10 +4144,13 @@
       if (Array.isArray(data.created_bookings) && data.created_bookings.length > 0) {
         createdIds = data.created_bookings;
       }
+      if (Array.isArray(data.created_payments)) {
+        createdPayments = data.created_payments;
+      }
     }
 
     const mainId = createdIds[0];
-    STATE.lich_hen.push({
+    const newRecords = [{
       MaLich: mainId,
       MaThuCung: payload.MaThuCung,
       MaDV: payload.MaDV,
@@ -2887,7 +4159,8 @@
       SoLuong: payload.SoLuong,
       TrangThai: payload.TrangThai,
       GhiChu: payload.GhiChu
-    });
+    }];
+    STATE.lich_hen.push(newRecords[0]);
 
     if (COMBO_ENABLED && comboMadv) {
       const secondId = createdIds[1] || comboMalich;
@@ -2896,7 +4169,7 @@
       const pad = n => String(n).padStart(2, '0');
       const ngaygioCombo = `${dtCombo.getFullYear()}-${pad(dtCombo.getMonth() + 1)}-${pad(dtCombo.getDate())} ${pad(dtCombo.getHours())}:${pad(dtCombo.getMinutes())}:00`;
       const ghichuCombo = `[Combo sau #${mainId}] ${payload.GhiChu}`.trim();
-      STATE.lich_hen.push({
+      const comboRec = {
         MaLich: secondId,
         MaThuCung: payload.MaThuCung,
         MaDV: comboMadv,
@@ -2905,20 +4178,47 @@
         SoLuong: comboSl,
         TrangThai: payload.TrangThai,
         GhiChu: ghichuCombo
+      };
+      newRecords.push(comboRec);
+      STATE.lich_hen.push(comboRec);
+    }
+
+    if (STATE.usingApi) {
+      createdPayments.forEach(p => upsertStatePayment(p));
+    } else if (['Tiền mặt', 'Chuyển khoản', 'Thẻ'].includes(payload.PhuongThuc) && payload.TrangThai !== 'Đã hủy' && payload.TrangThai !== 'Không đến') {
+      const nowStr = new Date().toISOString().slice(0, 19).replace('T', ' ');
+      newRecords.forEach(rec => {
+        const dvObj = STATE.dich_vu.find(d => d.MaDV === rec.MaDV) || { DonGia: 0 };
+        const sotien = Number(dvObj.DonGia) * Number(rec.SoLuong);
+        const nums = STATE.thanh_toan.map(t => parseInt(t.MaTT.replace(/\D/g, ''), 10) || 0);
+        const nextTt = 'TT' + String(Math.max(0, ...nums) + 1).padStart(3, '0');
+        upsertStatePayment({
+          MaTT: nextTt,
+          MaLich: rec.MaLich,
+          ThoiGianThanhToan: nowStr,
+          SoTien: sotien,
+          PhuongThuc: payload.PhuongThuc,
+          TrangThaiTT: 'Đã thanh toán'
+        });
       });
     }
 
+    persistLocalState();
     renderAdminStats();
     renderBookingsTable();
     runSearch();
     renderReports();
     onBookingTimeOrServiceChange();
 
+    const paidNotice = ['Tiền mặt', 'Chuyển khoản', 'Thẻ'].includes(payload.PhuongThuc)
+      ? ` • Đã ghi nhận thu <strong>${escHtml(payload.PhuongThuc)}</strong>`
+      : '';
     alertBox.className = 'alert alert-success show';
     alertBox.innerHTML = COMBO_ENABLED && comboMadv
-      ? `<strong>Đặt lịch Combo thành công!</strong> Đã ghi nhận 2 lịch nối tiếp <strong>${createdIds.map(x => '#' + x).join(' và ')}</strong> (Tổng thời lượng: ${totalDur} phút).`
-      : `<strong>Đặt lịch hẹn thành công!</strong> Mã lịch hẹn của bạn là <strong>#${mainId}</strong> (Thời lượng dự kiến: ${totalDur} phút).`;
+      ? `<strong>Đặt lịch Combo thành công!</strong> Đã ghi nhận 2 lịch nối tiếp <strong>${createdIds.map(x => '#' + x).join(' và ')}</strong> (Tổng thời lượng: ${totalDur} phút${paidNotice}).`
+      : `<strong>Đặt lịch hẹn thành công!</strong> Mã lịch hẹn của bạn là <strong>#${mainId}</strong> (Thời lượng dự kiến: ${totalDur} phút${paidNotice}).`;
     document.getElementById('lh_malich').value = nextBookingId();
+    if (document.getElementById('lh_phuongthuc')) document.getElementById('lh_phuongthuc').value = 'Chưa thanh toán';
     document.getElementById('lh_ghichu').value = '';
   }
 
@@ -2928,12 +4228,15 @@
   function resetSearch() {
     ACTIVE_FILTER_ONLY = false;
     document.getElementById('s_kw').value = '';
+    const topSearch = document.getElementById('topbarQuickSearch');
+    if (topSearch) topSearch.value = '';
     document.getElementById('s_loai').value = '';
     document.getElementById('s_madv').value = '';
     if (document.getElementById('s_manv')) document.getElementById('s_manv').value = '';
     document.getElementById('s_trangthai').value = '';
     document.getElementById('s_tungay').value = '';
     document.getElementById('s_denngay').value = '';
+    updateSearchFilterChipUI('chipFilterAll');
     runSearch();
   }
 
@@ -2941,12 +4244,16 @@
     resetSearch();
     document.getElementById('s_loai').value = loai;
     document.getElementById('s_trangthai').value = trangthai;
+    if (trangthai === 'Hoàn thành') updateSearchFilterChipUI('chipFilterDone');
+    else if (loai === 'Chó') updateSearchFilterChipUI('chipFilterDog');
+    else if (loai === 'Mèo') updateSearchFilterChipUI('chipFilterCat');
     runSearch();
   }
 
   function quickFilterActive() {
     resetSearch();
     ACTIVE_FILTER_ONLY = true;
+    updateSearchFilterChipUI('chipFilterActive');
     runSearch();
   }
 
@@ -2995,19 +4302,24 @@
         : 'Không tìm thấy lịch hẹn nào phù hợp với bộ lọc.';
       tbody.innerHTML = `<tr><td colspan="11" style="text-align:center;padding:24px;color:#64748b;">${msg}</td></tr>`;
     } else {
-      tbody.innerHTML = filtered.map(r => `<tr>
-        <td><strong>#${r.MaLich}</strong></td>
-        <td style="white-space:nowrap;">${escHtml(r.KhungGio)}</td>
-        <td><strong>${escHtml(r.TenKhachHang)}</strong><br/><small style="color:#64748b">${escHtml(r.SDTKhachHang)}</small></td>
-        <td><strong>${escHtml(r.TenThuCung)}</strong><br/><small style="color:#64748b">${escHtml(r.Loai)}${r.Giong ? ' • ' + escHtml(r.Giong) : ''}</small></td>
-        <td>${escHtml(r.TenDV)}</td>
+      tbody.innerHTML = filtered.map(r => {
+        const comboBadge = String(r.GhiChu || '').startsWith('[Combo sau #')
+          ? '<span class="meta-tag" style="margin-left:4px;">Combo</span>'
+          : '';
+        return `<tr>
+        <td><span class="mono-id">#${r.MaLich}</span></td>
+        <td style="white-space:nowrap;font-variant-numeric:tabular-nums;">${escHtml(r.KhungGio)}</td>
+        <td><strong>${escHtml(r.TenKhachHang)}</strong><br/><small style="color:var(--muted)">${escHtml(r.SDTKhachHang)}</small></td>
+        <td><strong>${escHtml(r.TenThuCung)}</strong><br/><small style="color:var(--muted)">${escHtml(r.Loai)}${r.Giong ? ' • ' + escHtml(r.Giong) : ''}</small></td>
+        <td>${escHtml(r.TenDV)}${comboBadge}</td>
         <td class="num" style="white-space:nowrap;">${fmtMoney(r.DonGia)} &times; ${r.SoLuong}</td>
         <td class="num"><strong>${fmtMoney(r.ThanhTienDuKien)}</strong></td>
-        <td>${escHtml(r.TenNhanVien)}<br/><small style="color:#64748b">${escHtml(r.CaLamViec)}</small></td>
+        <td>${escHtml(r.TenNhanVien)}<br/><small style="color:var(--muted)">${escHtml(r.CaLamViec)}</small></td>
         <td>${statusSelectHtml(r.MaLich, r.TrangThai)}</td>
         <td>${paymentSelectHtml(r.MaLich, r.PhuongThucThanhToan, r.TrangThai)}</td>
-        <td>${escHtml(r.GhiChu || '')}</td>
-      </tr>`).join('');
+        <td style="color:var(--text-secondary);">${escHtml(r.GhiChu || '')}</td>
+      </tr>`;
+      }).join('');
     }
   }
 
@@ -3064,9 +4376,11 @@
   // ======================= BÁO CÁO NGHIỆP VỤ & XUẤT FILE =======================
   function computeReportsData() {
     const rep1 = STATE.dich_vu.map(dv => {
-      const doneBookings = STATE.lich_hen.filter(l => l.MaDV === dv.MaDV && l.TrangThai === 'Hoàn thành');
+      const validBookings = STATE.lich_hen.filter(
+        l => l.MaDV === dv.MaDV && l.TrangThai !== 'Đã hủy' && l.TrangThai !== 'Không đến'
+      );
       let soGD = 0, tongSL = 0, tienMat = 0, chuyenKhoan = 0, quaThe = 0, tongThu = 0;
-      doneBookings.forEach(lh => {
+      validBookings.forEach(lh => {
         const tt = STATE.thanh_toan.find(p => p.MaLich === lh.MaLich && p.TrangThaiTT === 'Đã thanh toán');
         if (tt) {
           soGD += 1;
@@ -3104,8 +4418,10 @@
         } else {
           dangXuLy += 1;
         }
-        const tt = STATE.thanh_toan.find(p => p.MaLich === lh.MaLich && p.TrangThaiTT === 'Đã thanh toán');
-        if (tt) doanhThu += Number(tt.SoTien);
+        if (lh.TrangThai !== 'Đã hủy' && lh.TrangThai !== 'Không đến') {
+          const tt = STATE.thanh_toan.find(p => p.MaLich === lh.MaLich && p.TrangThaiTT === 'Đã thanh toán');
+          if (tt) doanhThu += Number(tt.SoTien);
+        }
       });
       return {
         MaNV: nv.MaNV,
@@ -3184,10 +4500,24 @@
     </tr>`;
   }
 
-  function exportReportXlsx(type) {
+  async function exportReportXlsx(type) {
+    renderReports();
     if (STATE.usingApi) {
-      window.location.href = `/api/export_xlsx?type=${type}`;
-      return;
+      try {
+        const res = await fetch(apiUrl(`/api/export_xlsx?type=${type}&t=${Date.now()}`), { cache: 'no-store' });
+        if (res.ok) {
+          const blob = await res.blob();
+          const url = URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          a.href = url;
+          a.download = type === 1 ? 'Bao_Cao_Doanh_Thu_Dich_Vu_PetCare.xlsx' : 'Bao_Cao_Hieu_Suat_Nhan_Vien_PetCare.xlsx';
+          document.body.appendChild(a);
+          a.click();
+          a.remove();
+          setTimeout(() => URL.revokeObjectURL(url), 1000);
+          return;
+        }
+      } catch (e) {}
     }
     const paperId = type === 1 ? 'report1Paper' : 'report2Paper';
     const fname = type === 1 ? 'Bao_Cao_Doanh_Thu_Dich_Vu_PetCare.xls' : 'Bao_Cao_Hieu_Suat_Nhan_Vien_PetCare.xls';
@@ -3213,35 +4543,6 @@
     const a = document.createElement('a');
     a.href = URL.createObjectURL(blob);
     a.download = filename;
-    a.click();
-  }
-
-  function exportReportCsv(type) {
-    const { rep1, rep2 } = computeReportsData();
-    let lines = [];
-    if (type === 1) {
-      lines.push('"TRUNG TÂM CHĂM SÓC THÚ CƯNG PETCARE SPA & CLINIC"');
-      lines.push('"BÁO CÁO TỔNG HỢP DOANH THU DỊCH VỤ (MẪU BC-01/TC-KT)"');
-      lines.push('"Người lập: Phạm Ngọc Lan (Lễ tân - Thu ngân)","Người nhận: Đỗ Thanh Hương (Quản lý cơ sở)"');
-      lines.push('');
-      lines.push('"Mã DV","Tên Dịch Vụ","Đơn Giá (VNĐ)","Số Giao Dịch","Tổng Số Lượng","Thu Tiền Mặt","Thu Chuyển Khoản","Thu Thẻ","Tổng Thực Thu"');
-      rep1.forEach(r => {
-        lines.push(`"${r.MaDV}","${r.TenDV}",${r.DonGia},${r.SoGD},${r.TongSL},${r.TienMat},${r.ChuyenKhoan},${r.QuaThe},${r.TongThu}`);
-      });
-    } else {
-      lines.push('"TRUNG TÂM CHĂM SÓC THÚ CƯNG PETCARE SPA & CLINIC"');
-      lines.push('"BÁO CÁO HIỆU SUẤT LÀM VIỆC CỦA NHÂN VIÊN (MẪU BC-02/NS-ĐH)"');
-      lines.push('"Người lập: Đỗ Thanh Hương (Quản lý cơ sở)","Người nhận: Bộ phận Nhân sự - Tiền lương & Ban Giám đốc"');
-      lines.push('');
-      lines.push('"Mã NV","Họ Tên Nhân Viên","Ca Làm Việc","Trạng Thái","Tổng Lịch Phân Công","Lịch Hoàn Thành","Đang Xử Lý","Đã Hủy","Tổng Phút Phục Vụ","Doanh Thu Đóng Góp"');
-      rep2.forEach(r => {
-        lines.push(`"${r.MaNV}","${r.HoTen}","${r.CaLamViec}","${r.TrangThai}",${r.TongLich},${r.HoanThanh},${r.DangXuLy},${r.DaHuy},${r.TongPhut},${r.DoanhThu}`);
-      });
-    }
-    const blob = new Blob(['\ufeff' + lines.join('\r\n')], { type: 'text/csv;charset=utf-8' });
-    const a = document.createElement('a');
-    a.href = URL.createObjectURL(blob);
-    a.download = type === 1 ? 'Bao_Cao_Doanh_Thu_Dich_Vu_PetCare.csv' : 'Bao_Cao_Hieu_Suat_Nhan_Vien_PetCare.csv';
     a.click();
   }
 

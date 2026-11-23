@@ -4,6 +4,7 @@ import sqlite3
 import urllib.parse
 import os
 import io
+import re
 import zipfile
 from datetime import datetime, timedelta
 
@@ -26,6 +27,82 @@ def next_code(conn, table, col, prefix):
         if digits:
             max_n = max(max_n, int(digits))
     return f"{prefix}{max_n + 1:03d}"
+
+
+def upsert_payment_record(conn, malich, phuongthuc, trangthai_tt="Đã thanh toán"):
+    lh_row = conn.execute(
+        """SELECT lh.MaLich, lh.SoLuong, dv.DonGia
+           FROM LICH_HEN lh JOIN DICH_VU dv ON lh.MaDV = dv.MaDV
+           WHERE lh.MaLich = ?""",
+        (malich,),
+    ).fetchone()
+    if not lh_row:
+        return None
+
+    existing_tt = conn.execute("SELECT * FROM THANH_TOAN WHERE MaLich = ?", (malich,)).fetchone()
+    if trangthai_tt == "Chưa thanh toán":
+        if not existing_tt:
+            return None
+        conn.execute("UPDATE THANH_TOAN SET TrangThaiTT = 'Chưa thanh toán' WHERE MaLich = ?", (malich,))
+        return {
+            "MaTT": existing_tt["MaTT"],
+            "MaLich": malich,
+            "ThoiGianThanhToan": existing_tt["ThoiGianThanhToan"],
+            "SoTien": float(existing_tt["SoTien"]),
+            "PhuongThuc": existing_tt["PhuongThuc"],
+            "TrangThaiTT": "Chưa thanh toán",
+        }
+
+    sotien = float(lh_row["DonGia"]) * int(lh_row["SoLuong"])
+    now_str = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    valid_method = phuongthuc if phuongthuc in ("Tiền mặt", "Chuyển khoản", "Thẻ") else "Chuyển khoản"
+    if existing_tt:
+        conn.execute(
+            "UPDATE THANH_TOAN SET PhuongThuc = ?, TrangThaiTT = 'Đã thanh toán', SoTien = ?, ThoiGianThanhToan = ? WHERE MaLich = ?",
+            (valid_method, sotien, now_str, malich),
+        )
+        matt = existing_tt["MaTT"]
+    else:
+        matt = next_code(conn, "THANH_TOAN", "MaTT", "TT")
+        conn.execute(
+            """INSERT INTO THANH_TOAN (MaTT, MaLich, ThoiGianThanhToan, SoTien, PhuongThuc, TrangThaiTT)
+               VALUES (?, ?, ?, ?, ?, 'Đã thanh toán')""",
+            (matt, malich, now_str, sotien, valid_method),
+        )
+    return {
+        "MaTT": matt,
+        "MaLich": malich,
+        "ThoiGianThanhToan": now_str,
+        "SoTien": sotien,
+        "PhuongThuc": valid_method,
+        "TrangThaiTT": "Đã thanh toán",
+    }
+
+
+def find_combo_partner_ids(conn, malich):
+    partners = []
+    seen = {malich}
+    child_rows = conn.execute(
+        "SELECT MaLich FROM LICH_HEN WHERE GhiChu LIKE ?",
+        (f"[Combo sau #{malich}]%",),
+    ).fetchall()
+    for r in child_rows:
+        cid = r["MaLich"]
+        if cid not in seen:
+            seen.add(cid)
+            partners.append(cid)
+
+    cur_row = conn.execute("SELECT GhiChu FROM LICH_HEN WHERE MaLich = ?", (malich,)).fetchone()
+    if cur_row and cur_row["GhiChu"]:
+        m = re.match(r"^\[Combo sau #(LH\d+)\]", str(cur_row["GhiChu"]).strip())
+        if m:
+            parent_id = m.group(1)
+            if parent_id not in seen:
+                parent_exists = conn.execute("SELECT 1 FROM LICH_HEN WHERE MaLich = ?", (parent_id,)).fetchone()
+                if parent_exists:
+                    seen.add(parent_id)
+                    partners.append(parent_id)
+    return partners
 
 
 def build_xlsx(sheet_title, headers, rows, meta_lines=None):
@@ -68,14 +145,16 @@ def build_xlsx(sheet_title, headers, rows, meta_lines=None):
 
     # Data rows
     for row in rows:
+        is_total = len(row) > 0 and str(row[0]) == "TỔNG CỘNG"
+        cell_style = "4" if is_total else "3"
         d_cells = []
         for c_i, val in enumerate(row):
             ref = f"{col_letter(c_i)}{r_idx}"
             if isinstance(val, (int, float)) and not isinstance(val, bool):
-                d_cells.append(f'<c r="{ref}" s="3"><v>{val}</v></c>')
+                d_cells.append(f'<c r="{ref}" s="{cell_style}"><v>{val}</v></c>')
             else:
                 d_cells.append(
-                    f'<c r="{ref}" s="3" t="inlineStr"><is><t>{esc(val)}</t></is></c>'
+                    f'<c r="{ref}" s="{cell_style}" t="inlineStr"><is><t>{esc(val)}</t></is></c>'
                 )
         sheet_rows_xml.append(f'<row r="{r_idx}">{"".join(d_cells)}</row>')
         r_idx += 1
@@ -92,15 +171,17 @@ def build_xlsx(sheet_title, headers, rows, meta_lines=None):
 
     styles_xml = """<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <styleSheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">
-  <fonts count="3">
+  <fonts count="4">
     <font><sz val="11"/><name val="Times New Roman"/></font>
     <font><b/><sz val="12"/><name val="Times New Roman"/></font>
     <font><b/><sz val="11"/><color rgb="FFFFFFFF"/><name val="Times New Roman"/></font>
+    <font><b/><sz val="11"/><name val="Times New Roman"/></font>
   </fonts>
-  <fills count="3">
+  <fills count="4">
     <fill><patternFill patternType="none"/></fill>
     <fill><patternFill patternType="gray125"/></fill>
     <fill><patternFill patternType="solid"><fgColor rgb="FF1E3A8A"/></patternFill></fill>
+    <fill><patternFill patternType="solid"><fgColor rgb="FFF1F5F9"/></patternFill></fill>
   </fills>
   <borders count="2">
     <border><left/><right/><top/><bottom/><diagonal/></border>
@@ -115,11 +196,12 @@ def build_xlsx(sheet_title, headers, rows, meta_lines=None):
   <cellStyleXfs count="1">
     <xf numFmtId="0" fontId="0" fillId="0" borderId="0"/>
   </cellStyleXfs>
-  <cellXfs count="4">
+  <cellXfs count="5">
     <xf numFmtId="0" fontId="0" fillId="0" borderId="0" xfId="0"/>
     <xf numFmtId="0" fontId="1" fillId="0" borderId="0" xfId="0"/>
     <xf numFmtId="0" fontId="2" fillId="2" borderId="1" xfId="0" applyFont="1" applyFill="1" applyBorder="1"/>
     <xf numFmtId="0" fontId="0" fillId="0" borderId="1" xfId="0" applyBorder="1"/>
+    <xf numFmtId="0" fontId="3" fillId="3" borderId="1" xfId="0" applyFont="1" applyFill="1" applyBorder="1"/>
   </cellXfs>
 </styleSheet>"""
 
@@ -167,6 +249,9 @@ class PetCareHandler(http.server.SimpleHTTPRequestHandler):
         self.send_header("Access-Control-Allow-Origin", "*")
         self.send_header("Access-Control-Allow-Methods", "GET, POST, OPTIONS")
         self.send_header("Access-Control-Allow-Headers", "Content-Type")
+        if getattr(self, "path", "").startswith("/api/"):
+            self.send_header("Cache-Control", "no-store, no-cache, must-revalidate, max-age=0")
+            self.send_header("Pragma", "no-cache")
         super().end_headers()
 
     def do_OPTIONS(self):
@@ -290,7 +375,7 @@ class PetCareHandler(http.server.SimpleHTTPRequestHandler):
                 COALESCE(SUM(CASE WHEN tt.PhuongThuc = 'Tiền mặt' THEN tt.SoTien ELSE 0 END), 0) AS ThuTienMat,
                 COALESCE(SUM(CASE WHEN tt.PhuongThuc = 'Thẻ' THEN tt.SoTien ELSE 0 END), 0) AS ThuQuaThe
             FROM DICH_VU dv
-            LEFT JOIN LICH_HEN lh ON dv.MaDV = lh.MaDV AND lh.TrangThai = 'Hoàn thành'
+            LEFT JOIN LICH_HEN lh ON dv.MaDV = lh.MaDV AND lh.TrangThai NOT IN ('Đã hủy', 'Không đến')
             LEFT JOIN THANH_TOAN tt ON lh.MaLich = tt.MaLich AND tt.TrangThaiTT = 'Đã thanh toán'
             GROUP BY dv.MaDV, dv.TenDV, dv.DonGia
             ORDER BY TongDoanhThuThucThu DESC"""
@@ -307,7 +392,7 @@ class PetCareHandler(http.server.SimpleHTTPRequestHandler):
                 SUM(CASE WHEN lh.TrangThai IN ('Đang thực hiện', 'Đã xác nhận', 'Mới tạo') THEN 1 ELSE 0 END) AS SoLichDangXuLy,
                 SUM(CASE WHEN lh.TrangThai IN ('Đã hủy', 'Không đến') THEN 1 ELSE 0 END) AS SoLichHuy,
                 COALESCE(SUM(CASE WHEN lh.TrangThai = 'Hoàn thành' THEN dv.ThoiLuongDuKien * lh.SoLuong ELSE 0 END), 0) AS TongSoPhutPhucVu,
-                COALESCE(SUM(CASE WHEN tt.TrangThaiTT = 'Đã thanh toán' THEN tt.SoTien ELSE 0 END), 0) AS DoanhThuDongGop
+                COALESCE(SUM(CASE WHEN lh.TrangThai NOT IN ('Đã hủy', 'Không đến') AND tt.TrangThaiTT = 'Đã thanh toán' THEN tt.SoTien ELSE 0 END), 0) AS DoanhThuDongGop
             FROM NHAN_VIEN nv
             LEFT JOIN LICH_HEN lh ON nv.MaNV = lh.MaNV
             LEFT JOIN DICH_VU dv ON lh.MaDV = dv.MaDV
@@ -332,7 +417,7 @@ class PetCareHandler(http.server.SimpleHTTPRequestHandler):
                               COALESCE(SUM(CASE WHEN tt.PhuongThuc = 'Thẻ' THEN tt.SoTien ELSE 0 END), 0) AS QuaThe,
                               COALESCE(SUM(tt.SoTien), 0) AS TongThu
                        FROM DICH_VU dv
-                       LEFT JOIN LICH_HEN lh ON dv.MaDV = lh.MaDV AND lh.TrangThai = 'Hoàn thành'
+                       LEFT JOIN LICH_HEN lh ON dv.MaDV = lh.MaDV AND lh.TrangThai NOT IN ('Đã hủy', 'Không đến')
                        LEFT JOIN THANH_TOAN tt ON lh.MaLich = tt.MaLich AND tt.TrangThaiTT = 'Đã thanh toán'
                        GROUP BY dv.MaDV, dv.TenDV, dv.DonGia
                        ORDER BY TongThu DESC"""
@@ -355,6 +440,17 @@ class PetCareHandler(http.server.SimpleHTTPRequestHandler):
                     "Tổng Thực Thu (VNĐ)",
                 ]
                 data_rows = [list(r) for r in rows_db]
+                data_rows.append([
+                    "TỔNG CỘNG",
+                    "TỔNG CỘNG TOÀN KỲ",
+                    "",
+                    sum(r["SoGD"] or 0 for r in rows_db),
+                    sum(r["TongSL"] or 0 for r in rows_db),
+                    sum(r["TienMat"] or 0 for r in rows_db),
+                    sum(r["ChuyenKhoan"] or 0 for r in rows_db),
+                    sum(r["QuaThe"] or 0 for r in rows_db),
+                    sum(r["TongThu"] or 0 for r in rows_db),
+                ])
                 xlsx_bytes = build_xlsx("BaoCaoDoanhThu", headers, data_rows, meta)
                 fname = "Bao_Cao_Doanh_Thu_Dich_Vu_PetCare.xlsx"
             else:
@@ -365,7 +461,7 @@ class PetCareHandler(http.server.SimpleHTTPRequestHandler):
                               SUM(CASE WHEN lh.TrangThai IN ('Đang thực hiện', 'Đã xác nhận', 'Mới tạo') THEN 1 ELSE 0 END) AS DangXuLy,
                               SUM(CASE WHEN lh.TrangThai IN ('Đã hủy', 'Không đến') THEN 1 ELSE 0 END) AS DaHuy,
                               COALESCE(SUM(CASE WHEN lh.TrangThai = 'Hoàn thành' THEN dv.ThoiLuongDuKien * lh.SoLuong ELSE 0 END), 0) AS SoPhut,
-                              COALESCE(SUM(CASE WHEN tt.TrangThaiTT = 'Đã thanh toán' THEN tt.SoTien ELSE 0 END), 0) AS DoanhThu
+                              COALESCE(SUM(CASE WHEN lh.TrangThai NOT IN ('Đã hủy', 'Không đến') AND tt.TrangThaiTT = 'Đã thanh toán' THEN tt.SoTien ELSE 0 END), 0) AS DoanhThu
                        FROM NHAN_VIEN nv
                        LEFT JOIN LICH_HEN lh ON nv.MaNV = lh.MaNV
                        LEFT JOIN DICH_VU dv ON lh.MaDV = dv.MaDV
@@ -393,6 +489,18 @@ class PetCareHandler(http.server.SimpleHTTPRequestHandler):
                     "Doanh Thu Đóng Góp (VNĐ)",
                 ]
                 data_rows = [list(r) for r in rows_db]
+                data_rows.append([
+                    "TỔNG CỘNG",
+                    "TỔNG CỘNG KHỐI CHĂM SÓC THÚ CƯNG",
+                    "",
+                    "",
+                    sum(r["TongLich"] or 0 for r in rows_db),
+                    sum(r["HoanThanh"] or 0 for r in rows_db),
+                    sum(r["DangXuLy"] or 0 for r in rows_db),
+                    sum(r["DaHuy"] or 0 for r in rows_db),
+                    sum(r["SoPhut"] or 0 for r in rows_db),
+                    sum(r["DoanhThu"] or 0 for r in rows_db),
+                ])
                 xlsx_bytes = build_xlsx("BaoCaoHieuSuatNV", headers, data_rows, meta)
                 fname = "Bao_Cao_Hieu_Suat_Nhan_Vien_PetCare.xlsx"
             conn.close()
@@ -575,6 +683,7 @@ class PetCareHandler(http.server.SimpleHTTPRequestHandler):
             if len(ngaygio) == 16:
                 ngaygio += ":00"
             trangthai = str(body.get("TrangThai", "Đã xác nhận")).strip()
+            phuongthuc = str(body.get("PhuongThuc", "Chưa thanh toán") or "Chưa thanh toán").strip()
             ghichu = str(body.get("GhiChu", "")).strip()
             combo_madv = str(body.get("ComboMaDV", "")).strip()
             combo_malich = str(body.get("ComboMaLich", "")).strip()
@@ -596,6 +705,10 @@ class PetCareHandler(http.server.SimpleHTTPRequestHandler):
                 errors.append("Vui lòng chọn chuyên viên phụ trách.")
             if not ngaygio:
                 errors.append("Vui lòng chọn ngày và giờ hẹn.")
+            if phuongthuc not in ("Chưa thanh toán", "Tiền mặt", "Chuyển khoản", "Thẻ"):
+                errors.append("Hình thức thanh toán không hợp lệ.")
+            if trangthai == "Hoàn thành" and phuongthuc == "Chưa thanh toán":
+                phuongthuc = "Chuyển khoản"
 
             try:
                 soluong = int(body.get("SoLuong", 0))
@@ -702,6 +815,7 @@ class PetCareHandler(http.server.SimpleHTTPRequestHandler):
                 return self.send_json({"ok": False, "errors": errors}, status=400)
 
             created_bookings = []
+            created_payments = []
             try:
                 conn.execute(
                     """INSERT INTO LICH_HEN (MaLich, MaThuCung, MaDV, MaNV, NgayGioHen, SoLuong, TrangThai, GhiChu)
@@ -723,6 +837,12 @@ class PetCareHandler(http.server.SimpleHTTPRequestHandler):
                     )
                     created_bookings.append(combo_malich)
 
+                if phuongthuc in ("Tiền mặt", "Chuyển khoản", "Thẻ") and trangthai not in ("Đã hủy", "Không đến"):
+                    for b_id in created_bookings:
+                        tt_rec = upsert_payment_record(conn, b_id, phuongthuc, "Đã thanh toán")
+                        if tt_rec:
+                            created_payments.append(tt_rec)
+
                 conn.commit()
             except sqlite3.IntegrityError:
                 conn.close()
@@ -737,13 +857,15 @@ class PetCareHandler(http.server.SimpleHTTPRequestHandler):
                     "ok": True,
                     "message": f"Đặt lịch hẹn thành công! Mã đặt lịch: {', '.join('#' + x for x in created_bookings)}.",
                     "created_bookings": created_bookings,
+                    "created_payments": created_payments,
                 }
             )
 
         elif parsed.path == "/api/lich_hen/status":
             malich = str(body.get("MaLich", "")).strip()
             trangthai = str(body.get("TrangThai", "")).strip()
-            phuongthuc = str(body.get("PhuongThuc", "Chuyển khoản")).strip()
+            phuongthuc = str(body.get("PhuongThuc", "Chuyển khoản") or "Chuyển khoản").strip()
+            sync_combo = bool(body.get("SyncCombo", True))
 
             valid_statuses = ("Mới tạo", "Đã xác nhận", "Đang thực hiện", "Hoàn thành", "Đã hủy", "Không đến")
             if not malich:
@@ -768,35 +890,45 @@ class PetCareHandler(http.server.SimpleHTTPRequestHandler):
             try:
                 conn.execute("UPDATE LICH_HEN SET TrangThai = ? WHERE MaLich = ?", (trangthai, malich))
 
-                new_tt = None
+                primary_tt = None
+                tt_list = []
+                updated_bookings = [{"MaLich": malich, "TrangThai": trangthai}]
+
                 if trangthai == "Hoàn thành":
-                    existing_tt = conn.execute("SELECT MaTT FROM THANH_TOAN WHERE MaLich = ?", (malich,)).fetchone()
-                    sotien = float(lh_row["DonGia"]) * int(lh_row["SoLuong"])
-                    now_str = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-                    if existing_tt:
-                        conn.execute(
-                            "UPDATE THANH_TOAN SET TrangThaiTT = 'Đã thanh toán', PhuongThuc = ?, SoTien = ?, ThoiGianThanhToan = ? WHERE MaLich = ?",
-                            (phuongthuc, sotien, now_str, malich),
-                        )
-                    else:
-                        matt = next_code(conn, "THANH_TOAN", "MaTT", "TT")
-                        conn.execute(
-                            """INSERT INTO THANH_TOAN (MaTT, MaLich, ThoiGianThanhToan, SoTien, PhuongThuc, TrangThaiTT)
-                               VALUES (?, ?, ?, ?, ?, 'Đã thanh toán')""",
-                            (matt, malich, now_str, sotien, phuongthuc),
-                        )
-                        new_tt = {
-                            "MaTT": matt,
-                            "MaLich": malich,
-                            "ThoiGianThanhToan": now_str,
-                            "SoTien": sotien,
-                            "PhuongThuc": phuongthuc,
-                            "TrangThaiTT": "Đã thanh toán",
-                        }
+                    existing_tt = conn.execute("SELECT PhuongThuc FROM THANH_TOAN WHERE MaLich = ?", (malich,)).fetchone()
+                    eff_method = (
+                        existing_tt["PhuongThuc"]
+                        if existing_tt and existing_tt["PhuongThuc"] in ("Tiền mặt", "Chuyển khoản", "Thẻ")
+                        else (phuongthuc if phuongthuc in ("Tiền mặt", "Chuyển khoản", "Thẻ") else "Chuyển khoản")
+                    )
+                    primary_tt = upsert_payment_record(conn, malich, eff_method, "Đã thanh toán")
+                    if primary_tt:
+                        tt_list.append(primary_tt)
+
+                    if sync_combo:
+                        for partner_id in find_combo_partner_ids(conn, malich):
+                            p_lh = conn.execute("SELECT TrangThai FROM LICH_HEN WHERE MaLich = ?", (partner_id,)).fetchone()
+                            p_tt = conn.execute("SELECT TrangThaiTT, PhuongThuc FROM THANH_TOAN WHERE MaLich = ?", (partner_id,)).fetchone()
+                            if (
+                                p_lh
+                                and p_lh["TrangThai"] not in ("Đã hủy", "Không đến")
+                                and not (p_tt and p_tt["TrangThaiTT"] == "Đã thanh toán")
+                            ):
+                                if p_lh["TrangThai"] != "Hoàn thành":
+                                    conn.execute("UPDATE LICH_HEN SET TrangThai = 'Hoàn thành' WHERE MaLich = ?", (partner_id,))
+                                updated_bookings.append({"MaLich": partner_id, "TrangThai": "Hoàn thành"})
+                                p_method = (
+                                    p_tt["PhuongThuc"]
+                                    if p_tt and p_tt["PhuongThuc"] in ("Tiền mặt", "Chuyển khoản", "Thẻ")
+                                    else eff_method
+                                )
+                                partner_tt_rec = upsert_payment_record(conn, partner_id, p_method, "Đã thanh toán")
+                                if partner_tt_rec:
+                                    tt_list.append(partner_tt_rec)
                 elif trangthai in ("Đã hủy", "Không đến"):
-                    existing_tt = conn.execute("SELECT MaTT FROM THANH_TOAN WHERE MaLich = ?", (malich,)).fetchone()
-                    if existing_tt:
-                        conn.execute("UPDATE THANH_TOAN SET TrangThaiTT = 'Chưa thanh toán' WHERE MaLich = ?", (malich,))
+                    primary_tt = upsert_payment_record(conn, malich, phuongthuc, "Chưa thanh toán")
+                    if primary_tt:
+                        tt_list.append(primary_tt)
 
                 conn.commit()
             except sqlite3.Error:
@@ -808,13 +940,16 @@ class PetCareHandler(http.server.SimpleHTTPRequestHandler):
                 {
                     "ok": True,
                     "message": f"Đã cập nhật trạng thái lịch hẹn #{malich} sang '{trangthai}'.",
-                    "thanh_toan": new_tt,
+                    "thanh_toan": primary_tt,
+                    "thanh_toan_list": tt_list,
+                    "updated_bookings": updated_bookings,
                 }
             )
 
         elif parsed.path == "/api/thanh_toan/method":
             malich = str(body.get("MaLich", "")).strip()
             phuongthuc = str(body.get("PhuongThuc", "")).strip()
+            sync_combo = bool(body.get("SyncCombo", True))
 
             if not malich:
                 return self.send_json({"ok": False, "errors": ["Không tìm thấy mã lịch hẹn."]}, status=400)
@@ -842,39 +977,38 @@ class PetCareHandler(http.server.SimpleHTTPRequestHandler):
                     status=400,
                 )
 
-            new_tt = None
+            primary_tt = None
+            tt_list = []
+            updated_bookings = []
             updated_lh_status = None
             try:
-                existing_tt = conn.execute("SELECT MaTT FROM THANH_TOAN WHERE MaLich = ?", (malich,)).fetchone()
                 if phuongthuc == "Chưa thanh toán":
-                    if existing_tt:
-                        conn.execute("UPDATE THANH_TOAN SET TrangThaiTT = 'Chưa thanh toán' WHERE MaLich = ?", (malich,))
+                    primary_tt = upsert_payment_record(conn, malich, "Chuyển khoản", "Chưa thanh toán")
+                    if primary_tt:
+                        tt_list.append(primary_tt)
                 elif phuongthuc in ("Tiền mặt", "Chuyển khoản", "Thẻ"):
-                    sotien = float(lh_row["DonGia"]) * int(lh_row["SoLuong"])
-                    now_str = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
                     if lh_row["TrangThai"] != "Hoàn thành":
                         conn.execute("UPDATE LICH_HEN SET TrangThai = 'Hoàn thành' WHERE MaLich = ?", (malich,))
                         updated_lh_status = "Hoàn thành"
-                    if existing_tt:
-                        conn.execute(
-                            "UPDATE THANH_TOAN SET PhuongThuc = ?, TrangThaiTT = 'Đã thanh toán', SoTien = ?, ThoiGianThanhToan = ? WHERE MaLich = ?",
-                            (phuongthuc, sotien, now_str, malich),
-                        )
-                    else:
-                        matt = next_code(conn, "THANH_TOAN", "MaTT", "TT")
-                        conn.execute(
-                            """INSERT INTO THANH_TOAN (MaTT, MaLich, ThoiGianThanhToan, SoTien, PhuongThuc, TrangThaiTT)
-                               VALUES (?, ?, ?, ?, ?, 'Đã thanh toán')""",
-                            (matt, malich, now_str, sotien, phuongthuc),
-                        )
-                        new_tt = {
-                            "MaTT": matt,
-                            "MaLich": malich,
-                            "ThoiGianThanhToan": now_str,
-                            "SoTien": sotien,
-                            "PhuongThuc": phuongthuc,
-                            "TrangThaiTT": "Đã thanh toán",
-                        }
+                        updated_bookings.append({"MaLich": malich, "TrangThai": "Hoàn thành"})
+                    primary_tt = upsert_payment_record(conn, malich, phuongthuc, "Đã thanh toán")
+                    if primary_tt:
+                        tt_list.append(primary_tt)
+                    if sync_combo:
+                        for partner_id in find_combo_partner_ids(conn, malich):
+                            p_lh = conn.execute("SELECT TrangThai FROM LICH_HEN WHERE MaLich = ?", (partner_id,)).fetchone()
+                            p_tt = conn.execute("SELECT TrangThaiTT FROM THANH_TOAN WHERE MaLich = ?", (partner_id,)).fetchone()
+                            if (
+                                p_lh
+                                and p_lh["TrangThai"] not in ("Đã hủy", "Không đến")
+                                and not (p_tt and p_tt["TrangThaiTT"] == "Đã thanh toán")
+                            ):
+                                if p_lh["TrangThai"] != "Hoàn thành":
+                                    conn.execute("UPDATE LICH_HEN SET TrangThai = 'Hoàn thành' WHERE MaLich = ?", (partner_id,))
+                                updated_bookings.append({"MaLich": partner_id, "TrangThai": "Hoàn thành"})
+                                partner_tt_rec = upsert_payment_record(conn, partner_id, phuongthuc, "Đã thanh toán")
+                                if partner_tt_rec:
+                                    tt_list.append(partner_tt_rec)
                 else:
                     conn.close()
                     return self.send_json(
@@ -891,7 +1025,9 @@ class PetCareHandler(http.server.SimpleHTTPRequestHandler):
                 {
                     "ok": True,
                     "message": f"Đã cập nhật thanh toán cho lịch hẹn #{malich} ({phuongthuc}).",
-                    "thanh_toan": new_tt,
+                    "thanh_toan": primary_tt,
+                    "thanh_toan_list": tt_list,
+                    "updated_bookings": updated_bookings,
                     "updated_lh_status": updated_lh_status,
                 }
             )

@@ -2,20 +2,20 @@
 <defs><marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M 0 1 L 10 5 L 0 9 z" fill="#1d4ed8"/></marker></defs>
 <text x="615" y="34" text-anchor="middle" font-size="19" font-weight="bold" fill="#0f172a">LƯỢC ĐỒ QUAN HỆ (RELATIONAL SCHEMA) ÁNH XẠ TỪ ERD.DRAWIO (CHUẨN HÓA 3NF)</text>
 <text x="615" y="55" text-anchor="middle" font-size="12" fill="#475569">Đã loại bỏ MaKH bắc cầu khỏi LICH_HEN và loại bỏ thuộc tính dẫn xuất ThanhTien khỏi bảng vật lý THANH_TOAN</text>
-<path d="M 50 360 L 22 360 L 22 121 L 50 121" fill="none" stroke="#1d4ed8" stroke-width="2" marker-end="url(#arrow)"/>
-<text x="26" y="352" font-size="10.5" font-weight="bold" fill="#b91c1c">N (1,1)</text>
-<text x="26" y="113" font-size="10.5" font-weight="bold" fill="#15803d">1 (1,N)</text>
+<path d="M 50 360 L 10 360 L 10 121 L 50 121" fill="none" stroke="#1d4ed8" stroke-width="2" marker-end="url(#arrow)"/>
+<text x="12" y="352" font-size="10" font-weight="bold" fill="#b91c1c">N (1,1)</text>
+<text x="12" y="113" font-size="10" font-weight="bold" fill="#15803d">1 (1,N)</text>
 <path d="M 460 290 L 410 290 L 410 336 L 360 336" fill="none" stroke="#1d4ed8" stroke-width="2" marker-end="url(#arrow)"/>
 <text x="415" y="282" font-size="10.5" font-weight="bold" fill="#b91c1c">N (1,1)</text>
 <text x="366" y="328" font-size="10.5" font-weight="bold" fill="#15803d">1 (0,N)</text>
-<path d="M 770 338 L 820 338 L 820 246 L 870 246" fill="none" stroke="#1d4ed8" stroke-width="2" marker-end="url(#arrow)"/>
-<text x="775" y="330" font-size="10.5" font-weight="bold" fill="#b91c1c">N (1,1)</text>
-<text x="825" y="238" font-size="10.5" font-weight="bold" fill="#15803d">1 (0,N)</text>
-<path d="M 770 314 L 805 314 L 805 586 L 680 586" fill="none" stroke="#1d4ed8" stroke-width="2" marker-end="url(#arrow)"/>
-<text x="775" y="306" font-size="10.5" font-weight="bold" fill="#b91c1c">N (1,1)</text>
-<text x="745" y="578" font-size="10.5" font-weight="bold" fill="#15803d">1 (0,N)</text>
-<path d="M 290 610 L 255 610 L 255 266 L 460 266" fill="none" stroke="#1d4ed8" stroke-width="2" marker-end="url(#arrow)"/>
-<text x="260" y="602" font-size="10.5" font-weight="bold" fill="#b91c1c">1 (1,1)</text>
+<path d="M 770 338 L 826 338 L 826 246 L 870 246" fill="none" stroke="#1d4ed8" stroke-width="2" marker-end="url(#arrow)"/>
+<text x="774" y="353" font-size="10" font-weight="bold" fill="#b91c1c">N (1,1)</text>
+<text x="830" y="238" font-size="10" font-weight="bold" fill="#15803d">1 (0,N)</text>
+<path d="M 770 314 L 812 314 L 812 495 L 632 495 L 632 586 L 680 586" fill="none" stroke="#1d4ed8" stroke-width="2" marker-end="url(#arrow)"/>
+<text x="774" y="306" font-size="10" font-weight="bold" fill="#b91c1c">N (1,1)</text>
+<text x="635" y="578" font-size="10" font-weight="bold" fill="#15803d">1 (0,N)</text>
+<path d="M 290 610 L 245 610 L 245 266 L 460 266" fill="none" stroke="#1d4ed8" stroke-width="2" marker-end="url(#arrow)"/>
+<text x="248" y="602" font-size="10" font-weight="bold" fill="#b91c1c">1 (1,1)</text>
 <text x="412" y="258" font-size="10.5" font-weight="bold" fill="#15803d">1 (0,1)</text>
 <rect x="50" y="75" width="310" height="160" rx="6" fill="#ffffff" stroke="#1e3a8a" stroke-width="2"/>
 <rect x="50" y="75" width="310" height="32" rx="6" fill="#1e3a8a"/>
